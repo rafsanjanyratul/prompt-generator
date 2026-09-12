@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import Button from '../ui/Button'
+import { trackEvent } from '../../lib/analytics.js'
 
 function HeroSection() {
   return (
@@ -17,10 +18,10 @@ function HeroSection() {
         </p>
 
         <div className="mt-7 flex flex-wrap gap-3">
-          <Link to="/explore">
+          <Link to="/explore" onClick={() => trackEvent('explore_click', { source: 'home', destination: '/explore' })}>
             <Button className="shadow-[0_10px_22px_rgba(15,23,42,0.08)]">Explore styles</Button>
           </Link>
-          <Link to="/explore">
+          <Link to="/explore" onClick={() => trackEvent('explore_click', { source: 'home', destination: '/explore' })}>
             <Button variant="secondary" className="shadow-[0_8px_20px_rgba(15,23,42,0.04)]">
               Browse trending
             </Button>

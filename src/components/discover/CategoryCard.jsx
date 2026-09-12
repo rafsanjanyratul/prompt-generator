@@ -1,5 +1,6 @@
 import { ArrowUpRight, Heart, Sparkles, Users } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { trackEvent } from '../../lib/analytics.js'
 
 const categoryMeta = {
   Boys: {
@@ -30,6 +31,7 @@ function CategoryCard({ category, description, href = '#' }) {
   return (
     <Link
       to={href}
+      onClick={() => trackEvent('category_select', { category, source: 'home' })}
       className="group block overflow-hidden rounded-[28px] border border-[var(--border)] bg-[var(--surface)] p-4 transition-all duration-200 hover:-translate-y-1 hover:border-[var(--focus)] hover:shadow-[0_18px_36px_rgba(15,23,42,0.08)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
     >
       <div className={`rounded-[22px] bg-gradient-to-br ${meta.accent} p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]`}>

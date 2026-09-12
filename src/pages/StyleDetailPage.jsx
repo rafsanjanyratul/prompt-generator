@@ -7,6 +7,7 @@ import StyleCard from '../components/discover/StyleCard'
 import Button from '../components/ui/Button'
 import EmptyState from '../components/ui/EmptyState'
 import useDocumentMeta from '../hooks/useDocumentMeta'
+import { trackEvent } from '../lib/analytics.js'
 
 function StyleDetailPage() {
   const { slug } = useParams()
@@ -23,6 +24,18 @@ function StyleDetailPage() {
     setImageFailed(false)
     setCopyState('idle')
   }, [slug])
+
+  useEffect(() => {
+    if (!style) return
+
+    trackEvent('style_view', {
+      style_id: style.id,
+      style_slug: style.slug,
+      style_title: style.title,
+      category: style.category,
+      style_type: style.style,
+    })
+  }, [style])
 
   const relatedStyles = useMemo(() => {
     if (!style) return []
@@ -57,6 +70,12 @@ function StyleDetailPage() {
       }
 
       setCopyState('success')
+      trackEvent('prompt_copy', {
+        style_id: style.id,
+        style_slug: style.slug,
+        style_title: style.title,
+        category: style.category,
+      })
       setTimeout(() => setCopyState('idle'), 1600)
     } catch {
       setCopyState('error')

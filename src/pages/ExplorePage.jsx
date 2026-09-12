@@ -8,6 +8,7 @@ import EmptyState from '../components/ui/EmptyState'
 import SearchInput from '../components/ui/SearchInput'
 import SectionHeader from '../components/ui/SectionHeader'
 import useDocumentMeta from '../hooks/useDocumentMeta'
+import { trackEvent } from '../lib/analytics.js'
 
 const defaultFilters = {
   category: 'All',
@@ -125,6 +126,38 @@ function ExplorePage() {
 
   const handleFilterChange = (key, value) => {
     setFilters((current) => ({ ...current, [key]: value }))
+    trackEvent('filter_use', {
+      filter_type: key,
+      filter_value: value,
+      resulting_result_count: promptStyles.filter((item) => {
+        const query = searchTerm.trim().toLowerCase()
+        const nextFilters = { ...filters, [key]: value }
+        const matchesSearch =
+          query.length === 0 ||
+          [
+            item.title,
+            item.shortDescription,
+            item.category,
+            item.gender,
+            item.style,
+            item.tags.join(' '),
+          ]
+            .join(' ')
+            .toLowerCase()
+            .includes(query)
+        const matchesCategory = nextFilters.category === 'All' || item.category === nextFilters.category
+        const matchesGender = nextFilters.gender === 'All' || item.gender === nextFilters.gender
+        const matchesStyle = nextFilters.style === 'All' || item.style === nextFilters.style
+        const matchesTrending =
+          nextFilters.trending === 'all'
+            ? true
+            : nextFilters.trending === 'true'
+              ? Boolean(item.trending)
+              : !item.trending
+
+        return matchesSearch && matchesCategory && matchesGender && matchesStyle && matchesTrending
+      }).length,
+    })
   }
 
   const resetAll = () => {
@@ -150,6 +183,28 @@ function ExplorePage() {
             <SearchInput
               value={searchTerm}
               onChange={setSearchTerm}
+              onSearchSubmit={(nextValue) => {
+                const normalized = nextValue.trim()
+                const resultCount = promptStyles.filter((item) => {
+                  const searchableText = [
+                    item.title,
+                    item.shortDescription,
+                    item.category,
+                    item.gender,
+                    item.style,
+                    item.tags.join(' '),
+                  ]
+                    .join(' ')
+                    .toLowerCase()
+
+                  return normalized.length === 0 || searchableText.includes(normalized.toLowerCase())
+                }).length
+
+                trackEvent('search', {
+                  search_term: normalized,
+                  result_count: resultCount,
+                })
+              }}
               placeholder="Search styles, tags, category, or mood"
             />
           </div>
@@ -159,7 +214,10 @@ function ExplorePage() {
               variant="secondary"
               size="sm"
               className="inline-flex items-center gap-2 self-start lg:self-auto"
-              onClick={resetAll}
+              onClick={() => {
+                resetAll()
+                trackEvent('search', { search_term: '', result_count: promptStyles.length })
+              }}
               aria-label="Clear search and filters"
             >
               <RotateCcw className="size-4" />

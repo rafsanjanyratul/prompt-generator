@@ -3,6 +3,14 @@ import AppShell from './AppShell'
 import HomePage from '../pages/HomePage'
 import ExplorePage from '../pages/ExplorePage'
 import StyleDetailPage from '../pages/StyleDetailPage'
+import { trackPageView } from '../lib/analytics.js'
+
+const routePageType = (path) => {
+  if (path.startsWith('/styles/')) return 'style_detail'
+  if (path === '/explore') return 'explore'
+  if (path === '/') return 'home'
+  return 'not_found'
+}
 
 const router = createBrowserRouter([
   {
@@ -24,5 +32,16 @@ const router = createBrowserRouter([
     ],
   },
 ])
+
+router.subscribe((state) => {
+  const location = state.location
+  const pageType = routePageType(location.pathname)
+
+  trackPageView({
+    path: location.pathname,
+    title: document.title,
+    page_type: pageType,
+  })
+})
 
 export default router

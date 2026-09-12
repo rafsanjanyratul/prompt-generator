@@ -1,6 +1,6 @@
 import { Search } from 'lucide-react'
 
-function SearchInput({ value, onChange, placeholder = 'Search styles', ...props }) {
+function SearchInput({ value, onChange, onSearchSubmit, placeholder = 'Search styles', ...props }) {
   return (
     <label
       className="flex w-full max-w-[32rem] items-center gap-3 rounded-[14px] border border-[var(--border)] bg-[var(--surface)] px-3 py-3 text-[var(--text-muted)] transition-colors focus-within:border-[var(--brand)] focus-within:ring-2 focus-within:ring-[var(--brand-soft)]"
@@ -11,6 +11,11 @@ function SearchInput({ value, onChange, placeholder = 'Search styles', ...props 
         type="search"
         value={value}
         onChange={(event) => onChange(event.target.value)}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter' && typeof onSearchSubmit === 'function') {
+            onSearchSubmit(value)
+          }
+        }}
         placeholder={placeholder}
         aria-label="Search styles"
         className="min-h-[24px] w-full border-0 bg-transparent text-[var(--text)] outline-none placeholder:text-[var(--text-muted)]"
