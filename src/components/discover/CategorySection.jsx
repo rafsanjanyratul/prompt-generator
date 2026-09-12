@@ -1,3 +1,4 @@
+import { motion, useReducedMotion } from 'motion/react'
 import CategoryCard from './CategoryCard'
 import SectionHeader from '../ui/SectionHeader'
 
@@ -25,8 +26,16 @@ const categories = [
 ]
 
 function CategorySection() {
+  const prefersReducedMotion = useReducedMotion()
+
   return (
-    <section className="py-8 md:py-10">
+    <motion.section
+      initial={prefersReducedMotion ? false : { opacity: 0, x: -24, y: 12 }}
+      whileInView={prefersReducedMotion ? undefined : { opacity: 1, x: 0, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.42, ease: 'easeOut' }}
+      className="py-8 md:py-10"
+    >
       <SectionHeader
         eyebrow="Categories"
         title="Browse by mood and moment"
@@ -34,16 +43,23 @@ function CategorySection() {
       />
 
       <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-        {categories.map((item) => (
-          <CategoryCard
+        {categories.map((item, index) => (
+          <motion.div
             key={item.category}
-            category={item.category}
-            description={item.description}
-            href={item.href}
-          />
+            initial={prefersReducedMotion ? false : { opacity: 0, x: -18 }}
+            whileInView={prefersReducedMotion ? undefined : { opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.25 }}
+            transition={{ delay: index * 0.05, duration: 0.3, ease: 'easeOut' }}
+          >
+            <CategoryCard
+              category={item.category}
+              description={item.description}
+              href={item.href}
+            />
+          </motion.div>
         ))}
       </div>
-    </section>
+    </motion.section>
   )
 }
 

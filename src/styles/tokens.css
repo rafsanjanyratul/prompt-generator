@@ -40,18 +40,18 @@
 }
 
 :root[data-theme='dark'] {
-  --background: #101114;
-  --surface: #171a1f;
-  --surface-elevated: #1d2128;
-  --surface-muted: #12161b;
-  --text: #f4f4f5;
-  --text-muted: #b4b7bf;
+  --background: #0d1117;
+  --surface: #171d25;
+  --surface-elevated: #1d2731;
+  --surface-muted: #111923;
+  --text: #eef3f8;
+  --text-muted: #aab7c5;
   --border: rgba(255, 255, 255, 0.08);
   --brand: #f4f4f5;
-  --brand-soft: #1a1f27;
+  --brand-soft: #1b2430;
   --brand-accent: #d2b18d;
-  --shadow: rgba(0, 0, 0, 0.32);
+  --shadow: rgba(0, 0, 0, 0.38);
   --focus: rgba(255, 255, 255, 0.18);
-  --success: #69d2a0;
+  --success: #79d8a5;
   --error: #fda29b;
 }

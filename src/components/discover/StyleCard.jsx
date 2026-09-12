@@ -14,16 +14,16 @@ function StyleCard({ item }) {
 
   return (
     <motion.div
-      initial={prefersReducedMotion ? false : { opacity: 0, y: 12 }}
+      initial={prefersReducedMotion ? false : { opacity: 0, y: 18 }}
       whileInView={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.32, ease: 'easeOut' }}
-      whileHover={prefersReducedMotion ? undefined : { y: -4 }}
+      transition={{ duration: 0.35, ease: 'easeOut' }}
+      whileHover={prefersReducedMotion ? undefined : { y: -4, scale: 1.01 }}
       className="h-full"
     >
       <Link
         to={`/styles/${item.slug}`}
-        className="group flex h-full flex-col overflow-hidden rounded-[28px] border border-[var(--border)] bg-[var(--surface)] shadow-[0_10px_30px_rgba(15,23,42,0.06)] transition-all duration-200 hover:-translate-y-1 hover:border-[var(--focus)] hover:shadow-[0_18px_42px_rgba(15,23,42,0.12)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
+        className="group flex h-full flex-col overflow-hidden rounded-[28px] border border-[var(--border)] bg-[var(--surface)] shadow-[0_10px_30px_rgba(15,23,42,0.06)] transition-all duration-200 hover:border-[var(--focus)] hover:shadow-[0_18px_42px_rgba(15,23,42,0.12)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
       >
         <div className="relative overflow-hidden">
           <div className="relative aspect-[4/5] w-full overflow-hidden bg-[var(--surface-muted)]">
@@ -41,7 +41,7 @@ function StyleCard({ item }) {
             ) : null}
 
             {imageFailed ? (
-              <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[var(--surface-muted)] via-[var(--surface)] to-[var(--brand-soft)] p-6 text-center">
+              <div className="flex h-full w-full items-center justify-center bg-[linear-gradient(135deg,var(--surface-muted),var(--surface),var(--brand-soft))] p-6 text-center">
                 <div className="flex flex-col items-center gap-3 text-[var(--text-muted)]">
                   <span className="flex h-12 w-12 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface)] text-[var(--text)]">
                     <ImageOff className="size-5" aria-hidden="true" />
@@ -52,7 +52,7 @@ function StyleCard({ item }) {
             ) : null}
           </div>
 
-          <div className="absolute inset-x-0 bottom-0 flex items-center justify-between p-4">
+          <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-2 p-4">
             <Badge tone="brand">{item.category}</Badge>
             {item.trending ? <Badge tone="success">Trending</Badge> : null}
           </div>
@@ -63,7 +63,7 @@ function StyleCard({ item }) {
             <h3 className="text-lg font-semibold tracking-[-0.03em] text-[var(--text)]">{item.title}</h3>
           </div>
 
-          <p className="text-sm leading-6 text-[var(--text-muted)] break-words">{item.shortDescription}</p>
+          <p className="break-words text-sm leading-6 text-[var(--text-muted)]">{item.shortDescription}</p>
 
           <div className="flex flex-wrap gap-2">
             {item.tags.slice(0, 3).map((tag) => (
