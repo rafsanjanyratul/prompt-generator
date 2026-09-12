@@ -1,0 +1,72 @@
+[
+  {
+    "id": 1,
+    "slug": "1980s-vintage-portrait",
+    "title": "1980s Vintage Portrait",
+    "shortDescription": "A nostalgic 1980s-inspired portrait with authentic vintage photography aesthetics.",
+    "category": "Boys",
+    "gender": "Male",
+    "style": "Vintage",
+    "tags": ["80s", "retro", "vintage"],
+    "image": "/images/styles/boys/001.webp",
+    "prompt": "Create a male portrait in a nostalgic 1980s style, shot with authentic analog film photography, soft warm lighting, slightly faded color tones, subtle grain, a clean studio backdrop, classic denim jacket, natural skin texture, cinematic composition, realistic facial features, soft depth of field, vintage magazine editorial aesthetic.",
+    "featured": true,
+    "trending": true
+  },
+  {
+    "id": 2,
+    "slug": "sunlit-girl-editorial",
+    "title": "Sunlit Girl Editorial",
+    "shortDescription": "Bright, natural beauty portrait with clean editorial styling and soft golden-hour light.",
+    "category": "Girls",
+    "gender": "Female",
+    "style": "Editorial",
+    "tags": ["sunlit", "editorial", "golden-hour"],
+    "image": "/images/styles/girls/001.webp",
+    "prompt": "Generate a female beauty portrait in a soft editorial style, golden-hour sunlight, clean natural skin tones, luminous face highlights, subtle soft shadows, natural hair movement, minimal makeup with fresh glow, elegant pose, premium fashion magazine composition, realistic detail, soft background blur, warm neutral palette, polished high-end portrait photography.",
+    "featured": true,
+    "trending": true
+  },
+  {
+    "id": 3,
+    "slug": "romantic-couple-street-scene",
+    "title": "Romantic Couple Street Scene",
+    "shortDescription": "Warm, intimate couple portrait with cinematic storytelling and a natural city backdrop.",
+    "category": "Couples",
+    "gender": "Mixed",
+    "style": "Cinematic",
+    "tags": ["romantic", "cinematic", "city"],
+    "image": "/images/styles/couples/001.webp",
+    "prompt": "Create a romantic couple portrait in a cinematic city scene, soft evening light, realistic skin tones, natural expressions, intimate body language, warm golden highlights, subtle motion blur in the background, beautifully textured urban environment, premium storytelling composition, realistic detail, emotional mood, shallow depth of field, polished editorial portrait photography.",
+    "featured": true,
+    "trending": false
+  },
+  {
+    "id": 4,
+    "slug": "cozy-family-portrait",
+    "title": "Cozy Family Portrait",
+    "shortDescription": "A cheerful family portrait with warm indoor light, relaxed posing, and a modern lifestyle feel.",
+    "category": "Family",
+    "gender": "Mixed",
+    "style": "Lifestyle",
+    "tags": ["family", "cozy", "lifestyle"],
+    "image": "/images/styles/family/001.webp",
+    "prompt": "Create a warm candid family portrait in a cozy modern home, natural daylight streaming through windows, relaxed expressions, genuine connection between family members, soft natural skin tones, layered clothing in neutral earth tones, intimate composition, realistic detail, subtle depth of field, unposed lifestyle photography feel, gentle emotional storytelling, clean and authentic look.",
+    "featured": false,
+    "trending": true
+  },
+  {
+    "id": 5,
+    "slug": "retro-synthwave-portrait",
+    "title": "Retro Synthwave Portrait",
+    "shortDescription": "A modern retro portrait with neon energy, bold color, and stylized nostalgic mood.",
+    "category": "Vintage/Retro",
+    "gender": "Male",
+    "style": "Retro Futurism",
+    "tags": ["neon", "retro", "synthwave"],
+    "image": "/images/styles/boys/002.webp",
+    "prompt": "Create a male portrait in a retro synthwave aesthetic, vibrant neon colors, bold gradient lighting, futuristic but nostalgic mood, polished reflective surfaces, stylized hair and fashion, realistic face details, dramatic pose, cinematic framing, modern retro poster aesthetic, high contrast, subtle grain, immersive color palette, premium digital art composition.",
+    "featured": false,
+    "trending": true
+  }
+]
