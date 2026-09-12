@@ -30,9 +30,9 @@ function CategoryCard({ category, description, href = '#' }) {
   return (
     <Link
       to={href}
-      className="group block overflow-hidden rounded-[28px] border border-[var(--border)] bg-[var(--surface)] p-4 transition-transform duration-200 hover:-translate-y-1"
+      className="group block overflow-hidden rounded-[28px] border border-[var(--border)] bg-[var(--surface)] p-4 transition-all duration-200 hover:-translate-y-1 hover:border-[var(--focus)] hover:shadow-[0_18px_36px_rgba(15,23,42,0.08)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
     >
-      <div className={`rounded-[22px] bg-gradient-to-br ${meta.accent} p-5`}>
+      <div className={`rounded-[22px] bg-gradient-to-br ${meta.accent} p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)]`}>
         <div className="flex items-center justify-between">
           <span className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[var(--border)] bg-white/50 text-[var(--text)] shadow-sm" aria-hidden="true">
             <Icon className="size-5" />

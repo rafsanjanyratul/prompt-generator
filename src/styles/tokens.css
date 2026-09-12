@@ -36,6 +36,7 @@
   --shadow: rgba(20, 20, 24, 0.14);
   --focus: rgba(23, 23, 23, 0.18);
   --success: #1c7c54;
+  --error: #b42318;
 }
 
 :root[data-theme='dark'] {
@@ -52,4 +53,5 @@
   --shadow: rgba(0, 0, 0, 0.32);
   --focus: rgba(255, 255, 255, 0.18);
   --success: #69d2a0;
+  --error: #fda29b;
 }

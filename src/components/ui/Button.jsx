@@ -21,7 +21,7 @@ function Button({
   return (
     <button
       type={type}
-      className={`inline-flex items-center justify-center rounded-full font-semibold transition-transform duration-200 hover:-translate-y-0.5 ${variants[variant]} ${sizes[size]} ${className}`.trim()}
+      className={`inline-flex items-center justify-center rounded-full font-semibold transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)] ${variants[variant]} ${sizes[size]} ${className}`.trim()}
       {...props}
     >
       {children}

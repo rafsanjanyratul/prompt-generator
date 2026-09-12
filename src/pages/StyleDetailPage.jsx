@@ -102,9 +102,9 @@ function StyleDetailPage() {
           </Link>
         </div>
 
-        <div className="grid gap-8 lg:grid-cols-[1.06fr_0.94fr] lg:items-start">
+        <div className="grid gap-8 lg:grid-cols-[1.08fr_0.92fr] lg:items-start">
           <div className="overflow-hidden rounded-[28px] border border-[var(--border)] bg-[var(--surface)] p-3 shadow-[0_10px_28px_rgba(15,23,42,0.06)]">
-            <div className="relative aspect-[4/5] overflow-hidden rounded-[22px] bg-[var(--surface-muted)]">
+            <div className="relative aspect-[4/5] overflow-hidden rounded-[22px] bg-[var(--surface-muted)] shadow-[inset_0_1px_0_rgba(255,255,255,0.2)]">
               {!imageFailed ? (
                 <img
                   src={style.image}
@@ -175,8 +175,15 @@ function StyleDetailPage() {
             <div className="flex flex-col gap-3 sm:flex-row">
               <Button
                 type="button"
-                className="inline-flex items-center gap-2"
+                className={`inline-flex items-center gap-2 ${
+                  copyState === 'success'
+                    ? 'bg-[var(--success)] text-[var(--background)] hover:-translate-y-0'
+                    : copyState === 'error'
+                      ? 'border border-[var(--error)] bg-[var(--surface)] text-[var(--error)] hover:-translate-y-0'
+                      : ''
+                }`}
                 onClick={handleCopyPrompt}
+                aria-live="polite"
               >
                 {copyState === 'success' ? <Check className="size-4" /> : <Copy className="size-4" />}
                 {copyLabel}

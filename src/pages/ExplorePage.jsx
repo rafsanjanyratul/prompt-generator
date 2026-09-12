@@ -157,9 +157,16 @@ function ExplorePage() {
         </div>
 
         <div className="mt-6 rounded-[28px] border border-[var(--border)] bg-[var(--surface)] p-4 shadow-[0_12px_32px_rgba(15,23,42,0.04)]">
-          <div className="mb-3 flex items-center gap-2 text-sm font-medium text-[var(--text)]">
-            <SlidersHorizontal className="size-4" />
-            <span>Filters</span>
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2 text-sm font-medium text-[var(--text)]">
+              <SlidersHorizontal className="size-4" />
+              <span>Filters</span>
+            </div>
+            {activeFilterCount > 0 ? (
+              <span className="rounded-full border border-[var(--border)] bg-[var(--surface-muted)] px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--text-muted)]">
+                {activeFilterCount} active
+              </span>
+            ) : null}
           </div>
 
           <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
