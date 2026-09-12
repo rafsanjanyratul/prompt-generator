@@ -5,22 +5,22 @@ const categories = [
   {
     category: 'Boys',
     description: 'Crisp portraits, vintage character, and polished lifestyle framing.',
-    href: '/explore',
+    href: '/explore?category=Boys',
   },
   {
     category: 'Girls',
     description: 'Soft editorial looks, natural beauty portraits, and warm light direction.',
-    href: '/explore',
+    href: '/explore?category=Girls',
   },
   {
     category: 'Couples',
     description: 'Romantic storytelling, cinematic emotion, and intimate connection.',
-    href: '/explore',
+    href: '/explore?category=Couples',
   },
   {
     category: 'Family',
     description: 'Authentic moments, cozy portraits, and lifestyle storytelling.',
-    href: '/explore',
+    href: '/explore?category=Family',
   },
 ]
 

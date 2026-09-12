@@ -1,6 +1,7 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
 import { ChevronDown, RotateCcw, SlidersHorizontal, Sparkles, X } from 'lucide-react'
+import { useSearchParams } from 'react-router-dom'
 import promptStyles from '../data/prompts.js'
 import StyleCard from '../components/discover/StyleCard'
 import Button from '../components/ui/Button'
@@ -16,6 +17,8 @@ const defaultFilters = {
   style: 'All',
   trending: 'all',
 }
+
+const categoryValues = ['All', 'Boys', 'Girls', 'Couples', 'Family']
 
 function FilterSelect({ label, value, onChange, options }) {
   return (
@@ -44,8 +47,18 @@ function FilterSelect({ label, value, onChange, options }) {
 
 function ExplorePage() {
   const prefersReducedMotion = useReducedMotion()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const queryCategory = searchParams.get('category')
+  const normalizedCategory = queryCategory && categoryValues.includes(queryCategory) ? queryCategory : 'All'
   const [searchTerm, setSearchTerm] = useState('')
-  const [filters, setFilters] = useState(defaultFilters)
+  const [filters, setFilters] = useState({ ...defaultFilters, category: normalizedCategory })
+
+  useEffect(() => {
+    setFilters((current) => ({
+      ...current,
+      category: normalizedCategory,
+    }))
+  }, [normalizedCategory])
 
   useDocumentMeta({
     title: 'Explore AI Photo Styles',
@@ -125,6 +138,16 @@ function ExplorePage() {
   ].filter(Boolean)
 
   const handleFilterChange = (key, value) => {
+    if (key === 'category') {
+      const nextParams = new URLSearchParams(searchParams)
+      if (value === 'All') {
+        nextParams.delete('category')
+      } else {
+        nextParams.set('category', value)
+      }
+      setSearchParams(nextParams, { replace: true })
+    }
+
     setFilters((current) => ({ ...current, [key]: value }))
     trackEvent('filter_use', {
       filter_type: key,
@@ -163,6 +186,7 @@ function ExplorePage() {
   const resetAll = () => {
     setSearchTerm('')
     setFilters(defaultFilters)
+    setSearchParams({}, { replace: true })
   }
 
   return (
@@ -174,8 +198,16 @@ function ExplorePage() {
       >
         <SectionHeader
           eyebrow="Browse"
-          title="Explore AI photo styles"
-          description="Search premium visual directions, narrow by mood and audience, and discover prompts you can adapt to your next image generation workflow."
+          title={
+            filters.category === 'All'
+              ? 'Explore AI photo styles'
+              : `${filters.category} photo styles`
+          }
+          description={
+            filters.category === 'All'
+              ? 'Search premium visual directions, narrow by mood and audience, and discover prompts you can adapt to your next image generation workflow.'
+              : `Browse ${filters.category.toLowerCase()} style directions, refine the search, and discover the strongest prompts for this audience.`
+          }
         />
 
         <div className="mt-6 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">

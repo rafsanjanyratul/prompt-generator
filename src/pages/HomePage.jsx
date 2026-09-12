@@ -21,6 +21,8 @@ function HomePage() {
     <div className="mx-auto w-[min(var(--container-width),calc(100%-2rem))] py-8 pb-16">
       <HeroSection />
 
+      <CategorySection />
+
       <DiscoverySection
         eyebrow="Featured"
         title="Featured styles"
@@ -34,8 +36,6 @@ function HomePage() {
         description="Fresh, popular directions people are using to create more cinematic, artistic, and natural portrait looks."
         items={trendingStyles}
       />
-
-      <CategorySection />
     </div>
   )
 }
