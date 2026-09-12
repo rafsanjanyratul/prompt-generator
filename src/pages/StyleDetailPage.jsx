@@ -6,6 +6,7 @@ import promptStyles from '../data/prompts.js'
 import StyleCard from '../components/discover/StyleCard'
 import Button from '../components/ui/Button'
 import EmptyState from '../components/ui/EmptyState'
+import useDocumentMeta from '../hooks/useDocumentMeta'
 
 function StyleDetailPage() {
   const { slug } = useParams()
@@ -63,6 +64,17 @@ function StyleDetailPage() {
     }
   }
 
+  useDocumentMeta({
+    title: style ? style.title : 'Style not found',
+    description: style
+      ? `${style.shortDescription} Explore the ${style.category} ${style.style.toLowerCase()} style prompt and related visual inspiration.`
+      : 'The requested style could not be found in the current collection.',
+    ogTitle: style ? style.title : 'Style not found',
+    ogDescription: style ? style.shortDescription : 'This style is not currently available in the collection.',
+    ogType: 'article',
+    robots: style ? 'index,follow' : 'noindex,follow',
+  })
+
   if (!style) {
     return (
       <div className="mx-auto w-[min(var(--container-width),calc(100%-2rem))] py-16">
@@ -109,6 +121,10 @@ function StyleDetailPage() {
                 <img
                   src={style.image}
                   alt={style.title}
+                  loading="eager"
+                  decoding="async"
+                  width={800}
+                  height={1000}
                   className="h-full w-full object-cover"
                   onError={() => setImageFailed(true)}
                 />

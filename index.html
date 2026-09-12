@@ -4,7 +4,19 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>prompt-generator</title>
+    <meta
+      name="description"
+      content="PromptMuse helps you discover curated AI photo styles, prompt inspiration, and visual direction for portraits, couples, family moments, and editorial looks."
+    />
+    <meta name="theme-color" content="#f5f2ee" />
+    <meta name="robots" content="index,follow" />
+    <meta property="og:title" content="PromptMuse | AI Photo Style Discovery" />
+    <meta
+      property="og:description"
+      content="Discover curated AI photo styles and prompt ideas for portraits, editorial looks, and cinematic inspiration."
+    />
+    <meta property="og:type" content="website" />
+    <title>PromptMuse | AI Photo Style Discovery</title>
     <script>
       (() => {
         const STORAGE_KEY = 'promptmuse-theme'
@@ -12,6 +24,7 @@
         const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
         const theme = storedTheme || systemTheme
         document.documentElement.setAttribute('data-theme', theme)
+        document.documentElement.setAttribute('data-theme-initialized', 'true')
       })()
     </script>
   </head>

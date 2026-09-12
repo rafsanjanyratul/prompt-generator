@@ -7,6 +7,7 @@ import Button from '../components/ui/Button'
 import EmptyState from '../components/ui/EmptyState'
 import SearchInput from '../components/ui/SearchInput'
 import SectionHeader from '../components/ui/SectionHeader'
+import useDocumentMeta from '../hooks/useDocumentMeta'
 
 const defaultFilters = {
   category: 'All',
@@ -44,6 +45,15 @@ function ExplorePage() {
   const prefersReducedMotion = useReducedMotion()
   const [searchTerm, setSearchTerm] = useState('')
   const [filters, setFilters] = useState(defaultFilters)
+
+  useDocumentMeta({
+    title: 'Explore AI Photo Styles',
+    description:
+      'Search, filter, and browse curated AI photo styles by mood, category, and trend for your next creative prompt.',
+    ogTitle: 'Explore AI Photo Styles',
+    ogDescription:
+      'Browse AI photo styles by category, trend, and mood to find the right visual direction for your next prompt.',
+  })
 
   const categoryOptions = useMemo(
     () => [{ label: 'All', value: 'All' }, ...new Set(promptStyles.map((item) => item.category))].map((category) =>
