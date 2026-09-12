@@ -1,12 +1,14 @@
 function Footer() {
   return (
-    <footer className="site-footer">
-      <div className="container footer-inner">
+    <footer className="border-t border-[var(--border)] bg-[var(--surface)]">
+      <div className="mx-auto flex w-[min(var(--container-width),calc(100%-2rem))] flex-col items-start justify-between gap-4 py-6 md:flex-row md:items-center md:py-8">
         <div>
-          <p className="footer-brand">PromptMuse</p>
-          <p className="footer-copy">Curated AI photo styles for creative inspiration.</p>
+          <p className="m-0 font-bold tracking-[-0.04em] text-[var(--text)]">PromptMuse</p>
+          <p className="mt-1 m-0 text-[var(--text-muted)]">
+            Curated AI photo styles for creative inspiration.
+          </p>
         </div>
-        <div className="footer-meta">
+        <div className="flex flex-wrap justify-end gap-4 text-sm text-[var(--text-muted)]">
           <span>Discovery</span>
           <span>Prompt ideas</span>
           <span>Visual inspiration</span>

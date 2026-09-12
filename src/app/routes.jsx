@@ -18,7 +18,11 @@ const router = createBrowserRouter([
       },
       {
         path: 'styles/:slug',
-        element: <div className="container page-placeholder">Style detail page coming soon.</div>,
+        element: (
+          <div className="mx-auto w-[min(var(--container-width),calc(100%-2rem))] py-16 text-base text-[var(--text-muted)]">
+            Style detail page coming soon.
+          </div>
+        ),
       },
     ],
   },

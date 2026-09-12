@@ -4,9 +4,9 @@ import Footer from '../components/layout/Footer'
 
 function AppShell() {
   return (
-    <div className="app-shell">
+    <div className="flex min-h-screen flex-col bg-[var(--background)] text-[var(--text)]">
       <Header />
-      <main className="app-main">
+      <main className="flex-1">
         <Outlet />
       </main>
       <Footer />

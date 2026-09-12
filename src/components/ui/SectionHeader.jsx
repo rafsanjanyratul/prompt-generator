@@ -1,9 +1,19 @@
 function SectionHeader({ eyebrow, title, description, align = 'left' }) {
   return (
-    <div className={`section-header section-header--${align}`}>
-      {eyebrow ? <p className="section-header__eyebrow">{eyebrow}</p> : null}
-      <h2 className="section-header__title">{title}</h2>
-      {description ? <p className="section-header__description">{description}</p> : null}
+    <div
+      className={`flex flex-col gap-2 ${align === 'center' ? 'items-center text-center' : 'items-start text-left'} mb-6`}
+    >
+      {eyebrow ? (
+        <p className="m-0 text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--text-muted)]">
+          {eyebrow}
+        </p>
+      ) : null}
+      <h2 className="m-0 text-[clamp(2rem,3vw,3rem)] leading-[1.05] tracking-[-0.06em] text-[var(--text)]">
+        {title}
+      </h2>
+      {description ? (
+        <p className="m-0 max-w-[42rem] text-[var(--text-muted)]">{description}</p>
+      ) : null}
     </div>
   )
 }

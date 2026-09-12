@@ -9,20 +9,30 @@ const navItems = [
 
 function Header() {
   return (
-    <header className="site-header">
-      <div className="container header-inner">
-        <NavLink to="/" className="brand" aria-label="PromptMuse home">
-          <span className="brand-mark">P</span>
+    <header className="sticky top-0 z-20 border-b border-[var(--border)] bg-[var(--background)]/80 backdrop-blur-xl">
+      <div className="mx-auto flex min-h-[76px] w-[min(var(--container-width),calc(100%-2rem))] items-center justify-between gap-4">
+        <NavLink
+          to="/"
+          className="inline-flex items-center gap-3 text-sm font-bold tracking-[-0.04em] text-[var(--text)]"
+          aria-label="PromptMuse home"
+        >
+          <span className="inline-flex size-8 items-center justify-center rounded-[0.7rem] border border-[var(--border)] bg-[var(--brand-soft)] text-sm font-bold text-[var(--text)]">
+            P
+          </span>
           <span>PromptMuse</span>
         </NavLink>
 
-        <nav className="main-nav" aria-label="Main navigation">
+        <nav className="flex items-center gap-4" aria-label="Main navigation">
           {navItems.map((item) => (
             <NavLink
               key={item.to}
               to={item.to}
               className={({ isActive }) =>
-                `nav-link${isActive ? ' nav-link--active' : ''}`
+                `inline-flex min-h-9 items-center rounded-full px-3 py-2 text-sm font-medium transition-colors ${
+                  isActive
+                    ? 'bg-[var(--surface)] text-[var(--text)]'
+                    : 'text-[var(--text-muted)] hover:text-[var(--text)]'
+                }`
               }
             >
               {item.label}
@@ -30,7 +40,7 @@ function Header() {
           ))}
         </nav>
 
-        <div className="header-actions">
+        <div className="flex items-center">
           <ThemeToggle />
         </div>
       </div>
