@@ -25,7 +25,8 @@ function FilterSelect({ label, value, onChange, options }) {
         <select
           value={value}
           onChange={(event) => onChange(event.target.value)}
-          className="w-full appearance-none rounded-[14px] border border-[var(--border)] bg-[var(--surface)] px-3 py-3 pr-10 text-sm text-[var(--text)] outline-none transition-colors focus:border-[var(--brand)] focus:ring-2 focus:ring-[var(--brand-soft)]"
+          aria-label={label}
+          className="min-h-[44px] w-full appearance-none rounded-[14px] border border-[var(--border)] bg-[var(--surface)] px-3 py-3 pr-10 text-sm text-[var(--text)] outline-none transition-colors focus:border-[var(--brand)] focus:ring-2 focus:ring-[var(--brand-soft)]"
         >
           {options.map((option) => (
             <option key={option.value} value={option.value}>
@@ -149,6 +150,7 @@ function ExplorePage() {
               size="sm"
               className="inline-flex items-center gap-2 self-start lg:self-auto"
               onClick={resetAll}
+              aria-label="Clear search and filters"
             >
               <RotateCcw className="size-4" />
               Clear filters
@@ -198,7 +200,7 @@ function ExplorePage() {
         </div>
 
         <div className="mt-6 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-          <div className="flex items-center gap-2 text-sm text-[var(--text-muted)]">
+          <div className="flex items-center gap-2 text-sm text-[var(--text-muted)]" aria-live="polite">
             <Sparkles className="size-4 text-[var(--brand)]" />
             <span>
               Showing <strong className="font-semibold text-[var(--text)]">{filteredStyles.length}</strong> styles
@@ -206,14 +208,14 @@ function ExplorePage() {
           </div>
 
           {activeFilters.length > 0 ? (
-            <div className="flex flex-wrap items-center gap-2">
-              {activeFilters.map((label) => (
+            <div className="flex flex-wrap items-center gap-2" aria-label="Active filters">
+              {activeFilters.map((label, index) => (
                 <span
-                  key={label}
+                  key={`${label}-${index}`}
                   className="inline-flex items-center gap-1 rounded-full border border-[var(--border)] bg-[var(--surface)] px-2.5 py-1 text-[11px] font-medium uppercase tracking-[0.08em] text-[var(--text-muted)]"
                 >
                   {label}
-                  <X className="size-3" />
+                  <X className="size-3" aria-hidden="true" />
                 </span>
               ))}
             </div>

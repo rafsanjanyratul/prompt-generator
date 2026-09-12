@@ -59,7 +59,7 @@ function StyleCard({ item }) {
             <h3 className="text-lg font-semibold tracking-[-0.03em] text-[var(--text)]">{item.title}</h3>
           </div>
 
-          <p className="text-sm leading-6 text-[var(--text-muted)]">{item.shortDescription}</p>
+          <p className="text-sm leading-6 text-[var(--text-muted)] break-words">{item.shortDescription}</p>
 
           <div className="flex flex-wrap gap-2">
             {item.tags.slice(0, 3).map((tag) => (

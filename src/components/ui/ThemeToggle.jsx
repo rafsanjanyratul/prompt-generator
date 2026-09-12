@@ -35,7 +35,7 @@ function ThemeToggle() {
       aria-label={`Switch to ${isDark ? 'light' : 'dark'} mode`}
       aria-pressed={isDark}
       title={`Switch to ${isDark ? 'light' : 'dark'} mode`}
-      className="group inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--surface)] px-2.5 py-1.5 text-[11px] font-semibold text-[var(--text)] shadow-[0_1px_0_rgba(15,23,42,0.02)] transition-all duration-200 hover:border-[var(--focus)] hover:bg-[var(--surface-elevated)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
+      className="group inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full border border-[var(--border)] bg-[var(--surface)] px-2.5 py-1.5 text-[11px] font-semibold text-[var(--text)] shadow-[0_1px_0_rgba(15,23,42,0.02)] transition-all duration-200 hover:border-[var(--focus)] hover:bg-[var(--surface-elevated)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
     >
       <span className="relative inline-flex h-6 w-10 items-center rounded-full border border-[var(--border)] bg-[var(--surface-muted)] p-1">
         <span
@@ -47,7 +47,7 @@ function ThemeToggle() {
           {isDark ? <MoonStar className="size-2.5" /> : <SunMedium className="size-2.5" />}
         </span>
       </span>
-      <span className="inline-flex items-center gap-1.5">
+      <span className="hidden items-center gap-1.5 sm:inline-flex">
         {isDark ? <MoonStar className="size-3.5" /> : <SunMedium className="size-3.5" />}
         <span>{isDark ? 'Dark' : 'Light'}</span>
       </span>

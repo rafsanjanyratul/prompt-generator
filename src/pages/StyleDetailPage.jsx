@@ -184,6 +184,7 @@ function StyleDetailPage() {
                 }`}
                 onClick={handleCopyPrompt}
                 aria-live="polite"
+                aria-label={`${copyLabel} prompt`}
               >
                 {copyState === 'success' ? <Check className="size-4" /> : <Copy className="size-4" />}
                 {copyLabel}

@@ -13,7 +13,7 @@ function SearchInput({ value, onChange, placeholder = 'Search styles', ...props 
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
         aria-label="Search styles"
-        className="w-full border-0 bg-transparent text-[var(--text)] outline-none placeholder:text-[var(--text-muted)]"
+        className="min-h-[24px] w-full border-0 bg-transparent text-[var(--text)] outline-none placeholder:text-[var(--text-muted)]"
       />
     </label>
   )

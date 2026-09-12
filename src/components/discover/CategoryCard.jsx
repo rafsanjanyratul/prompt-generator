@@ -44,7 +44,7 @@ function CategoryCard({ category, description, href = '#' }) {
         </div>
         <div className="mt-12">
           <h3 className="text-2xl font-semibold tracking-[-0.04em] text-[var(--text)]">{category}</h3>
-          <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">{description}</p>
+          <p className="mt-2 text-sm leading-6 text-[var(--text-muted)] break-words">{description}</p>
         </div>
       </div>
     </Link>
