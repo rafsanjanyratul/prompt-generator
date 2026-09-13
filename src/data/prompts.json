@@ -27,20 +27,7 @@
 "featured": true,
 "trending": true
 },
-{
-"id": 3,
-"slug": "romantic-couple-street-scene",
-"title": "Romantic Couple Street Scene",
-"shortDescription": "Warm, intimate couple portrait with cinematic storytelling and a natural city backdrop.",
-"category": "Couples",
-"gender": "Mixed",
-"style": "Cinematic",
-"tags": ["romantic", "cinematic", "city", "evening-light", "storytelling"],
-"image": "/images/styles/couples/romantic-couple-street-scene.webp",
-"prompt": "Create a romantic couple portrait in a cinematic city scene, soft evening light, realistic skin tones, natural expressions, intimate body language, warm golden highlights, subtle motion blur in the background, beautifully textured urban environment, premium storytelling composition, realistic detail, emotional mood, shallow depth of field, polished editorial portrait photography.",
-"featured": true,
-"trending": false
-},
+
 {
 "id": 4,
 "slug": "cozy-family-portrait",
@@ -97,20 +84,7 @@
 "featured": false,
 "trending": true
 },
-{
-"id": 8,
-"slug": "rooftop-couple-golden-hour",
-"title": "Rooftop Couple Golden Hour",
-"shortDescription": "An intimate rooftop portrait with warm evening light, soft movement, and a relaxed city romance feel.",
-"category": "Couples",
-"gender": "Mixed",
-"style": "Cinematic",
-"tags": ["rooftop", "golden-hour", "romantic", "city", "soft-light"],
-"image": "/images/styles/couples/rooftop-couple-golden-hour.webp",
-"prompt": "Create a romantic couple portrait on a rooftop at golden hour, warm sunlight falling across their faces, realistic skin tones, natural smiles, gentle body language, soft wind in clothing, urban skyline in the background, cinematic composition, shallow depth of field, warm color grading, intimate emotional mood, elegant natural portrait photography with a modern city romance atmosphere.",
-"featured": true,
-"trending": false
-},
+
 {
 "id": 9,
 "slug": "dhaka-wedding-inspired-portrait",
@@ -182,20 +156,6 @@
 "trending": false
 },
 {
-"id": 14,
-"slug": "coastal-couple-escape",
-"title": "Coastal Couple Escape",
-"shortDescription": "A relaxed couple portrait on the coast with sea air, soft textures, and romantic travel mood.",
-"category": "Couples",
-"gender": "Mixed",
-"style": "Travel",
-"tags": ["coastal", "travel", "couple", "romantic", "beach"],
-"image": "/images/styles/couples/coastal-couple-escape.webp",
-"prompt": "Create a romantic couple portrait on a coastal shoreline at golden hour, gentle breeze, relaxed expressions, natural movement of clothing, warm sunlight on skin, soft ocean haze in the background, realistic detail, emotional connection, cinematic composition, refined travel photography mood, natural color palette, premium lifestyle portrait aesthetic.",
-"featured": false,
-"trending": true
-},
-{
 "id": 15,
 "slug": "monsoon-rural-family-story",
 "title": "Monsoon Rural Family Story",
@@ -250,20 +210,6 @@
 "prompt": "Create a mother and daughter portrait in a soft studio setting, gentle natural light, warm neutral background, affectionate body language, realistic skin tones, soft focus on the environment, subtle emotional connection, refined portrait composition, clean shadows, natural expressions, premium lifestyle portrait photography with calm and intimate mood.",
 "featured": false,
 "trending": true
-},
-{
-"id": 19,
-"slug": "weekend-city-couple-walk",
-"title": "Weekend City Couple Walk",
-"shortDescription": "A relaxed couple portrait capturing everyday urban affection, movement, and candid storytelling.",
-"category": "Couples",
-"gender": "Mixed",
-"style": "Street",
-"tags": ["city", "walking", "casual", "romantic", "documentary"],
-"image": "/images/styles/couples/weekend-city-couple-walk.webp",
-"prompt": "Create a candid couple portrait during a city walk on a weekend, natural smile, relaxed posture, casual everyday outfits, warm ambient light, realistic skin tones, urban background with soft texture, subtle motion blur, honest emotional connection, documentary-style composition, modern lifestyle portrait photography, warm natural color palette, intimate storytelling mood.",
-"featured": false,
-"trending": false
 },
 {
 "id": 20,
@@ -334,5 +280,147 @@
 "prompt": "Transform my uploaded photo into a premium futuristic techwear fashion portrait with an original cyber-ninja aesthetic. Preserve the exact same person's identity, facial structure, facial features, skin tone, hairstyle, natural skin texture, body proportions, and recognizable appearance. Do not replace or redesign the person's face.\n\nDress the person in sophisticated all-black functional techwear: a structured technical jacket, layered utility vest, realistic functional pockets, subtle straps, tapered cargo trousers, minimalist gloves if appropriate, and futuristic but wearable boots. The outfit should look like high-end technical fashion, not armor or a costume.\n\nPlace the person in a rain-darkened futuristic urban alley with concrete and metal architecture, subtle fog, wet pavement, distant architectural lights, and realistic reflections.\n\nUse a soft neutral key light on the face, combined with a restrained cool cyan rim light around the silhouette. Keep the face naturally visible and avoid covering it with a mask.\n\nPose the person in a calm three-quarter stance with relaxed but confident posture and naturally positioned hands. The expression should be focused and composed.\n\nRender detailed technical fabrics, stitching, straps, realistic metal and rubber materials, wet-surface reflections, subtle atmospheric haze, shallow depth of field, deep blacks, controlled highlights, and premium fashion-campaign color grading.\n\nAvoid weapons, excessive armor, glowing eyes, logos, random text, exaggerated cybernetic body parts, or costume-like styling.\n\nThe final result should resemble a high-end futuristic streetwear campaign photographed at night.\n\nAspect ratio: 4:5 vertical.\nPhotorealistic, cinematic, premium techwear fashion photography, high detail.",
 "featured": false,
 "trending": false
-}
+},
+
+  {
+    "id": 25,
+    "slug": "80s-bangladesh-vintage-couple",
+    "title": "80s Bangladesh Vintage Couple",
+    "shortDescription": "A nostalgic 1980s-inspired portrait with authentic vintage photography aesthetics.",
+    "category": "Couples",
+    "gender": "Mixed",
+    "style": "Vintage",
+    "tags": ["80s", "retro", "vintage", "film", "nostalgia"],
+    "image": "/images/styles/couples/80s-bangladesh-vintage-couple.webp",
+    "prompt": "Transform our uploaded couple photo into an authentic late-1980s to early-1990s Bangladeshi vintage couple photograph.\n\nPreserve the exact identity of BOTH people in the uploaded photo. Keep each person's original facial structure, eyes, nose, lips, jawline, skin tone, natural skin texture, age, hairstyle characteristics, body proportions, and recognizable appearance. Do not swap, merge, redesign, beautify, or replace either person's face. Both people must remain clearly recognizable as the same individuals from the uploaded photo.\n\nDress the man in an authentic late-80s/early-90s Bangladeshi outfit such as a tucked or relaxed cotton shirt with high-waisted trousers. Dress the woman in a period-appropriate traditional saree with a simple blouse and modest vintage jewelry such as earrings and bangles. Avoid modern fashion elements.\n\nPlace the couple in a nostalgic Bangladeshi neighborhood or village setting with an old residential building, veranda, greenery, simple furniture, rickshaw or subtle period details in the background.\n\nGive them a natural couple pose, standing or sitting close together with relaxed body language. Avoid overly romantic modern poses. Their expressions should feel warm, natural, and candid, like a genuine family photograph from that period.\n\nUse warm afternoon daylight and an authentic Kodak 35mm film-camera aesthetic. Create slightly faded colors, warm skin tones, mild analog grain, soft highlights, gentle contrast, subtle film imperfections, and natural photographic softness.\n\nUse a realistic 50mm lens perspective with moderate depth of field. Keep both faces clearly visible and naturally focused.\n\nAvoid face replacement, facial blending, excessive skin smoothing, modern beauty filters, unrealistic body proportions, distorted hands, extra fingers, duplicated people, warped clothing, excessive HDR, or CGI appearance.\n\nThe final result should look like a genuine Bangladeshi couple photograph taken around 1988–1992, not a modern digital photograph with a simple vintage filter.\n\nAspect ratio: 4:5 vertical.",
+    "featured": true,
+    "trending": true
+  },
+  {
+    "id": 26,
+    "slug": "royalty-heritage-wedding",
+    "title": "Royalty Heritage Wedding",
+    "shortDescription": "Luxurious South Asian heritage wedding portrait with rich detail.",
+    "category": "Couples",
+    "gender": "Mixed",
+    "style": "Traditional",
+    "tags": ["wedding", "traditional", "heritage", "luxury", "culture"],
+    "image": "/images/styles/couples/royalty-heritage-wedding.webp",
+    "prompt": "Transform our uploaded couple photo into a luxurious South Asian heritage wedding portrait while preserving the exact identity of both people.\n\nPreserve both individuals' original facial identities completely. Keep their exact facial structures, eyes, noses, lips, jawlines, skin tones, natural skin textures, ages, and recognizable appearances. Do not replace, merge, beautify, or redesign either face. Each person must remain unmistakably recognizable.\n\nDress the man in an elegant traditional South Asian groom outfit such as a richly detailed sherwani or premium embroidered Panjabi with subtle royal accessories. Dress the woman in an elegant traditional bridal saree or lehenga with sophisticated embroidery and refined jewelry. Keep the styling luxurious but tasteful.\n\nPlace the couple inside a grand heritage palace or traditional South Asian wedding venue featuring carved architectural details, elegant arches, warm chandeliers, floral arrangements, traditional furniture, and subtle decorative elements.\n\nPose them naturally as a newly married couple, standing close together with graceful posture and calm expressions. Their interaction should feel genuine rather than overly staged.\n\nUse warm cinematic lighting with soft golden highlights and controlled shadows. Add subtle background bokeh from decorative lights.\n\nPhotograph the scene with a professional full-frame camera and approximately an 85mm portrait-lens perspective. Keep both faces sharp with realistic depth of field.\n\nUse rich but sophisticated colors such as deep red, burgundy, gold, cream, and warm brown while maintaining natural skin tones.\n\nInclude realistic fabric embroidery, jewelry reflections, hair detail, skin texture, and subtle photographic grain.\n\nAvoid face changes, excessive makeup, unrealistic jewelry, plastic skin, distorted hands, extra fingers, duplicated accessories, exaggerated body proportions, or CGI appearance.\n\nThe final image should look like a premium heritage wedding photograph captured by a professional South Asian wedding photographer.\n\nAspect ratio: 4:5 vertical.",
+    "featured": false,
+    "trending": true
+  },
+  {
+    "id": 27,
+    "slug": "sunset-beach-romance",
+    "title": "Sunset Beach Romance",
+    "shortDescription": "Cinematic romantic beach portrait during golden hour.",
+    "category": "Couples",
+    "gender": "Mixed",
+    "style": "Cinematic",
+    "tags": ["beach", "sunset", "romantic", "cinematic", "travel"],
+    "image": "/images/styles/couples/sunset-beach-romance.webp",
+    "prompt": "Transform our uploaded couple photo into a cinematic romantic beach portrait during golden hour.\n\nPreserve the exact identities of BOTH people. Keep their original facial structures, eyes, noses, lips, jawlines, skin tones, natural skin textures, ages, hairstyles, and recognizable appearances. Do not replace, merge, or redesign either face.\n\nDress the couple in elegant relaxed coastal outfits. The man can wear a clean linen shirt with relaxed trousers, while the woman wears a flowing lightweight summer dress or elegant contemporary outfit. Use natural neutral, cream, beige, and soft pastel tones.\n\nPlace them together on a beautiful beach during sunset, with warm sand, gentle waves, distant horizon, and subtle coastal vegetation.\n\nCreate a natural romantic pose: walking together near the shoreline, standing side by side, or gently looking toward each other. Keep the interaction subtle and authentic rather than exaggerated.\n\nUse warm golden-hour sunlight coming from behind or from the side, creating a beautiful natural rim light around their hair and shoulders. Use soft reflected light to keep both faces clearly visible.\n\nCapture the scene with a professional 50mm lens, realistic depth of field, cinematic composition, and natural environmental perspective.\n\nUse warm orange, golden, peach, and soft blue tones while maintaining realistic skin colors.\n\nAdd subtle film grain, natural hair movement, realistic fabric movement, gentle ocean reflections, and cinematic color grading.\n\nAvoid face changes, excessive beauty retouching, unrealistic body proportions, distorted hands, extra fingers, fake-looking ocean textures, excessive blur, or CGI appearance.\n\nThe final result should look like a genuine premium travel-romance photograph captured at sunset.\n\nAspect ratio: 4:5 vertical.",
+    "featured": true,
+    "trending": false
+  },
+  {
+    "id": 28,
+    "slug": "winter-cozy-cabin-vibes",
+    "title": "Winter Cozy Cabin Vibes",
+    "shortDescription": "Warm cinematic winter cabin portrait with a cozy lifestyle feel.",
+    "category": "Couples",
+    "gender": "Mixed",
+    "style": "Lifestyle",
+    "tags": ["winter", "cozy", "cabin", "lifestyle", "romantic"],
+    "image": "/images/styles/couples/winter-cozy-cabin-vibes.webp",
+    "prompt": "Transform our uploaded couple photo into a warm cinematic winter cabin couple portrait.\n\nPreserve the exact identity of BOTH people from the uploaded photo. Keep each person's original facial structure, eyes, nose, lips, jawline, skin tone, natural skin texture, age, hairstyle, and recognizable appearance. Do not replace, merge, or redesign either face.\n\nDress the man in a warm knitted sweater, casual trousers, and subtle winter layers. Dress the woman in a cozy knit sweater or cardigan with a warm scarf or elegant winter outfit. Use natural colors such as cream, beige, brown, gray, and muted green.\n\nPlace the couple inside a cozy wooden cabin with warm wooden walls, a fireplace, soft blankets, a window showing a snowy landscape, warm lamps, and tasteful rustic decorations.\n\nGive them a natural intimate pose such as sitting together near the fireplace, sharing a warm drink, or standing beside the window. Their interaction should feel comfortable and genuine.\n\nUse warm interior lighting from the fireplace and lamps combined with cool natural daylight coming through the window. Create a cinematic contrast between warm indoor tones and cool snowy outdoor tones.\n\nPhotograph them with an approximately 50mm or 85mm lens and realistic shallow depth of field. Keep both faces sharp and naturally illuminated.\n\nAdd realistic fabric textures, wood grain, fireplace glow, subtle reflections, natural skin texture, and fine photographic grain.\n\nAvoid face blending, excessive skin smoothing, exaggerated romance poses, distorted hands, extra fingers, unrealistic snow, artificial lighting, or CGI appearance.\n\nThe final result should feel like a genuine premium lifestyle photograph of a couple enjoying a quiet winter evening together.\n\nAspect ratio: 4:5 vertical.",
+    "featured": false,
+    "trending": true
+  },
+  {
+    "id": 29,
+    "slug": "rainy-day-romance",
+    "title": "Rainy Day Romance",
+    "shortDescription": "Cinematic rainy-day photograph with an intimate urban mood.",
+    "category": "Couples",
+    "gender": "Mixed",
+    "style": "Cinematic",
+    "tags": ["rain", "romantic", "cinematic", "urban", "storytelling"],
+    "image": "/images/styles/couples/rainy-day-romance.webp",
+    "prompt": "Transform our uploaded couple photo into a cinematic rainy-day romantic photograph while preserving both people's exact identities.\n\nPreserve the exact facial identity of BOTH individuals. Keep their original facial structures, eyes, noses, lips, jawlines, skin tones, natural skin textures, ages, hairstyles, and recognizable appearances. Do not replace, merge, or redesign either face.\n\nDress the man in a simple dark or neutral casual shirt with trousers and a lightweight jacket. Dress the woman in a stylish modest outfit suitable for rainy weather, such as a soft-colored dress with a lightweight coat or traditional-modern outfit.\n\nPlace the couple on a realistic urban or quiet neighborhood street during rainfall. Include wet pavement, subtle reflections, trees, buildings, parked vehicles, and atmospheric rain in the background.\n\nGive them a natural pose under a shared umbrella, walking together or standing close while looking at each other. Keep the romance subtle and believable.\n\nUse soft overcast daylight mixed with warm reflections from nearby windows or street lights. Create realistic rain droplets and wet-surface reflections without obscuring their faces.\n\nUse a professional 50mm lens perspective with realistic depth of field and cinematic framing.\n\nUse muted blue-gray environmental tones with subtle warm highlights. Keep skin tones natural and detailed.\n\nAdd fine film grain, realistic water droplets on the umbrella, wet clothing texture, natural hair detail, and cinematic contrast.\n\nAvoid face changes, excessive romantic posing, unrealistic rain, distorted umbrellas, distorted hands, extra fingers, plastic skin, excessive blur, or CGI appearance.\n\nThe final image should feel like a still frame from a high-quality romantic film, photographed naturally in real rain.\n\nAspect ratio: 4:5 vertical.",
+    "featured": false,
+    "trending": true
+  },
+  {
+    "id": 30,
+    "slug": "cyberpunk-futuristic-duo",
+    "title": "Cyberpunk Futuristic Duo",
+    "shortDescription": "Sophisticated futuristic cyberpunk couple fashion portrait.",
+    "category": "Couples",
+    "gender": "Mixed",
+    "style": "Fashion",
+    "tags": ["cyberpunk", "futuristic", "fashion", "urban", "neon"],
+    "image": "/images/styles/couples/cyberpunk-futuristic-duo.webp",
+    "prompt": "Transform our uploaded couple photo into a sophisticated futuristic cyberpunk couple fashion portrait.\n\nPreserve the exact identity of BOTH people. Keep each person's original facial structure, eyes, nose, lips, jawline, skin tone, natural skin texture, age, hairstyle, and recognizable appearance. Do not replace, merge, or redesign either face. Both individuals must remain clearly recognizable.\n\nDress the man and woman in coordinated futuristic streetwear using black technical fabrics, structured jackets, utility details, subtle reflective materials, and modern cyberpunk fashion elements. The clothing should look functional and fashion-forward, not like armor.\n\nPlace the couple in a futuristic urban street at night with neon signs, wet pavement, glass buildings, subtle holographic displays, atmospheric mist, and colorful city lights. Avoid recognizable brand logos.\n\nGive them a confident fashion-editorial pose standing together naturally, with subtle interaction between them.\n\nUse controlled cyan, electric blue, violet, and magenta neon lighting. Keep soft neutral key lighting on both faces so their identities remain clearly visible.\n\nUse a professional 35mm or 50mm lens perspective with realistic depth of field and cinematic environmental composition.\n\nMake wet surfaces realistically reflect the neon lights. Add subtle atmospheric haze and realistic urban texture.\n\nUse detailed fabric materials, natural skin pores, realistic hair strands, and fine photographic grain.\n\nAvoid changing faces, glowing eyes, robotic facial features, excessive cybernetic modifications, weapons, exaggerated armor, distorted hands, extra fingers, fake text, or obvious CGI artifacts.\n\nThe final image should look like a premium futuristic couple fashion campaign photographed in a real cyberpunk city.\n\nAspect ratio: 4:5 vertical.",
+    "featured": false,
+    "trending": false
+  },
+  {
+    "id": 31,
+    "slug": "old-money-aesthetic-couple",
+    "title": "Old Money Aesthetic Couple",
+    "shortDescription": "Sophisticated timeless old-money editorial portrait.",
+    "category": "Couples",
+    "gender": "Mixed",
+    "style": "Editorial",
+    "tags": ["old-money", "aesthetic", "luxury", "timeless", "editorial"],
+    "image": "/images/styles/couples/old-money-aesthetic-couple.webp",
+    "prompt": "Transform our uploaded couple photo into a sophisticated timeless old-money editorial portrait.\n\nPreserve the exact identity of BOTH people in the uploaded photo. Keep their original facial structures, eyes, noses, lips, jawlines, skin tones, natural skin textures, ages, hairstyles, and recognizable appearances. Do not replace, merge, or redesign either face.\n\nDress the man in a perfectly tailored classic blazer, dress shirt, trousers, or understated suit. Dress the woman in an elegant timeless dress, blouse with tailored trousers, or sophisticated classic outfit. Use refined neutral colors such as cream, navy, beige, brown, white, and muted olive.\n\nPlace the couple at an elegant heritage estate, classic mansion, country house, private garden, or refined vintage interior. Include tasteful architecture, classic furniture, greenery, and subtle luxury details.\n\nGive them a calm, confident, effortless pose. They should look naturally comfortable together rather than posing like influencers.\n\nUse soft natural daylight with gentle shadows and warm highlights. Avoid excessive dramatic lighting.\n\nPhotograph the couple with an approximately 85mm lens and premium editorial composition. Keep both faces sharp with subtle background separation.\n\nUse restrained color grading, natural skin tones, muted colors, soft contrast, and fine analog film grain.\n\nFocus on quality materials: wool, linen, leather, polished wood, natural stone, and realistic fabric textures.\n\nAvoid visible luxury-brand logos, excessive jewelry, flashy cars, unrealistic wealth symbolism, face changes, body reshaping, distorted hands, or CGI appearance.\n\nThe final image should feel like a timeless luxury lifestyle editorial rather than a flashy social-media photograph.\n\nAspect ratio: 4:5 vertical.",
+    "featured": false,
+    "trending": true
+  },
+  {
+    "id": 32,
+    "slug": "casual-cafe-date",
+    "title": "Casual Cafe Date",
+    "shortDescription": "Natural premium café-date lifestyle photograph.",
+    "category": "Couples",
+    "gender": "Mixed",
+    "style": "Lifestyle",
+    "tags": ["cafe", "date", "casual", "lifestyle", "romantic"],
+    "image": "/images/styles/couples/casual-cafe-date.webp",
+    "prompt": "Transform our uploaded couple photo into a natural premium café-date lifestyle photograph.\n\nPreserve the exact identities of BOTH people. Keep their original facial structures, eyes, noses, lips, jawlines, skin tones, natural skin textures, ages, hairstyles, and recognizable appearances. Do not replace, merge, beautify, or redesign either face.\n\nDress the man in a clean casual outfit such as a neutral shirt, polo, or lightweight overshirt with trousers or jeans. Dress the woman in a stylish casual outfit such as a blouse, cardigan, casual dress, or contemporary top with trousers or jeans.\n\nPlace them inside a cozy modern café with warm wooden furniture, large windows, plants, soft pendant lights, coffee cups, books, and subtle everyday details. Avoid recognizable brand logos.\n\nShow them enjoying a genuine date: sitting across from each other, sharing coffee, smiling naturally, talking, or looking at each other.\n\nThe pose and expressions should feel candid, relaxed, and believable rather than professionally staged.\n\nUse warm window light mixed with soft indoor ambient lighting. Create gentle shadows and realistic highlights on their faces.\n\nPhotograph the scene with a 50mm lens perspective and moderate shallow depth of field. Keep both faces naturally sharp while allowing the background to soften.\n\nUse warm neutral tones, natural browns, cream, muted green, and subtle café colors.\n\nAdd realistic skin texture, hair detail, fabric texture, coffee reflections, natural background blur, and subtle photographic grain.\n\nAvoid face changes, excessive beauty filters, unrealistic smiles, distorted hands, extra fingers, duplicated objects, excessive blur, or CGI appearance.\n\nThe final image should look like a genuine candid lifestyle photograph captured during a real café date.\n\nAspect ratio: 4:5 vertical.",
+    "featured": false,
+    "trending": false
+  },
+  {
+    "id": 33,
+    "slug": "traditional-festive-avatar",
+    "title": "Traditional Festive Avatar",
+    "shortDescription": "Refined traditional South Asian festive portrait with cultural authenticity.",
+    "category": "Couples",
+    "gender": "Mixed",
+    "style": "Traditional",
+    "tags": ["festival", "traditional", "heritage", "South Asian", "culture"],
+    "image": "/images/styles/couples/traditional-festive-avatar.webp",
+    "prompt": "Transform our uploaded couple photo into a refined traditional South Asian festive portrait while preserving both people's exact real identities.\n\nPreserve the exact facial identity of BOTH individuals. Keep each person's facial structure, eyes, nose, lips, jawline, skin tone, natural skin texture, age, hairstyle characteristics, and recognizable appearance unchanged. Do not replace, merge, or redesign either face.\n\nDress the man in an elegant traditional Panjabi or kurta with a tasteful vest or traditional styling. Dress the woman in a beautiful traditional saree or festive South Asian outfit with a refined blouse and tasteful accessories.\n\nUse coordinated but not identical colors inspired by traditional South Asian festive fashion.\n\nAdd elegant traditional jewelry for the woman such as earrings, bangles, and a necklace. Add subtle traditional accessories for the man such as a watch, ring, or simple festive detail.\n\nPlace the couple in a beautifully decorated cultural celebration environment with flowers, warm decorative lights, traditional patterns, subtle lanterns, and elegant festive details.\n\nGive them a warm natural couple pose with relaxed expressions. They can stand together, sit side by side, or look naturally toward each other.\n\nUse warm ambient festival lighting with soft flattering portrait light on both faces. Create subtle decorative bokeh in the background.\n\nUse a professional 50mm or 85mm portrait-lens perspective with realistic depth of field.\n\nMaintain rich but realistic festive colors and natural skin tones. Add detailed textile textures, jewelry reflections, realistic hair, and subtle cinematic film grain.\n\nAvoid changing either face, excessive makeup, unrealistic jewelry, exaggerated body proportions, distorted hands, extra fingers, duplicated accessories, or CGI appearance.\n\nThe final image should feel like a premium traditional South Asian festive portrait while remaining clearly the same real couple from the uploaded photo.\n\nAspect ratio: 4:5 vertical.",
+    "featured": false,
+    "trending": false
+  },
+  {
+    "id": 34,
+    "slug": "fantasy-fairytale-couple",
+    "title": "Fantasy Fairytale Couple",
+    "shortDescription": "Cinematic photorealistic fantasy fairytale couple portrait.",
+    "category": "Couples",
+    "gender": "Mixed",
+    "style": "Fantasy",
+    "tags": ["fantasy", "fairytale", "cinematic", "romantic", "magic"],
+    "image": "/images/styles/couples/fantasy-fairytale-couple.webp",
+    "prompt": "Transform our uploaded couple photo into a cinematic photorealistic fantasy fairytale couple portrait while preserving the exact identity of both people.\n\nPreserve the exact real identity of BOTH individuals. Keep each person's original facial structure, eyes, nose, lips, jawline, skin tone, natural skin texture, age, hairstyle, and recognizable appearance. Do not replace, merge, or redesign either face. The fantasy transformation must happen through clothing, environment, lighting, and atmosphere.\n\nDress the man in an elegant fantasy-inspired formal outfit with refined medieval or royal influences, using textured fabrics, subtle embroidery, and sophisticated layers.\n\nDress the woman in an elegant flowing fantasy gown inspired by fairytale royalty, using delicate fabrics, embroidery, subtle botanical details, and tasteful accessories.\n\nPlace the couple in an enchanted forest or grand fairytale garden with ancient trees, flowers, soft mist, distant castle architecture, glowing lanterns, and warm magical light filtering through the environment.\n\nGive the couple a graceful natural pose, standing close together or gently holding hands. Their expressions should feel calm, affectionate, and authentic.\n\nUse cinematic golden-hour lighting with warm rays through the trees, subtle rim light around their hair, and soft natural illumination on both faces.\n\nCreate realistic depth and atmosphere using an approximately 50mm or 85mm lens perspective. Keep both faces sharply recognizable while the distant environment gradually falls out of focus.\n\nUse a sophisticated palette of forest green, deep blue, muted gold, cream, and warm brown.\n\nAdd realistic fabric movement, detailed flowers and foliage, atmospheric mist, subtle floating particles, natural skin texture, realistic hair strands, and fine cinematic film grain.\n\nKeep the fantasy elements photorealistic and elegant rather than cartoon-like.\n\nAvoid changing either person's face, excessive magical effects, glowing eyes, exaggerated body proportions, distorted hands, extra fingers, artificial wings, plastic skin, or obvious CGI appearance.\n\nThe final result should look like a high-budget cinematic fairytale photograph featuring the exact real couple from the uploaded photo.\n\nAspect ratio: 4:5 vertical.",
+    "featured": false,
+    "trending": false
+  }
+
 ]
