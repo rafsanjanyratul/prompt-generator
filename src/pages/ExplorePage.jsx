@@ -22,8 +22,8 @@ const categoryValues = ['All', 'Boys', 'Girls', 'Couples', 'Family']
 
 function FilterSelect({ label, value, onChange, options }) {
   return (
-    <label className="block">
-      <span className="mb-2 block text-[11px] font-semibold uppercase tracking-[0.12em] text-[var(--text-muted)]">
+    <label className="block min-w-0">
+      <span className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--text-muted)] md:text-[11px]">
         {label}
       </span>
       <div className="relative">
@@ -31,7 +31,7 @@ function FilterSelect({ label, value, onChange, options }) {
           value={value}
           onChange={(event) => onChange(event.target.value)}
           aria-label={label}
-          className="min-h-[44px] w-full appearance-none rounded-[14px] border border-[var(--border)] bg-[var(--surface)] px-3 py-3 pr-10 text-sm text-[var(--text)] outline-none transition-colors focus:border-[var(--brand)] focus:ring-2 focus:ring-[var(--brand-soft)]"
+          className="min-h-[46px] w-full appearance-none rounded-[16px] border border-[var(--border)] bg-[var(--surface)] px-3.5 py-2.5 pr-10 text-sm font-medium text-[var(--text)] shadow-[0_8px_20px_rgba(15,23,42,0.02)] outline-none transition-all duration-200 hover:border-[var(--focus)] focus:border-[var(--brand)] focus:ring-2 focus:ring-[var(--brand-soft)] focus:ring-offset-2 focus:ring-offset-[var(--background)] md:min-h-[48px]"
         >
           {options.map((option) => (
             <option key={option.value} value={option.value}>
@@ -39,7 +39,7 @@ function FilterSelect({ label, value, onChange, options }) {
             </option>
           ))}
         </select>
-        <ChevronDown className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-[var(--text-muted)]" />
+        <ChevronDown className="pointer-events-none absolute right-3.5 top-1/2 size-4 -translate-y-1/2 text-[var(--text-muted)]" />
       </div>
     </label>
   )
@@ -258,20 +258,20 @@ function ExplorePage() {
           ) : null}
         </div>
 
-        <div className="mt-6 rounded-[28px] border border-[var(--border)] bg-[var(--surface)] p-4 shadow-[0_12px_32px_rgba(15,23,42,0.04)]">
+        <div className="mt-6 rounded-[24px] border border-[var(--border)] bg-[var(--surface)] p-3.5 shadow-[0_12px_30px_rgba(15,23,42,0.04)] md:rounded-[28px] md:p-4">
           <div className="mb-3 flex items-center justify-between gap-3">
             <div className="flex items-center gap-2 text-sm font-medium text-[var(--text)]">
               <SlidersHorizontal className="size-4" />
               <span>Filters</span>
             </div>
             {activeFilterCount > 0 ? (
-              <span className="rounded-full border border-[var(--border)] bg-[var(--surface-muted)] px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--text-muted)]">
+              <span className="rounded-full border border-[var(--border)] bg-[var(--surface-muted)] px-2 py-1 text-[9px] font-semibold uppercase tracking-[0.12em] text-[var(--text-muted)] md:text-[10px]">
                 {activeFilterCount} active
               </span>
             ) : null}
           </div>
 
-          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
             <FilterSelect
               label="Category"
               value={filters.category}
@@ -325,7 +325,7 @@ function ExplorePage() {
         {filteredStyles.length > 0 ? (
           <motion.div
             layout
-            className="mt-6 grid gap-5 sm:grid-cols-2 xl:grid-cols-3"
+            className="mt-6 grid grid-cols-2 gap-4 sm:gap-5 xl:grid-cols-3"
             transition={{ duration: 0.25, ease: 'easeOut' }}
           >
             {filteredStyles.map((item, index) => (

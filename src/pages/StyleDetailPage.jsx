@@ -274,7 +274,7 @@ function StyleDetailPage() {
 
             <motion.div
               layout
-              className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3"
+              className="grid grid-cols-2 gap-4 sm:gap-5 xl:grid-cols-3"
               transition={{ duration: 0.25, ease: 'easeOut' }}
             >
               {relatedStyles.map((item, index) => (
