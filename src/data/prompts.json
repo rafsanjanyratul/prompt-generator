@@ -13,20 +13,6 @@
 "featured": true,
 "trending": true
 },
-{
-"id": 2,
-"slug": "sunlit-girl-editorial",
-"title": "Sunlit Girl Editorial",
-"shortDescription": "Bright, natural beauty portrait with clean editorial styling and soft golden-hour light.",
-"category": "Girls",
-"gender": "Female",
-"style": "Editorial",
-"tags": ["sunlit", "editorial", "golden-hour", "beauty", "natural-light"],
-"image": "/images/styles/girls/sunlit-girl-editorial.webp",
-"prompt": "Generate a female beauty portrait in a soft editorial style, golden-hour sunlight, clean natural skin tones, luminous face highlights, subtle soft shadows, natural hair movement, minimal makeup with fresh glow, elegant pose, premium fashion magazine composition, realistic detail, soft background blur, warm neutral palette, polished high-end portrait photography.",
-"featured": true,
-"trending": true
-},
 
 {
 "id": 4,
@@ -56,20 +42,7 @@
 "featured": false,
 "trending": true
 },
-{
-"id": 6,
-"slug": "bengali-traditional-portrait",
-"title": "Bengali Traditional Portrait",
-"shortDescription": "A refined portrait blending Bengali cultural elegance with studio portrait discipline and warm heritage styling.",
-"category": "Girls",
-"gender": "Female",
-"style": "Traditional",
-"tags": ["bengali", "traditional", "heritage", "studio", "culture"],
-"image": "/images/styles/girls/bengali-traditional-portrait.webp",
-"prompt": "Create a Bengali woman portrait in a traditional elegant look, rich cultural attire with fine embroidery, graceful pose, soft studio lighting, natural skin texture, detailed jewelry, warm neutral tones, strong facial features, subtle heritage styling, realistic portrait photography, soft background blur, premium editorial composition with refined cultural authenticity.",
-"featured": false,
-"trending": false
-},
+
 {
 "id": 7,
 "slug": "old-money-luxury-elegance",
@@ -127,20 +100,7 @@
 "featured": false,
 "trending": false
 },
-{
-"id": 12,
-"slug": "parisian-fashion-editorial",
-"title": "Parisian Fashion Editorial",
-"shortDescription": "An elegant fashion portrait with a refined European editorial mood and polished luxury styling.",
-"category": "Girls",
-"gender": "Female",
-"style": "Fashion",
-"tags": ["fashion", "editorial", "luxury", "elegant", "city"],
-"image": "/images/styles/girls/parisian-fashion-editorial.webp",
-"prompt": "Create a luxury fashion portrait of a young woman in a Parisian editorial setting, refined outfit, elegant pose, soft natural light, premium styling, subtle movement in hair and fabric, realistic skin texture, elegant facial features, balanced composition, polished magazine-quality portrait photography, sophisticated color palette, subtle depth of field, modern high-fashion atmosphere.",
-"featured": false,
-"trending": true
-},
+
 {
 "id": 13,
 "slug": "traditional-royal-groom-panjabi-look",
@@ -169,20 +129,7 @@
 "featured": false,
 "trending": false
 },
-{
-"id": 16,
-"slug": "urban-girl-fashion-week",
-"title": "Urban Girl Fashion Week",
-"shortDescription": "A confident urban portrait combining fashion direction, movement, and editorial city energy.",
-"category": "Girls",
-"gender": "Female",
-"style": "Fashion",
-"tags": ["fashion", "city", "urban", "editorial", "confident"],
-"image": "/images/styles/girls/urban-girl-fashion-week.webp",
-"prompt": "Create a confident urban fashion portrait of a young woman in a stylish city environment, modern clothing, strong pose, soft street light, dynamic composition, polished skin texture, natural movement in hair and fabric, editorial framing, realistic detail, premium commercial portrait aesthetic, modern urban mood, subtle shadows and crisp highlights.",
-"featured": true,
-"trending": true
-},
+
 {
 "id": 17,
 "slug": "moody-cinematic-dark-portrait",
@@ -419,6 +366,147 @@
     "tags": ["fantasy", "fairytale", "cinematic", "romantic", "magic"],
     "image": "/images/styles/couples/fantasy-fairytale-couple.webp",
     "prompt": "Transform our uploaded couple photo into a cinematic photorealistic fantasy fairytale couple portrait while preserving the exact identity of both people.\n\nPreserve the exact real identity of BOTH individuals. Keep each person's original facial structure, eyes, nose, lips, jawline, skin tone, natural skin texture, age, hairstyle, and recognizable appearance. Do not replace, merge, or redesign either face. The fantasy transformation must happen through clothing, environment, lighting, and atmosphere.\n\nDress the man in an elegant fantasy-inspired formal outfit with refined medieval or royal influences, using textured fabrics, subtle embroidery, and sophisticated layers.\n\nDress the woman in an elegant flowing fantasy gown inspired by fairytale royalty, using delicate fabrics, embroidery, subtle botanical details, and tasteful accessories.\n\nPlace the couple in an enchanted forest or grand fairytale garden with ancient trees, flowers, soft mist, distant castle architecture, glowing lanterns, and warm magical light filtering through the environment.\n\nGive the couple a graceful natural pose, standing close together or gently holding hands. Their expressions should feel calm, affectionate, and authentic.\n\nUse cinematic golden-hour lighting with warm rays through the trees, subtle rim light around their hair, and soft natural illumination on both faces.\n\nCreate realistic depth and atmosphere using an approximately 50mm or 85mm lens perspective. Keep both faces sharply recognizable while the distant environment gradually falls out of focus.\n\nUse a sophisticated palette of forest green, deep blue, muted gold, cream, and warm brown.\n\nAdd realistic fabric movement, detailed flowers and foliage, atmospheric mist, subtle floating particles, natural skin texture, realistic hair strands, and fine cinematic film grain.\n\nKeep the fantasy elements photorealistic and elegant rather than cartoon-like.\n\nAvoid changing either person's face, excessive magical effects, glowing eyes, exaggerated body proportions, distorted hands, extra fingers, artificial wings, plastic skin, or obvious CGI appearance.\n\nThe final result should look like a high-budget cinematic fairytale photograph featuring the exact real couple from the uploaded photo.\n\nAspect ratio: 4:5 vertical.",
+    "featured": false,
+    "trending": false
+  },
+
+  {
+    "id": 35,
+    "slug": "retro-saree-with-vintage-kodak-look",
+    "title": "Retro Saree with Vintage Kodak Look",
+    "shortDescription": "Authentic late-1980s to early-1990s Bangladeshi vintage portrait with classic photo aesthetics.",
+    "category": "Girls",
+    "gender": "Female",
+    "style": "Vintage",
+    "tags": ["80s", "90s", "retro", "saree", "vintage", "Kodak", "Bangladesh"],
+    "image": "/images/styles/girls/retro-saree-with-vintage-kodak-look.webp",
+    "prompt": "Using my uploaded photograph as the primary identity reference, recreate the subject as an authentic late-1980s to early-1990s Bangladeshi vintage portrait. Preserve the exact identity of the person in the uploaded photo. Keep the same facial structure, eyes, nose, lips, jawline, skin tone, natural skin texture, age, hairstyle characteristics, and overall recognizable appearance. Do not replace the face, turn her into a generic model, or significantly alter her facial proportions. Dress her in an authentic traditional saree inspired by late-80s and early-90s Bangladesh, preferably a beautiful printed or lightly patterned cotton saree with a classic blouse. Add simple period-appropriate jewelry such as small earrings, traditional bangles, and a subtle necklace. Keep the styling elegant, modest, and historically believable rather than modern or luxurious. Place her in a nostalgic Bangladeshi residential environment with an old veranda, painted wall, wooden furniture, plants, and subtle everyday details from that era. Give her a relaxed natural pose with a gentle expression, similar to a genuine family-album photograph. Avoid an exaggerated fashion-model pose. Use soft afternoon daylight and recreate the visual character of an old Kodak 35mm photograph: warm slightly faded colors, natural skin tones, soft highlights, mild analog grain, subtle film texture, gentle contrast, and slight photographic softness. Use a realistic 50mm film-camera perspective with moderate depth of field. Avoid excessive skin smoothing, plastic skin, modern beauty filters, unrealistic jewelry, distorted hands, extra fingers, warped clothing, excessive HDR, oversharpening, or CGI appearance. The final photograph should genuinely feel like a preserved Bangladeshi family photograph from around 1988–1992 rather than a modern image with a vintage filter. Aspect ratio: 4:5 vertical.",
+    "featured": false,
+    "trending": true
+  },
+  {
+    "id":36,
+    "slug": "royal-princess-queen-aesthetic",
+    "title": "Royal Princess / Queen Aesthetic",
+    "shortDescription": "Elegant South Asian royal portrait reimagined with traditional palace fashion.",
+    "category": "Girls",
+    "gender": "Female",
+    "style": "Traditional",
+    "tags": ["royal", "princess", "queen", "aesthetic", "traditional", "palace", "South Asian"],
+    "image": "/images/styles/girls/royal-princess-queen-aesthetic.webp",
+    "prompt": "Reimagine the woman in my uploaded photo as an elegant South Asian princess or queen while keeping her real identity completely intact. Maintain the exact facial identity from the reference image, including facial structure, eyes, nose, lips, jawline, skin tone, natural skin texture, age, and recognizable appearance. Do not replace or redesign her face, and do not turn her into a generic beauty model. Style her in an elegant royal South Asian outfit inspired by palace fashion, such as a richly detailed lehenga, anarkali, or luxurious traditional dress. Use refined silk, velvet, or brocade fabrics with tasteful embroidery and subtle gold detailing. Add sophisticated traditional jewelry including earrings, necklace, bangles, and a refined royal headpiece. Keep the jewelry luxurious but proportionate and believable. Set the portrait inside a grand heritage palace featuring elegant arches, carved details, traditional furniture, warm lamps, and refined architectural elements. Give her a calm, confident royal expression and graceful posture while maintaining realistic body proportions. Illuminate the scene with cinematic warm lighting, soft golden highlights, controlled shadows, and subtle background separation. Capture the portrait with a professional full-frame camera and an approximately 85mm portrait-lens perspective. Use a sophisticated palette of deep jewel tones, warm gold, cream, and rich traditional fabrics while keeping her skin tone natural. Include realistic embroidery, jewelry reflections, fabric texture, natural skin pores, and subtle photographic grain. Avoid facial changes, excessive makeup, unrealistic body reshaping, plastic skin, oversized jewelry, distorted hands, extra fingers, or CGI-like textures. The result should resemble a high-end royal editorial portrait while remaining unmistakably the same person from the uploaded photograph. Aspect ratio: 4:5 vertical.",
+    "featured": true,
+    "trending": false
+  },
+  {
+    "id":37,
+    "slug": "korean-glass-skin-floral-look",
+    "title": "Korean Glass Skin Floral Look",
+    "shortDescription": "Contemporary Korean-inspired beauty editorial with a luminous complexion and floral aesthetics.",
+    "category": "Girls",
+    "gender": "Female",
+    "style": "Editorial",
+    "tags": ["Korean", "glass skin", "floral", "beauty", "editorial", "contemporary"],
+    "image": "/images/styles/girls/korean-glass-skin-floral-look.webp",
+    "prompt": "Create a contemporary Korean-inspired floral beauty editorial using my uploaded photo as the identity reference. The person's real identity must remain unchanged. Preserve her exact facial structure, eyes, nose, lips, jawline, skin tone, age, natural skin texture, and recognizable appearance. Do not transform her into a different Korean model or alter her facial proportions. Dress her in a soft contemporary Korean-inspired outfit such as an elegant pastel blouse, delicate cardigan, or minimal feminine dress. Incorporate subtle floral details and soft fabrics in refined pastel colors. Build a clean studio environment with delicate flowers and botanical elements against a creamy or pale pastel background. Give her fresh, natural-looking beauty styling with subtle blush, softly defined eyes, natural lips, and a healthy luminous complexion. The glass-skin effect should look hydrated and radiant, not artificially blurred or plastic. Use a gentle relaxed expression and elegant natural pose while keeping realistic anatomy and body proportions. Illuminate the portrait with large diffused studio lights, soft shadows, and controlled highlights across the face. Use an approximately 85mm portrait-lens look with sharp focus on the eyes and realistic background separation. Keep the palette soft and airy: ivory, blush pink, lavender, powder blue, and muted green. Preserve realistic pores, fine hair detail, fabric texture, and subtle photographic grain. Avoid excessive whitening, unrealistic skin smoothing, oversized eyes, doll-like features, exaggerated makeup, distorted hands, extra fingers, or artificial beauty-filter effects. The final image should resemble a premium Korean beauty campaign while clearly remaining the same real person from the uploaded photo. Aspect ratio: 4:5 vertical.",
+    "featured": false,
+    "trending": true
+  },
+  {
+    "id":38,
+    "slug": "bohemian-beach-sunset-vibes",
+    "title": "Bohemian Beach / Sunset Vibes",
+    "shortDescription": "Cinematic bohemian beach photograph captured during the golden hour.",
+    "category": "Girls",
+    "gender": "Female",
+    "style": "Lifestyle",
+    "tags": ["bohemian", "beach", "sunset", "vibes", "cinematic", "golden hour"],
+    "image": "/images/styles/girls/bohemian-beach-sunset-vibes.webp",
+    "prompt": "Reinterpret my uploaded portrait as a cinematic bohemian beach photograph captured during golden hour. Keep the woman's exact real identity intact. Preserve her original facial structure, eyes, nose, lips, jawline, skin tone, natural skin texture, age, hairstyle characteristics, and recognizable appearance. Do not replace her face or transform her into a generic fashion model. Dress her in an elegant relaxed bohemian outfit such as a flowing lightweight maxi dress or textured natural-fabric ensemble. Use earthy, cream, beige, terracotta, muted orange, and soft neutral tones. Add tasteful minimal accessories such as small earrings, bracelets, or a simple necklace. Place her on a beautiful natural beach with warm sand, gentle ocean waves, distant horizon, and subtle coastal vegetation. Give her a relaxed natural pose, perhaps standing near the shoreline while the wind gently moves her hair and clothing. Use warm golden-hour sunlight from the side or slightly behind her, creating soft rim lighting around the hair and shoulders while keeping the face naturally illuminated. Photograph the scene with a professional 50mm or 85mm lens and realistic environmental depth. Use warm cinematic tones, soft highlights, natural skin color, gentle contrast, and subtle film grain. Include realistic fabric movement, natural hair detail, ocean reflections, and atmospheric depth. Avoid excessive beauty retouching, unrealistic body shaping, plastic skin, oversaturated colors, fake ocean textures, distorted hands, extra fingers, or CGI appearance. The final photograph should feel like an authentic premium travel-fashion photograph taken during a real sunset. Aspect ratio: 4:5 vertical.",
+    "featured": false,
+    "trending": false
+  },
+  {
+    "id": 39,
+    "slug": "cinematic-dark-aesthetic-music-player-portrait",
+    "title": "Cinematic Dark Aesthetic Music Player Portrait",
+    "shortDescription": "A dramatic, low-key vertical portrait featuring an original futuristic music-player display.",
+    "category": "Girls",
+    "gender": "Female",
+    "style": "Cinematic",
+    "tags": ["cinematic", "dark aesthetic", "music player", "portrait", "low-key"],
+    "image": "/images/styles/girls/cinematic-dark-aesthetic-music-player-portrait.webp",
+    "prompt": "Create an original, high-end cinematic 4:5 vertical portrait using my uploaded photograph as the sole identity reference. Subject and identity preservation: Keep the exact same person from my uploaded photo. Preserve her recognizable identity, natural facial structure, face shape, eyes, eyebrows, nose, lips, jawline, skin tone, natural skin texture, hairstyle characteristics, body proportions, age, and overall appearance. Do not replace her face with a fictional character, generic model, or AI-generated person. Do not beautify, reshape, whiten, smooth, age, or redesign her facial features. Maintain realistic skin texture, authentic facial proportions, and natural imperfections. The person must remain clearly recognizable as the original subject. Preserve her original clothing and its authentic colors, patterns, textures, and details. Do not replace or redesign the outfit. Composition and pose: Place the woman sitting naturally and comfortably on a simple, modern chair in a dark, minimalist interior. Frame the scene as a sophisticated cinematic portrait, with a natural side or three-quarter body angle. Her posture should appear relaxed, graceful, and realistic, as if she is quietly listening to music. Use a subtle, natural expression and an elegant pose. Avoid exaggerated gestures, unnatural body positioning, or artificial-looking anatomy. Lighting and atmosphere: Create a dramatic low-key environment with deep shadows, rich blacks, and a warm, intimate atmosphere. Use soft golden-white rim lighting to gently outline her hair, shoulders, and body while preserving realistic facial details. The room should be almost completely dark, with subtle ambient illumination, realistic shadows, and faint warm reflections on the floor. The lighting should feel physically believable, as though it is coming from a glowing electronic display mounted on the wall. Original futuristic music-player display: Behind the subject, install a large, original futuristic music-player panel on the wall. The panel should have a sleek, premium design with softly rounded edges and a subtle warm white or golden glow around its frame. The display should appear physically mounted on the wall, with realistic light spill, gentle reflections, and natural interaction between the glow and the surrounding room. Inside the panel: Place the uploaded or user-provided album artwork on the left, using it only as reference material that the user has permission to use. If no suitable artwork is available, create an entirely original abstract album cover with a dark, atmospheric, music-inspired design. On the right, display a clean, modern, fictional music-player interface. Include the text: Song: [abc], Artist: [xyz]. Add a progress bar with a playback indicator. Include original, generic music-player symbols for heart, menu, shuffle, previous, pause/play, next, and repeat. Keep the interface visually balanced, realistic, elegant, and readable without resembling any specific existing music-streaming service. The entire music-player panel should feel like an original futuristic home audio installation rather than a copy of an existing application. Visual style and technical quality: Use realistic photography with a cinematic editorial aesthetic, natural proportions, and physically accurate lighting. Create the impression of a professional portrait captured with an approximately 50mm or 85mm lens, featuring realistic depth of field and carefully controlled focus. Use a sophisticated color palette of charcoal black, deep brown, warm ivory, muted gold, and subtle amber tones. Include natural hair strands and realistic skin texture, soft shadows and gentle atmospheric depth, subtle cinematic film grain, realistic fabric details and natural folds, accurate perspective and believable reflections. High detail without an artificial or overly processed appearance. Important restrictions: Create an entirely original composition and visual design. Do not imitate or reproduce any specific photographer's signature style, movie scene, album cover, music-player interface, brand identity, or copyrighted artwork. Avoid cartoon-like rendering, excessive magical effects, glowing eyes, plastic skin, face distortion, altered identity, extra fingers, deformed hands, unnatural anatomy, excessive sharpening, and obvious CGI artifacts. The final result should look like a premium, photorealistic cinematic portrait of the same real person in an original, dark, atmospheric music-listening environment. Aspect ratio: 4:5 vertical.",
+    "featured": true,
+    "trending": false
+  },
+  {
+    "id": 40,
+    "slug": "casual-modern-street-style",
+    "title": "Casual Modern Street Style",
+    "shortDescription": "Contemporary urban street-fashion portrait with a premium casual look.",
+    "category": "Girls",
+    "gender": "Female",
+    "style": "Street",
+    "tags": ["casual", "modern", "street style", "urban", "fashion"],
+    "image": "/images/styles/girls/casual-modern-street-style.webp",
+    "prompt": "Create a premium contemporary urban street-fashion portrait based on my uploaded photograph. Keep the woman's exact identity and recognizable appearance. Preserve her facial structure, eyes, nose, lips, jawline, skin tone, natural skin texture, age, hairstyle characteristics, and realistic body proportions. Do not replace her face or turn her into a generic fashion influencer. Style her in believable modern streetwear: an oversized jacket or casual shirt layered over a clean top, relaxed-fit jeans or trousers, and fashionable sneakers. Add minimal accessories such as a small shoulder bag, watch, or simple jewelry. Place her on a modern city street with contemporary buildings, sidewalks, storefronts, subtle signs, street textures, and realistic everyday surroundings. Do not include recognizable brand logos. Give her a confident but natural pose, such as walking or casually standing as though captured during a real street-fashion shoot. Use soft late-afternoon or overcast urban lighting with natural shadows and subtle reflections. Photograph the scene with a professional 35mm or 50mm lens, realistic depth of field, sharp facial focus, and a slightly cinematic perspective. Use balanced contemporary colors with neutral clothing and subtle environmental accents. Include natural hair detail, realistic fabric texture, skin texture, and fine photographic grain. Avoid excessive posing, body reshaping, unrealistic proportions, plastic skin, fake backgrounds, distorted hands, extra fingers, or CGI appearance. The final image should look like an authentic high-end urban street photograph captured with a professional camera. Aspect ratio: 4:5 vertical.",
+    "featured": false,
+    "trending": true
+  },
+  {
+    "id": 41,
+    "slug": "traditional-desi-festival-look",
+    "title": "Traditional Desi Festival Look",
+    "shortDescription": "Elegant traditional South Asian festive portrait celebrating cultural attire.",
+    "category": "Girls",
+    "gender": "Female",
+    "style": "Traditional",
+    "tags": ["traditional", "desi", "festival", "South Asian", "festive", "saree"],
+    "image": "/images/styles/girls/traditional-desi-festival-look.webp",
+    "prompt": "Use the uploaded photograph as the foundation for an elegant traditional South Asian festival portrait. Preserve the woman's exact real identity, including facial structure, eyes, nose, lips, jawline, skin tone, natural skin texture, age, and recognizable appearance. Do not replace, redesign, or significantly alter her face. Dress her in a beautiful traditional South Asian festive outfit such as a colorful saree, salwar kameez, or lehenga. Use tasteful embroidery, traditional patterns, rich but balanced colors, and realistic textile textures. Add elegant festive jewelry such as earrings, bangles, necklace, and subtle hair accessories. Keep the jewelry refined and culturally believable rather than excessive. Place her in a beautifully decorated South Asian celebration setting featuring flowers, warm decorative lights, traditional patterns, subtle lanterns, and tasteful cultural details. Give her a warm natural expression and graceful pose. Keep her hands and body anatomy realistic. Use warm ambient festival lighting combined with soft portrait lighting on her face. Allow decorative lights to create subtle background bokeh. Capture the scene with a professional 50mm or 85mm portrait lens and realistic depth of field. Use rich festive colors while maintaining natural skin tones. Include realistic textile details, jewelry reflections, natural hair strands, skin texture, and subtle cinematic grain. Avoid face changes, excessive makeup, artificial skin smoothing, unrealistic jewelry, distorted hands, extra fingers, excessive saturation, or CGI appearance. The final result should feel like a genuine premium South Asian festive portrait featuring the exact real person from the uploaded photograph. Aspect ratio: 4:5 vertical.",
+    "featured": false,
+    "trending": false
+  },
+  {
+    "id": 42,
+    "slug": "cyberpunk-cyber-girl",
+    "title": "Cyberpunk Cyber-Girl",
+    "shortDescription": "Sophisticated futuristic cyberpunk fashion portrait set in a neon urban night.",
+    "category": "Girls",
+    "gender": "Female",
+    "style": "Fashion",
+    "tags": ["cyberpunk", "cyber-girl", "futuristic", "fashion", "neon", "urban"],
+    "image": "/images/styles/girls/cyberpunk-cyber-girl.webp",
+    "prompt": "Recreate the subject from my uploaded image as a sophisticated futuristic cyberpunk fashion portrait. Preserve her exact identity throughout the transformation. Keep the same facial structure, eyes, nose, lips, jawline, skin tone, natural skin texture, age, hairstyle, and recognizable appearance. Do not replace her face with a futuristic character or generic cyberpunk model. Dress her in sophisticated futuristic streetwear featuring a structured black technical jacket, layered utility clothing, subtle reflective materials, and modern cyberpunk fashion details. Keep the outfit stylish and functional rather than resembling armor. Place her in a futuristic urban street at night with neon signs, wet pavement, glass buildings, subtle holographic displays, illuminated storefronts, and atmospheric mist. Avoid recognizable brand logos. Give her a confident, calm expression and a natural fashion-editorial pose. Use controlled cyan, electric blue, magenta, and violet lighting around the environment while keeping a soft neutral key light on her face so her identity remains clear. Capture the portrait with a professional 50mm or 85mm lens, realistic depth of field, sharp eyes, and cinematic perspective. Make wet surfaces realistically reflect the neon environment and add subtle atmospheric haze. Include detailed but believable clothing materials, natural skin pores, realistic hair strands, and fine photographic grain. Avoid facial changes, glowing eyes, robotic facial features, excessive cybernetic implants, plastic skin, exaggerated body proportions, distorted hands, extra fingers, fake text, or obvious CGI artifacts. The final result should feel like a premium futuristic fashion campaign photographed in a real cyberpunk city. Aspect ratio: 4:5 vertical.",
+    "featured": true,
+    "trending": false
+  },
+  {
+    "id": 43,
+    "slug": "soft-aesthetic-pastel-studio-portrait",
+    "title": "Soft Aesthetic Pastel Studio Portrait",
+    "shortDescription": "Elegant studio portrait with a soft aesthetic and delicate pastel tones.",
+    "category": "Girls",
+    "gender": "Female",
+    "style": "Editorial",
+    "tags": ["soft aesthetic", "pastel", "studio", "portrait", "elegant", "beauty"],
+    "image": "/images/styles/girls/soft-aesthetic-pastel-studio-portrait.webp",
+    "prompt": "Create a soft, elegant pastel studio portrait from my uploaded photo while keeping the woman's real identity completely unchanged. Preserve her exact facial structure, eyes, nose, lips, jawline, skin tone, natural skin texture, age, hairstyle characteristics, and recognizable appearance. Do not replace or redesign her face or turn her into a generic beauty model. Dress her in a soft feminine contemporary outfit such as a pastel blouse, elegant knit top, minimal dress, or refined casual outfit. Use blush pink, cream, lavender, powder blue, or muted peach. Create a clean premium studio environment with a seamless pastel background and minimal decorative elements such as delicate flowers, soft fabric textures, or simple sculptural objects. Give her a calm natural expression and relaxed elegant posture. Maintain realistic body proportions and natural hand placement. Use large softbox lighting with gentle shadows and flattering but realistic facial illumination. Photograph the scene with an approximately 85mm portrait lens, sharp focus on the eyes, and smooth but believable background separation. Use soft pastel color grading with natural skin tones and an airy atmosphere. Preserve realistic skin pores, fine hair details, fabric texture, and subtle photographic grain. The skin should look healthy and natural rather than artificially blurred. Avoid excessive beauty filters, face reshaping, skin whitening, plastic skin, oversized eyes, unrealistic makeup, distorted hands, extra fingers, or CGI appearance. The final result should resemble a premium modern studio portrait suitable for an elegant lifestyle or beauty editorial. Aspect ratio: 4:5 vertical.",
+    "featured": false,
+    "trending": true
+  },
+  {
+    "id": 44,
+    "slug": "fantasy-fairy-elven-look",
+    "title": "Fantasy Fairy / Elven Look",
+    "shortDescription": "Elegant cinematic fantasy portrait set in an enchanted forest.",
+    "category": "Girls",
+    "gender": "Female",
+    "style": "Fantasy",
+    "tags": ["fantasy", "fairy", "elven", "cinematic", "portrait", "enchanted"],
+    "image": "/images/styles/girls/fantasy-fairy-elven-look.webp",
+    "prompt": "Build an elegant cinematic fantasy portrait around the woman in my uploaded photograph while preserving her exact real identity. Keep her original facial structure, eyes, nose, lips, jawline, skin tone, natural skin texture, age, hairstyle characteristics, and recognizable appearance unchanged. Do not replace her face with a fantasy character or generic model. The fantasy transformation should come entirely from styling, environment, lighting, and atmosphere. Dress her in an elegant fantasy-inspired outfit made from flowing fabrics, delicate layers, embroidered details, and subtle botanical patterns. The design should feel like sophisticated elven fashion rather than a costume. Add tasteful fantasy accessories such as delicate leaf-inspired jewelry, floral hair details, or subtle natural ornaments. Place her inside an enchanted forest with tall trees, moss, wildflowers, gentle mist, soft sunlight filtering through leaves, and subtle atmospheric particles. Keep the environment photorealistic. Give her a peaceful, confident expression and a graceful natural pose. Use cinematic golden forest lighting with soft rays through the trees, subtle rim lighting around the hair, and gentle illumination across the face. Capture the scene with an approximately 50mm or 85mm lens and realistic depth of field. Use a sophisticated palette of forest green, muted gold, warm brown, cream, and subtle floral tones. Include realistic fabric movement, detailed foliage, natural hair strands, skin texture, atmospheric depth, and fine cinematic film grain. Avoid changing her face, glowing eyes, exaggerated magical effects, cartoon-like styling, distorted hands, extra fingers, plastic skin, or obvious CGI appearance. The final image should feel like a high-budget cinematic fantasy portrait while still clearly showing the exact real person from the uploaded photograph. Aspect ratio: 4:5 vertical.",
     "featured": false,
     "trending": false
   }
