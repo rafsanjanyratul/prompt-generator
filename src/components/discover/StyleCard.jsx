@@ -7,6 +7,7 @@ import Badge from '../ui/Badge'
 function StyleCard({ item }) {
   const [imageFailed, setImageFailed] = useState(false)
   const prefersReducedMotion = useReducedMotion()
+  const displayCategory = item.category === 'Boys' ? 'Men' : item.category === 'Girls' ? 'Women' : item.category
 
   if (!item) {
     return null
@@ -53,7 +54,7 @@ function StyleCard({ item }) {
           </div>
 
           <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-2 p-2.5 md:p-4">
-            <Badge tone="brand">{item.category}</Badge>
+            <Badge tone="brand">{displayCategory}</Badge>
             {item.trending ? <Badge tone="success">Trending</Badge> : null}
           </div>
         </div>

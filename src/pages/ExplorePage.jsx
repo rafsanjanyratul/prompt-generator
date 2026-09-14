@@ -20,6 +20,18 @@ const defaultFilters = {
 
 const categoryValues = ['All', 'Boys', 'Girls', 'Couples', 'Family']
 
+const getDisplayCategoryLabel = (category) => {
+  const displayLabels = {
+    All: 'All',
+    Boys: 'Men',
+    Girls: 'Women',
+    Couples: 'Couples',
+    Family: 'Family',
+  }
+
+  return displayLabels[category] ?? category
+}
+
 function FilterSelect({ label, value, onChange, options }) {
   return (
     <label className="block min-w-0">
@@ -71,7 +83,7 @@ function ExplorePage() {
 
   const categoryOptions = useMemo(
     () => [{ label: 'All', value: 'All' }, ...new Set(promptStyles.map((item) => item.category))].map((category) =>
-      typeof category === 'string' ? { label: category, value: category } : category
+      typeof category === 'string' ? { label: getDisplayCategoryLabel(category), value: category } : category
     ),
     []
   )
@@ -131,7 +143,7 @@ function ExplorePage() {
   }, [filters, searchTerm])
 
   const activeFilters = [
-    filters.category !== 'All' ? `Category: ${filters.category}` : null,
+    filters.category !== 'All' ? `Category: ${getDisplayCategoryLabel(filters.category)}` : null,
     filters.gender !== 'All' ? `Gender: ${filters.gender}` : null,
     filters.style !== 'All' ? `Style: ${filters.style}` : null,
     filters.trending !== 'all' ? `Trending: ${filters.trending === 'true' ? 'On' : 'Off'}` : null,
@@ -201,12 +213,12 @@ function ExplorePage() {
           title={
             filters.category === 'All'
               ? 'Explore AI photo styles'
-              : `${filters.category} photo styles`
+              : `${getDisplayCategoryLabel(filters.category)} photo styles`
           }
           description={
             filters.category === 'All'
               ? 'Search premium visual directions, narrow by mood and audience, and discover prompts you can adapt to your next image generation workflow.'
-              : `Browse ${filters.category.toLowerCase()} style directions, refine the search, and discover the strongest prompts for this audience.`
+              : `Browse ${getDisplayCategoryLabel(filters.category).toLowerCase()} style directions, refine the search, and discover the strongest prompts for this audience.`
           }
         />
 

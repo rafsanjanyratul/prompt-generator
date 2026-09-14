@@ -22,13 +22,14 @@ const categoryMeta = {
   },
 }
 
-function CategoryCard({ category, description, href = '#' }) {
+function CategoryCard({ category, description, href = '#', displayCategory = category }) {
   const meta = categoryMeta[category] ?? {
     accent: 'from-[#f0efe9] to-[#f7f5f2]',
     icon: Sparkles,
   }
   const Icon = meta.icon
   const prefersReducedMotion = useReducedMotion()
+  const title = displayCategory ?? category
 
   return (
     <motion.div
@@ -55,7 +56,7 @@ function CategoryCard({ category, description, href = '#' }) {
             </span>
           </div>
           <div className="mt-8 md:mt-12">
-            <h3 className="text-xl font-semibold tracking-[-0.04em] text-[var(--text)] md:text-2xl">{category}</h3>
+            <h3 className="text-xl font-semibold tracking-[-0.04em] text-[var(--text)] md:text-2xl">{title}</h3>
             <p className="mt-2 line-clamp-3 break-words text-[11px] leading-5 text-[var(--text-muted)] md:text-sm md:leading-6">
               {description}
             </p>

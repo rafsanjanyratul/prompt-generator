@@ -3,6 +3,11 @@ import { motion, useReducedMotion } from 'motion/react'
 import CategoryCard from './CategoryCard'
 import SectionHeader from '../ui/SectionHeader'
 
+const categoryLabelMap = {
+  Boys: 'Men',
+  Girls: 'Women',
+}
+
 const categories = [
   {
     category: 'Boys',
@@ -82,6 +87,7 @@ function CategorySection() {
           >
             <CategoryCard
               category={item.category}
+              displayCategory={categoryLabelMap[item.category] ?? item.category}
               description={item.description}
               href={item.href}
             />

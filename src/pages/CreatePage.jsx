@@ -1,10 +1,14 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import {
+  ArrowUpRight,
   Camera,
   Check,
   ChevronDown,
   ChevronUp,
+  Copy,
+  RotateCcw,
+  Shuffle,
   Sparkles,
   Wand2,
 } from 'lucide-react'
@@ -29,32 +33,22 @@ import {
   weather,
   outfits,
 } from '../data/createBuilderOptions.js'
+import { trackEvent } from '../lib/analytics.js'
+import Button from '../components/ui/Button.jsx'
+import {
+  buildPrompt,
+  createDefaultBuilderSelections,
+} from '../utils/promptBuilder.js'
+import { randomizeBuilderSelections } from '../utils/randomizeBuilder.js'
 
 const builderProgress = ['Subject', 'Format', 'Style', 'Scene', 'Advanced']
 
-const initialBuilderState = {
-  subject: 'boys',
-  purpose: 'general-portrait',
-  aspectRatio: '4:5',
-  style: 'cinematic',
-  background: 'studio',
-  outfit: 'casual',
-  pose: 'looking-at-camera',
-  mood: 'cinematic',
-  lighting: 'soft',
-  expression: 'natural',
-  time: 'golden-hour',
-  weather: 'clear-sky',
-  colorGrading: 'warm',
-  cultural: 'bangladeshi',
-  camera: 'professional-portrait',
-  lens: '85mm',
-  framing: 'medium-shot',
-  photographyStyle: 'editorial',
-  accessories: [],
-  effects: [],
-  identityPreservation: identityPreservation.defaultValue,
-  customInstruction: '',
+const initialBuilderState = createDefaultBuilderSelections()
+const subjectLabelMap = {
+  boys: 'Men',
+  girls: 'Women',
+  couples: 'Couples',
+  family: 'Family',
 }
 
 function SectionHeader({ label, description }) {
@@ -150,6 +144,18 @@ function CreatePage() {
   const prefersReducedMotion = useReducedMotion()
   const [showAdvanced, setShowAdvanced] = useState(false)
   const [builder, setBuilder] = useState(initialBuilderState)
+  const [copyState, setCopyState] = useState('idle')
+  const previousPromptRef = useRef(buildPrompt(initialBuilderState).prompt)
+
+  const generatedPrompt = useMemo(() => buildPrompt(builder), [builder])
+
+  useEffect(() => {
+    if (copyState !== 'idle' && previousPromptRef.current !== generatedPrompt.prompt) {
+      setCopyState('idle')
+    }
+
+    previousPromptRef.current = generatedPrompt.prompt
+  }, [copyState, generatedPrompt.prompt])
 
   const subjectRules = compatibility.subjectRules[builder.subject] || {}
   const relevantPoses = new Set(subjectRules.relevantPoses || [])
@@ -217,6 +223,63 @@ function CreatePage() {
     setBuilder((current) => ({ ...current, [field]: value }))
   }
 
+  const handleCopyPrompt = async () => {
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(generatedPrompt.prompt)
+      } else {
+        const textarea = document.createElement('textarea')
+        textarea.value = generatedPrompt.prompt
+        textarea.setAttribute('readonly', '')
+        textarea.style.position = 'fixed'
+        textarea.style.left = '-9999px'
+        document.body.appendChild(textarea)
+        textarea.select()
+        const copied = document.execCommand('copy')
+        document.body.removeChild(textarea)
+
+        if (!copied) {
+          throw new Error('Clipboard copy failed')
+        }
+      }
+
+      setCopyState('success')
+      trackEvent('builder_prompt_copy', {
+        subject: builder.subject,
+        style: builder.style,
+        purpose: builder.purpose,
+      })
+      window.setTimeout(() => setCopyState('idle'), 1500)
+    } catch {
+      setCopyState('error')
+      window.setTimeout(() => setCopyState('idle'), 1800)
+    }
+  }
+
+  const handleReset = () => {
+    const next = createDefaultBuilderSelections()
+    setBuilder(next)
+    setCopyState('idle')
+    trackEvent('builder_reset', {
+      subject: next.subject,
+      style: next.style,
+    })
+  }
+
+  const handleSurpriseMe = () => {
+    const next = randomizeBuilderSelections(builder)
+    setBuilder(next)
+    setCopyState('idle')
+    trackEvent('builder_surprise_me', {
+      subject: next.subject,
+      style: next.style,
+      purpose: next.purpose,
+    })
+  }
+
+  const copyLabel =
+    copyState === 'success' ? 'Copied!' : copyState === 'error' ? 'Copy failed' : 'Copy Prompt'
+
   return (
     <div className="mx-auto w-[min(var(--container-width),calc(100%-2rem))] py-8 pb-16 md:py-10">
       <CreateIntro />
@@ -266,7 +329,7 @@ function CreatePage() {
 
             <div className="grid gap-4 xl:grid-cols-2">
               <div className="rounded-[24px] border border-[var(--border)] bg-[var(--surface)] p-4 sm:p-5">
-                <SectionHeader label="01 — Subject" description="Choose the people in the photo." />
+                <SectionHeader label="Who is this for?" description="Choose the people in the photo." />
                 <div className="grid grid-cols-2 gap-2">
                   {subjects.map((option) => (
                     <SelectCardButton
@@ -275,7 +338,7 @@ function CreatePage() {
                       onClick={() => updateField('subject', option.value)}
                       ariaLabel={`Select subject ${option.label}`}
                     >
-                      {option.label}
+                      {subjectLabelMap[option.value] ?? option.label}
                     </SelectCardButton>
                   ))}
                 </div>
@@ -760,14 +823,156 @@ function CreatePage() {
               </AnimatePresence>
             </div>
 
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
+              <Button
+                type="button"
+                size="sm"
+                variant="secondary"
+                onClick={handleReset}
+                className="inline-flex items-center justify-center gap-2"
+                aria-label="Reset builder selections"
+              >
+                <RotateCcw className="size-3.5" aria-hidden="true" />
+                Start Over
+              </Button>
+
+              <Button
+                type="button"
+                size="sm"
+                variant="ghost"
+                onClick={handleSurpriseMe}
+                className="inline-flex items-center justify-center gap-2"
+                aria-label="Generate a surprising compatible builder configuration"
+              >
+                <Shuffle className="size-3.5" aria-hidden="true" />
+                Surprise Me
+              </Button>
+            </div>
+
             <div className="rounded-[24px] border border-[var(--border)] bg-[var(--surface)] p-4 sm:p-5">
-              <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--text-muted)]">
-                <Camera className="size-3.5" aria-hidden="true" />
-                Prompt Preview
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--text-muted)]">
+                  <Camera className="size-3.5" aria-hidden="true" />
+                  Prompt Preview
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="secondary"
+                    onClick={handleCopyPrompt}
+                    className={`inline-flex items-center gap-2 ${
+                      copyState === 'success'
+                        ? 'border-[var(--success)] bg-[var(--success)] text-[var(--background)] hover:-translate-y-0'
+                        : copyState === 'error'
+                          ? 'border-[var(--error)] text-[var(--error)]'
+                          : ''
+                    }`}
+                    aria-live="polite"
+                    aria-label={copyLabel}
+                  >
+                    {copyState === 'success' ? <Check className="size-3.5" aria-hidden="true" /> : <Copy className="size-3.5" aria-hidden="true" />}
+                    {copyLabel}
+                  </Button>
+                </div>
               </div>
 
               <div className="mt-4 rounded-[20px] border border-dashed border-[var(--border)] bg-[var(--surface-muted)] p-4 text-sm leading-7 text-[var(--text-muted)] sm:text-base">
-                Your personalized prompt will appear here.
+                <div className="mb-3 flex flex-wrap gap-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--text-muted)]">
+                  <span className="rounded-full border border-[var(--border)] bg-[var(--surface)] px-2 py-1">
+                    {generatedPrompt.metadata.subject}
+                  </span>
+                  <span className="rounded-full border border-[var(--border)] bg-[var(--surface)] px-2 py-1">
+                    {generatedPrompt.metadata.style}
+                  </span>
+                  <span className="rounded-full border border-[var(--border)] bg-[var(--surface)] px-2 py-1">
+                    {generatedPrompt.metadata.purpose}
+                  </span>
+                </div>
+
+                <div className="max-h-[290px] overflow-y-auto overscroll-contain rounded-[16px] border border-[var(--border)] bg-[var(--surface)] px-3 py-3 text-sm leading-7 text-[var(--text)] [scrollbar-color:var(--border)_transparent] [scrollbar-width:thin] sm:text-[15px] [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[var(--border)] [&::-webkit-scrollbar-track]:bg-transparent">
+                  <p className="m-0 whitespace-pre-wrap break-words">{generatedPrompt.prompt}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded-[24px] border border-[var(--border)] bg-[linear-gradient(180deg,var(--surface)_0%,var(--surface-muted)_100%)] p-4 shadow-[0_12px_30px_rgba(15,23,42,0.04)] sm:p-5">
+              <div className="mb-3 flex items-center gap-3 text-[var(--text)]">
+                <span className="flex h-8 w-8 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--brand-soft)] text-[var(--text)]">
+                  <Sparkles className="size-4" aria-hidden="true" />
+                </span>
+                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--text-muted)]">
+                  Ready to Create?
+                </p>
+              </div>
+
+              <div className="mb-4 flex flex-wrap items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--text-muted)]">
+                {[1, 2, 3, 4].map((step) => (
+                  <div key={step} className="flex items-center gap-2">
+                    <span className="flex h-6 w-6 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface)] text-[9px] text-[var(--text)]">
+                      {String(step).padStart(2, '0')}
+                    </span>
+                    <span>
+                      {step === 1
+                        ? 'Copy'
+                        : step === 2
+                          ? 'Upload'
+                          : step === 3
+                            ? 'Paste'
+                            : 'Generate'}
+                    </span>
+                    {step < 4 ? <span className="h-px w-3 bg-[var(--border)]" aria-hidden="true" /> : null}
+                  </div>
+                ))}
+              </div>
+
+              <div className="grid gap-3 md:grid-cols-2">
+                <a
+                  href="https://chatgpt.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => trackEvent('builder_create_chatgpt', { subject: builder.subject, style: builder.style })}
+                  aria-label="Create with ChatGPT opens in a new tab"
+                  className="group flex min-h-[52px] items-center justify-between gap-3 rounded-[18px] border border-[var(--border)] bg-[linear-gradient(180deg,rgba(113,79,246,0.08),rgba(255,255,255,0.02))] px-4 py-3 text-left text-[var(--text)] transition-all duration-200 hover:-translate-y-0.5 hover:border-[var(--focus)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <span className="flex h-8 w-8 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface)] text-[var(--text)]">
+                      <Sparkles className="size-3.5" aria-hidden="true" />
+                    </span>
+                    <span className="text-sm font-semibold">
+                      Create with
+                      <span className="mt-0.5 block text-base font-bold">ChatGPT</span>
+                    </span>
+                  </div>
+                  <ArrowUpRight className="size-4 shrink-0 text-[var(--text-muted)] transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true" />
+                </a>
+
+                <a
+                  href="https://gemini.google.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => trackEvent('builder_create_gemini', { subject: builder.subject, style: builder.style })}
+                  aria-label="Create with Gemini opens in a new tab"
+                  className="group flex min-h-[52px] items-center justify-between gap-3 rounded-[18px] border border-[var(--border)] bg-[var(--surface)] px-4 py-3 text-left text-[var(--text)] transition-all duration-200 hover:-translate-y-0.5 hover:border-[var(--focus)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <span className="flex h-8 w-8 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface-muted)] text-[var(--text)]">
+                      <Sparkles className="size-3.5" aria-hidden="true" />
+                    </span>
+                    <span className="text-sm font-semibold">
+                      Create with
+                      <span className="mt-0.5 block text-base font-bold">Gemini</span>
+                    </span>
+                  </div>
+                  <ArrowUpRight className="size-4 shrink-0 text-[var(--text-muted)] transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true" />
+                </a>
+              </div>
+
+              <div className="mt-4">
+                <p className="m-0 text-[11px] leading-5 text-[var(--text-muted)] sm:text-xs">
+                  Copy the prompt → Open an AI tool → Upload your photo → Paste the prompt → Generate
+                </p>
               </div>
             </div>
           </div>

@@ -1,18 +1,23 @@
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import { Menu, X } from 'lucide-react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useLocation } from 'react-router-dom'
 import ThemeToggle from '../ui/ThemeToggle'
 
-const navItems = [
-  { label: 'Home', to: '/', end: true },
-  { label: 'Explore', to: '/explore' },
-  { label: 'Styles', to: '/styles/1980s-vintage-portrait' },
-  { label: 'Create', to: '/create' },
-]
+const DEFAULT_STYLES_PATH = '/styles/1980s-vintage-portrait'
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const location = useLocation()
+  const isStylesRoute = location.pathname.startsWith('/styles/')
+  const stylesNavTarget = isStylesRoute ? location.pathname : DEFAULT_STYLES_PATH
+
+  const navItems = [
+    { label: 'Home', to: '/', end: true },
+    { label: 'Explore', to: '/explore' },
+    { label: 'Styles', to: stylesNavTarget },
+    { label: 'Create', to: '/create' },
+  ]
 
   const closeMenu = () => setIsMenuOpen(false)
 
@@ -35,22 +40,26 @@ function Header() {
           className="hidden flex-1 items-center justify-center gap-2 text-[11px] sm:gap-3 sm:text-sm md:flex md:gap-5"
           aria-label="Main navigation"
         >
-          {navItems.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              end={item.end}
-              className={({ isActive }) =>
-                `relative inline-flex min-h-9 items-center px-1.5 py-2 font-medium transition-colors sm:px-2 ${
-                  isActive
-                    ? 'text-[var(--text)] after:absolute after:bottom-0 after:left-0 after:h-px after:w-full after:bg-[var(--brand)]'
-                    : 'text-[var(--text-muted)] hover:text-[var(--text)]'
-                }`
-              }
-            >
-              {item.label}
-            </NavLink>
-          ))}
+          {navItems.map((item) => {
+            const resolvedIsActive = item.label === 'Styles' ? isStylesRoute : undefined
+
+            return (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                end={item.end}
+                className={({ isActive }) =>
+                  `relative inline-flex min-h-9 items-center px-1.5 py-2 font-medium transition-colors sm:px-2 ${
+                    (resolvedIsActive ?? isActive)
+                      ? 'text-[var(--text)] after:absolute after:bottom-0 after:left-0 after:h-px after:w-full after:bg-[var(--brand)]'
+                      : 'text-[var(--text-muted)] hover:text-[var(--text)]'
+                  }`
+                }
+              >
+                {item.label}
+              </NavLink>
+            )
+          })}
         </nav>
 
         <div className="flex items-center justify-end gap-2">
@@ -84,28 +93,34 @@ function Header() {
               aria-label="Mobile navigation"
               className="mx-auto flex w-[min(var(--container-width),calc(100%-2rem))] flex-col py-3"
             >
-              {navItems.map((item, index) => (
-                <motion.div
-                  key={item.to}
-                  initial={{ opacity: 0, x: -12 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.04, duration: 0.18, ease: 'easeOut' }}
-                >
-                  <NavLink
-                    to={item.to}
-                    end={item.end}
-                    onClick={closeMenu}
-                    className={({ isActive }) =>
-                      `flex items-center justify-between rounded-full px-3 py-2.5 text-base font-medium transition-colors ${
-                        isActive ? 'bg-[var(--surface-elevated)] text-[var(--text)]' : 'text-[var(--text-muted)] hover:text-[var(--text)]'
-                      }`
-                    }
+              {navItems.map((item, index) => {
+                const resolvedIsActive = item.label === 'Styles' ? isStylesRoute : undefined
+
+                return (
+                  <motion.div
+                    key={item.to}
+                    initial={{ opacity: 0, x: -12 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.04, duration: 0.18, ease: 'easeOut' }}
                   >
-                    <span>{item.label}</span>
-                    <span aria-hidden="true">•</span>
-                  </NavLink>
-                </motion.div>
-              ))}
+                    <NavLink
+                      to={item.to}
+                      end={item.end}
+                      onClick={closeMenu}
+                      className={({ isActive }) =>
+                        `flex items-center justify-between rounded-full px-3 py-2.5 text-base font-medium transition-colors ${
+                          (resolvedIsActive ?? isActive)
+                            ? 'bg-[var(--surface-elevated)] text-[var(--text)]'
+                            : 'text-[var(--text-muted)] hover:text-[var(--text)]'
+                        }`
+                      }
+                    >
+                      <span>{item.label}</span>
+                      <span aria-hidden="true">•</span>
+                    </NavLink>
+                  </motion.div>
+                )
+              })}
             </motion.nav>
           </motion.div>
         ) : null}
