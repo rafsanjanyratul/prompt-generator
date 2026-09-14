@@ -15,20 +15,6 @@
 },
 
 {
-"id": 4,
-"slug": "cozy-family-portrait",
-"title": "Cozy Family Portrait",
-"shortDescription": "A cheerful family portrait with warm indoor light, relaxed posing, and a modern lifestyle feel.",
-"category": "Family",
-"gender": "Mixed",
-"style": "Lifestyle",
-"tags": ["family", "cozy", "lifestyle", "warm-light", "natural"],
-"image": "/images/styles/family/cozy-family-portrait.webp",
-"prompt": "Create a warm candid family portrait in a cozy modern home, natural daylight streaming through windows, relaxed expressions, genuine connection between family members, soft natural skin tones, layered clothing in neutral earth tones, intimate composition, realistic detail, subtle depth of field, unposed lifestyle photography feel, gentle emotional storytelling, clean and authentic look.",
-"featured": false,
-"trending": true
-},
-{
 "id": 5,
 "slug": "cyberpunk-neon-streetwear",
 "title": "Cyberpunk Neon Streetwear",
@@ -57,50 +43,6 @@
 "featured": false,
 "trending": true
 },
-
-{
-"id": 9,
-"slug": "dhaka-wedding-inspired-portrait",
-"title": "Dhaka Wedding Inspired Portrait",
-"shortDescription": "A cultural wedding-inspired portrait with rich color, elegant motion, and celebratory emotional warmth.",
-"category": "Family",
-"gender": "Mixed",
-"style": "Traditional",
-"tags": ["wedding", "dhaka", "heritage", "celebration", "culture"],
-"image": "/images/styles/family/dhaka-wedding-inspired-portrait.webp",
-"prompt": "Create a family portrait inspired by a Dhaka wedding celebration, richly colored traditional attire, warm festive lighting, graceful expressions, authentic cultural styling, joyful body language, elegant details in fabric and jewelry, realistic skin textures, soft depth of field, emotional storytelling, premium cultural portrait photography, warm ambient color palette, polished and celebratory mood.",
-"featured": false,
-"trending": false
-},
-{
-"id": 10,
-"slug": "rural-bangladesh-vintage-memory",
-"title": "Rural Bangladesh Vintage Memory",
-"shortDescription": "A nostalgic rural portrait that captures the calm beauty and texture of classic Bangladesh village life.",
-"category": "Family",
-"gender": "Mixed",
-"style": "Vintage",
-"tags": ["rural", "bangladesh", "memory", "vintage", "heritage"],
-"image": "/images/styles/family/rural-bangladesh-vintage-memory.webp",
-"prompt": "Create a family portrait in a rural Bangladesh setting, nostalgic warm color palette, textured natural surroundings, simple traditional clothing, honest expressions, gentle sunlight, quiet emotional atmosphere, realistic skin tones, natural poses, nostalgic film look, soft grain, rich environmental detail, documentary portrait photography with a timeless heritage mood.",
-"featured": false,
-"trending": true
-},
-{
-"id": 11,
-"slug": "safari-family-travel-moment",
-"title": "Safari Family Travel Moment",
-"shortDescription": "A joyful travel portrait capturing a family road-trip memory with cinematic natural light.",
-"category": "Family",
-"gender": "Mixed",
-"style": "Travel",
-"tags": ["travel", "family", "nature", "storytelling", "adventure"],
-"image": "/images/styles/family/safari-family-travel-moment.webp",
-"prompt": "Create a family travel portrait outdoors in a scenic natural landscape, warm golden-hour sunlight, relaxed walking poses, authentic smiles, layered travel clothing, genuine family connection, realistic natural skin tones, cinematic composition, soft depth of field, rich environmental detail, peaceful adventure mood, premium lifestyle travel photography with a joyful documentary feel.",
-"featured": false,
-"trending": false
-},
-
 {
 "id": 13,
 "slug": "traditional-royal-groom-panjabi-look",
@@ -112,20 +54,6 @@
 "tags": ["studio", "neon", "detail", "modern", "portrait"],
 "image": "/images/styles/boys/traditional-royal-groom-panjabi-look.webp",
 "prompt": "Transform my uploaded photo into a luxurious South Asian groom-inspired portrait while preserving the exact identity and recognizable facial appearance of the person in my uploaded photo. Keep the original facial structure, eyes, nose, lips, jawline, skin tone, natural skin texture, hairstyle where appropriate, and body proportions. Do not replace the face or turn the person into a different model.\n\nDress the person in a premium traditional Bangladeshi/South Asian groom outfit: an elegant embroidered Panjabi or sophisticated sherwani-inspired ensemble in ivory, cream, deep emerald, charcoal, or muted gold. Add tasteful embroidery, a refined waistcoat or shawl if appropriate, traditional footwear, and minimal sophisticated accessories. Every fabric, embroidery thread, and fold should look physically realistic.\n\nPlace the person inside an elegant heritage environment inspired by a Bangladeshi rajbari or refined South Asian wedding venue. Use carved wood, textured walls, tall curtains, subtle floral arrangements, warm architectural details, and soft background depth.\n\nUse warm golden ambient lighting combined with soft window light. Create gentle highlights on the embroidery and natural shadow transitions across the face. Keep skin realistic and avoid excessive beauty retouching.\n\nPose the person upright with dignified but natural posture, relaxed shoulders, one hand naturally positioned near the waist or holding the edge of the shawl, and a calm confident expression.\n\nUse realistic textile detail, natural skin pores, believable jewelry reflections, cinematic depth of field, elegant composition, rich but controlled colors, and high-end South Asian wedding-editorial photography.\n\nAvoid costume-like styling, excessive jewelry, unrealistic palace backgrounds, plastic skin, or exaggerated royal effects.\n\nAspect ratio: 4:5 vertical.\nPhotorealistic, luxurious, premium wedding editorial photography.",
-"featured": false,
-"trending": false
-},
-{
-"id": 15,
-"slug": "monsoon-rural-family-story",
-"title": "Monsoon Rural Family Story",
-"shortDescription": "A heartfelt rural family portrait that captures mood, texture, and honest connection in a monsoon afternoon.",
-"category": "Family",
-"gender": "Mixed",
-"style": "Lifestyle",
-"tags": ["monsoon", "rural", "family", "storytelling", "weather"],
-"image": "/images/styles/family/monsoon-rural-family-story.webp",
-"prompt": "Create a family portrait in a monsoon rural setting, soft rain haze, earthy natural surroundings, close emotional connection, real expressions, natural clothing, subtle wet textures, warm diffused light, documentary-style composition, rich environmental detail, realistic skin tones, gentle storytelling mood, authentic lifestyle portrait photography with natural atmosphere.",
 "featured": false,
 "trending": false
 },
@@ -144,20 +72,7 @@
 "featured": false,
 "trending": false
 },
-{
-"id": 18,
-"slug": "soft-studio-mother-daughter",
-"title": "Soft Studio Mother and Daughter",
-"shortDescription": "A warm, intimate studio portrait of a mother and daughter with gentle light and emotional calm.",
-"category": "Family",
-"gender": "Mixed",
-"style": "Studio",
-"tags": ["family", "studio", "mother-daughter", "soft-light", "portrait"],
-"image": "/images/styles/family/soft-studio-mother-daughter.webp",
-"prompt": "Create a mother and daughter portrait in a soft studio setting, gentle natural light, warm neutral background, affectionate body language, realistic skin tones, soft focus on the environment, subtle emotional connection, refined portrait composition, clean shadows, natural expressions, premium lifestyle portrait photography with calm and intimate mood.",
-"featured": false,
-"trending": true
-},
+
 {
 "id": 20,
 "slug": "athletic-&-fitness-aesthetic",
@@ -509,6 +424,148 @@
     "prompt": "Build an elegant cinematic fantasy portrait around the woman in my uploaded photograph while preserving her exact real identity. Keep her original facial structure, eyes, nose, lips, jawline, skin tone, natural skin texture, age, hairstyle characteristics, and recognizable appearance unchanged. Do not replace her face with a fantasy character or generic model. The fantasy transformation should come entirely from styling, environment, lighting, and atmosphere. Dress her in an elegant fantasy-inspired outfit made from flowing fabrics, delicate layers, embroidered details, and subtle botanical patterns. The design should feel like sophisticated elven fashion rather than a costume. Add tasteful fantasy accessories such as delicate leaf-inspired jewelry, floral hair details, or subtle natural ornaments. Place her inside an enchanted forest with tall trees, moss, wildflowers, gentle mist, soft sunlight filtering through leaves, and subtle atmospheric particles. Keep the environment photorealistic. Give her a peaceful, confident expression and a graceful natural pose. Use cinematic golden forest lighting with soft rays through the trees, subtle rim lighting around the hair, and gentle illumination across the face. Capture the scene with an approximately 50mm or 85mm lens and realistic depth of field. Use a sophisticated palette of forest green, muted gold, warm brown, cream, and subtle floral tones. Include realistic fabric movement, detailed foliage, natural hair strands, skin texture, atmospheric depth, and fine cinematic film grain. Avoid changing her face, glowing eyes, exaggerated magical effects, cartoon-like styling, distorted hands, extra fingers, plastic skin, or obvious CGI appearance. The final image should feel like a high-budget cinematic fantasy portrait while still clearly showing the exact real person from the uploaded photograph. Aspect ratio: 4:5 vertical.",
     "featured": false,
     "trending": false
+  },
+
+  {
+    "id": 50,
+    "slug": "traditional-desi-festive-family",
+    "title": "Traditional Desi Festive Family",
+    "shortDescription": "Elegant traditional South Asian family portrait with festive styling and authentic cultural atmosphere.",
+    "category": "Family",
+    "gender": "Unisex",
+    "style": "Festive",
+    "tags": ["traditional", "desi", "festive", "family", "south-asian", "bangladesh"],
+    "image": "/images/styles/family/traditional-desi-festive-family.webp",
+    "prompt": "Use our uploaded family photograph as the visual and identity reference, and recreate the entire family as an elegant traditional South Asian festive portrait.\n\nPreserve the exact identity of EVERY family member in the uploaded photo. Keep each person's original facial structure, eyes, nose, lips, jawline, skin tone, natural skin texture, age, hairstyle characteristics, body proportions, and recognizable appearance. Do not replace, merge, beautify, or redesign anyone's face. Every family member must remain individually recognizable.\n\nDress the family in coordinated but authentic traditional South Asian festive clothing. Dress the men in elegant Panjabi/kurta or traditional formal wear, the women in beautiful sarees or traditional festive outfits, and children in age-appropriate traditional clothing if children are present.\n\nUse tasteful traditional accessories such as earrings, bangles, necklaces, watches, or other culturally appropriate details. Keep the styling elegant and realistic rather than excessively luxurious.\n\nPlace the family in a beautifully decorated Bangladeshi/South Asian home or festive venue with flowers, warm decorative lights, traditional patterns, subtle lanterns, and tasteful cultural elements.\n\nArrange everyone naturally as a real family portrait. Keep parents and children close together with relaxed body language and genuine expressions. Avoid stiff or overly symmetrical posing.\n\nUse warm ambient lighting combined with soft professional portrait lighting so every face is clearly visible.\n\nPhotograph the family with a professional camera using a natural 50mm portrait perspective and realistic depth of field. Keep all important faces sharp.\n\nUse rich festive colors while maintaining natural skin tones and realistic textile textures.\n\nAdd subtle cinematic color grading, fine film grain, realistic hair detail, fabric texture, and natural skin pores.\n\nAvoid face swapping, identity mixing, duplicate people, missing family members, distorted hands, extra fingers, unnatural body proportions, excessive skin smoothing, plastic skin, or CGI appearance.\n\nThe final image should look like a genuine premium South Asian family photograph captured during a festive celebration.\n\nAspect ratio: 4:5 vertical.",
+    "featured": false,
+    "trending": true
+  },
+  {
+    "id": 51,
+    "slug": "80s-vintage-family-album",
+    "title": "80s Vintage Family Album",
+    "shortDescription": "Authentic late-1980s to early-1990s Bangladeshi family album portrait with nostalgic analog photography.",
+    "category": "Family",
+    "gender": "Unisex",
+    "style": "Vintage",
+    "tags": ["80s", "90s", "retro", "vintage", "family", "kodak", "bangladesh"],
+    "image": "/images/styles/family/80s-vintage-family-album.webp",
+    "prompt": "Reimagine the family in my uploaded photograph as a genuine late-1980s to early-1990s Bangladeshi family-album picture.\n\nKeep every family member's exact real identity unchanged. Preserve each person's facial structure, eyes, nose, lips, jawline, skin tone, natural skin texture, age, hairstyle, and recognizable appearance. Do not merge faces or turn anyone into a different person. Children must remain children and adults must retain their appropriate age.\n\nStyle the family in authentic late-80s/early-90s Bangladeshi clothing. Use period-appropriate cotton sarees, printed shirts, Panjabi, simple dresses, high-waisted trousers, and modest traditional outfits depending on each person's age and gender.\n\nPlace them in a nostalgic Bangladeshi home environment with an old veranda, painted walls, wooden furniture, potted plants, curtains, and subtle everyday details from that era.\n\nArrange the family naturally, as though someone took a spontaneous family photograph during an ordinary afternoon.\n\nUse warm natural daylight and recreate the character of an old Kodak 35mm photograph: slightly faded colors, warm skin tones, mild analog grain, soft highlights, gentle contrast, subtle film imperfections, and authentic photographic softness.\n\nUse a realistic 35mm or 50mm film-camera perspective with moderate depth of field.\n\nKeep faces naturally detailed rather than heavily retouched. Preserve realistic skin texture, hair, clothing folds, and age characteristics.\n\nAvoid modern clothing, modern interiors, excessive beauty filters, face changes, duplicated people, distorted hands, extra fingers, unnatural body proportions, oversharpening, HDR, or CGI effects.\n\nThe final result should genuinely resemble a preserved Bangladeshi family photograph from around 1988–1992, not a modern digital image with a vintage preset.\n\nAspect ratio: 4:5 vertical.",
+    "featured": false,
+    "trending": true
+  },
+  {
+    "id": 52,
+    "slug": "royalty-mansion-family-portrait",
+    "title": "Royalty Mansion Family Portrait",
+    "shortDescription": "Sophisticated South Asian royal heritage family portrait set inside a luxurious traditional mansion.",
+    "category": "Family",
+    "gender": "Unisex",
+    "style": "Royal",
+    "tags": ["royal", "mansion", "heritage", "family", "south-asian", "luxury"],
+    "image": "/images/styles/family/royalty-mansion-family-portrait.webp",
+    "prompt": "Create a sophisticated royal heritage family portrait from the uploaded family photo while keeping every person's real identity intact.\n\nPreserve the exact identity of all family members individually. Keep their original facial structures, eyes, noses, lips, jawlines, skin tones, natural skin textures, ages, hairstyles, and recognizable appearances. Do not replace, combine, or redesign any face.\n\nDress the family in refined South Asian royal-inspired formal clothing. Use elegant sherwanis, embroidered Panjabis, sarees, lehengas, anarkalis, or age-appropriate traditional formal wear.\n\nChoose luxurious but tasteful fabrics such as silk, velvet, brocade, and embroidered textiles. Add refined jewelry and accessories without making the family look excessively theatrical.\n\nPlace the family inside a grand heritage mansion with high ceilings, elegant arches, carved wooden details, marble or polished floors, classic furniture, chandeliers, and warm architectural lighting.\n\nArrange the family like a formal royal household portrait, but keep their expressions natural and their body proportions realistic.\n\nUse warm cinematic lighting with soft golden highlights and controlled shadows. Ensure that every important face receives enough light and remains clearly recognizable.\n\nCapture the scene with an approximately 50mm or 85mm professional portrait-lens perspective and realistic depth of field.\n\nUse sophisticated colors such as deep burgundy, emerald, navy, cream, warm gold, and brown.\n\nInclude realistic fabric embroidery, jewelry reflections, architectural details, natural skin texture, and subtle photographic grain.\n\nAvoid exaggerated crowns, fantasy armor, face changes, unrealistic body proportions, duplicate family members, distorted hands, extra fingers, plastic skin, or CGI appearance.\n\nThe final photograph should feel like an elegant heritage family portrait photographed inside a luxurious South Asian mansion.\n\nAspect ratio: 4:5 vertical.",
+    "featured": false,
+    "trending": false
+  },
+  {
+    "id": 53,
+    "slug": "outdoor-picnic-garden-day",
+    "title": "Outdoor Picnic / Garden Day",
+    "shortDescription": "Warm candid family portrait captured naturally during an outdoor picnic or garden day.",
+    "category": "Family",
+    "gender": "Unisex",
+    "style": "Outdoor",
+    "tags": ["outdoor", "picnic", "garden", "family", "candid", "nature"],
+    "image": "/images/styles/family/outdoor-picnic-garden-day.webp",
+    "prompt": "Turn our uploaded family photograph into a warm, candid outdoor family day captured in a beautiful garden or picnic setting.\n\nMaintain the exact identity of every person in the reference photo. Preserve each individual's facial structure, eyes, nose, lips, jawline, skin tone, natural skin texture, age, hairstyle, and recognizable appearance. Do not replace or blend faces.\n\nDress everyone in comfortable contemporary casual clothing suitable for a family picnic. Use coordinated natural colors without making everyone wear identical outfits. Children should have age-appropriate clothing.\n\nPlace the family in a lush green garden or peaceful outdoor park with grass, trees, flowers, a picnic blanket, simple food containers, drinks, and subtle everyday family details.\n\nCreate a natural family interaction rather than a formal pose. Some family members can sit on the picnic blanket while others stand nearby. Parents can interact naturally with children, creating a genuine candid moment.\n\nUse soft morning or late-afternoon sunlight filtering through trees. Create natural highlights and gentle shadows across the scene.\n\nCapture the photograph using a professional 35mm or 50mm lens with realistic environmental depth and enough depth of field to keep the whole family recognizable.\n\nUse fresh natural colors with realistic greens and warm skin tones.\n\nInclude subtle film grain, realistic grass and foliage, natural clothing folds, hair movement, and authentic photographic texture.\n\nAvoid artificial poses, face changes, duplicated people, floating objects, distorted hands, extra fingers, unrealistic children, excessive background blur, plastic skin, or CGI appearance.\n\nThe final image should feel like a genuine candid family photograph taken during a memorable outdoor picnic.\n\nAspect ratio: 4:5 vertical.",
+    "featured": false,
+    "trending": false
+  },
+  {
+    "id": 54,
+    "slug": "cozy-winter-home-aesthetic",
+    "title": "Cozy Winter Home Aesthetic",
+    "shortDescription": "Warm cinematic family lifestyle scene inside a cozy home during a peaceful winter evening.",
+    "category": "Family",
+    "gender": "Unisex",
+    "style": "Cozy",
+    "tags": ["winter", "cozy", "home", "family", "cinematic", "lifestyle"],
+    "image": "/images/styles/family/cozy-winter-home-aesthetic.webp",
+    "prompt": "Build a warm cinematic winter family scene around the people in my uploaded photograph.\n\nKeep the exact real identity of every family member. Preserve each person's facial structure, eyes, nose, lips, jawline, skin tone, natural skin texture, age, hairstyle, and recognizable appearance. Do not change, merge, or replace anyone's face.\n\nDress the family in cozy winter clothing such as knitted sweaters, cardigans, scarves, warm trousers, and comfortable layered outfits. Keep each person's clothing age-appropriate and naturally coordinated.\n\nPlace everyone inside a cozy family home with warm wooden details, soft blankets, cushions, a fireplace or heater, warm lamps, books, and a large window showing a cool winter landscape outside.\n\nCreate a genuine family moment: parents sitting together with children, family members sharing a warm drink, talking, reading, or relaxing together.\n\nUse a combination of warm indoor lighting and cool natural daylight entering through the window. Create a cinematic warm-versus-cool atmosphere while keeping all faces clearly visible.\n\nUse a professional 50mm lens perspective with realistic depth of field. Keep the important faces sharp.\n\nUse warm cream, brown, beige, muted green, and soft gray tones.\n\nPreserve realistic skin texture, knitted fabric details, wooden surfaces, hair strands, and subtle photographic grain.\n\nAvoid changing facial identities, unrealistic children, exaggerated poses, distorted hands, extra fingers, plastic skin, artificial snow, excessive blur, or CGI appearance.\n\nThe final image should feel like an authentic premium family lifestyle photograph captured during a peaceful winter evening at home.\n\nAspect ratio: 4:5 vertical.",
+    "featured": false,
+    "trending": false
+  },
+  {
+    "id": 55,
+    "slug": "modern-minimalist-studio-look",
+    "title": "Modern Minimalist Studio Look",
+    "shortDescription": "Refined contemporary family studio portrait with clean styling, neutral tones, and minimalist aesthetics.",
+    "category": "Family",
+    "gender": "Unisex",
+    "style": "Minimalist",
+    "tags": ["modern", "minimalist", "studio", "family", "portrait", "clean"],
+    "image": "/images/styles/family/modern-minimalist-studio-look.webp",
+    "prompt": "Recreate the uploaded family as a refined modern studio family portrait with a clean minimalist aesthetic.\n\nPreserve the exact identity of every family member individually. Keep their original facial structures, eyes, noses, lips, jawlines, skin tones, natural skin textures, ages, hairstyles, and recognizable appearances. Do not replace, merge, or redesign faces.\n\nDress the family in sophisticated modern minimalist clothing using neutral tones such as white, cream, beige, gray, black, and muted earth colors. Keep outfits coordinated without making them identical.\n\nUse a clean contemporary studio with a seamless neutral background, minimal furniture, soft architectural elements, and generous negative space.\n\nArrange the family naturally with subtle interaction. Parents and children should stand or sit close together with relaxed expressions and believable body language.\n\nUse large softbox lighting from both sides with gentle fill light, producing soft controlled shadows and clean professional illumination.\n\nPhotograph the family with a professional 50mm or 85mm lens. Keep all important faces sharply focused while maintaining subtle background separation.\n\nUse clean neutral color grading, natural skin tones, soft contrast, and minimal visual distractions.\n\nPreserve realistic fabric textures, skin pores, hair detail, and subtle photographic grain.\n\nAvoid excessive beauty retouching, face reshaping, identical facial expressions, unrealistic body proportions, distorted hands, extra fingers, duplicated people, or CGI appearance.\n\nThe final image should resemble a premium contemporary family photography studio session.\n\nAspect ratio: 4:5 vertical.",
+    "featured": false,
+    "trending": false
+  },
+  {
+    "id": 56,
+    "slug": "vacation-beach-resort-vibes",
+    "title": "Vacation Beach / Resort Vibes",
+    "shortDescription": "Cinematic tropical family vacation portrait with a natural premium resort atmosphere.",
+    "category": "Family",
+    "gender": "Unisex",
+    "style": "Vacation",
+    "tags": ["vacation", "beach", "resort", "tropical", "family", "travel"],
+    "image": "/images/styles/family/vacation-beach-resort-vibes.webp",
+    "prompt": "Use our uploaded family photo to create a cinematic tropical vacation family portrait while keeping everyone's real identity unchanged.\n\nPreserve the exact facial identity of every family member. Maintain their original facial structure, eyes, nose, lips, jawline, skin tone, natural skin texture, age, hairstyle, and recognizable appearance. Do not swap, merge, or redesign faces.\n\nDress the family in stylish but realistic vacation clothing. Use linen shirts, casual dresses, light shirts, shorts, skirts, or comfortable resort outfits appropriate to each person's age.\n\nPlace the family at a beautiful tropical beach or premium resort with palm trees, soft sand, turquoise water, subtle resort architecture, and a clear horizon.\n\nCreate a natural family moment such as walking together along the beach, standing near the water, or sitting together at a resort area. Keep the interaction genuine and relaxed.\n\nUse warm late-afternoon sunlight with soft golden highlights and natural reflected light from the sand and water.\n\nCapture the scene with a professional 35mm or 50mm lens, realistic environmental depth, and natural perspective.\n\nUse bright but controlled tropical colors while keeping skin tones accurate and natural.\n\nInclude realistic ocean reflections, fabric movement, hair affected by the sea breeze, natural shadows, and subtle cinematic film grain.\n\nAvoid face changes, unrealistic beach environments, distorted hands, extra fingers, duplicated people, exaggerated body proportions, excessive saturation, or CGI appearance.\n\nThe final image should look like a genuine premium family vacation photograph captured at a beautiful tropical destination.\n\nAspect ratio: 4:5 vertical.",
+    "featured": false,
+    "trending": false
+  },
+  {
+    "id": 57,
+    "slug": "cultural-heritage-look",
+    "title": "Cultural / Heritage Look",
+    "shortDescription": "Timeless South Asian family heritage portrait inspired by traditional Bangladeshi culture and architecture.",
+    "category": "Family",
+    "gender": "Unisex",
+    "style": "Heritage",
+    "tags": ["cultural", "heritage", "traditional", "south-asian", "bangladesh", "family"],
+    "image": "/images/styles/family/cultural-heritage-look.webp",
+    "prompt": "Reinterpret the people in my uploaded family photograph as a timeless South Asian cultural heritage family portrait.\n\nEvery family member must retain their exact real identity. Preserve each person's facial structure, eyes, nose, lips, jawline, skin tone, natural skin texture, age, hairstyle characteristics, body proportions, and recognizable appearance. Do not replace, blend, or redesign any face.\n\nDress the family in authentic traditional South Asian clothing inspired by cultural heritage. Use sarees, Panjabis, kurtas, traditional dresses, shawls, and age-appropriate cultural outfits.\n\nIncorporate subtle regional details such as traditional textiles, handcrafted furniture, woven materials, clay objects, wooden architecture, heritage patterns, or other tasteful cultural elements.\n\nPlace the family in a traditional Bangladeshi or South Asian heritage environment such as an old ancestral home, courtyard, veranda, or historic architectural setting.\n\nArrange everyone naturally as a family, with multiple generations if present in the uploaded photo. Encourage subtle interaction between parents, children, and older family members rather than a stiff formal pose.\n\nUse warm natural daylight with soft directional shadows.\n\nPhotograph the scene with a professional 50mm lens and realistic depth of field. Keep every important face clear and recognizable.\n\nUse earthy colors, warm brown, muted red, cream, deep green, and natural textile tones.\n\nAdd realistic fabric texture, wood grain, skin texture, natural hair detail, and subtle analog film grain.\n\nAvoid cultural inaccuracies, face changes, duplicated people, modern clothing, distorted hands, extra fingers, excessive beauty filters, plastic skin, or CGI appearance.\n\nThe final photograph should feel like a timeless family heritage portrait that celebrates South Asian culture without looking artificial.\n\nAspect ratio: 4:5 vertical.",
+    "featured": false,
+    "trending": false
+  },
+  {
+    "id": 58,
+    "slug": "fantasy-kingdom-family",
+    "title": "Fantasy Kingdom Family",
+    "shortDescription": "Cinematic photorealistic fantasy kingdom family portrait with elegant royal styling and a grand castle setting.",
+    "category": "Family",
+    "gender": "Unisex",
+    "style": "Fantasy",
+    "tags": ["fantasy", "kingdom", "royal", "family", "cinematic", "castle"],
+    "image": "/images/styles/family/fantasy-kingdom-family.webp",
+    "prompt": "Create a cinematic photorealistic fantasy kingdom portrait featuring the family from my uploaded photograph.\n\nPreserve the exact real identity of EVERY family member. Keep each person's facial structure, eyes, nose, lips, jawline, skin tone, natural skin texture, age, hairstyle, body proportions, and recognizable appearance unchanged. Do not replace, merge, or redesign anyone's face. The fantasy transformation should come entirely from clothing, environment, lighting, and atmosphere.\n\nDress the adults and children in elegant fantasy-inspired royal clothing appropriate to their ages. Use flowing fabrics, subtle embroidery, layered garments, refined accessories, and sophisticated medieval-inspired details without making the clothing look like theatrical costumes.\n\nPlace the family inside a magnificent fantasy kingdom featuring a grand castle, stone architecture, beautiful gardens, ancient trees, subtle fountains, distant mountains, and warm atmospheric light.\n\nArrange the family like a royal household portrait while keeping their natural family relationship visible. Parents should remain clearly recognizable as parents and children as children.\n\nUse cinematic golden-hour lighting with warm rays illuminating the family and subtle rim lighting around their hair and shoulders.\n\nCapture the scene using a professional 50mm lens perspective with realistic depth of field and cinematic environmental scale.\n\nUse an elegant palette of forest green, royal blue, muted gold, cream, burgundy, and natural earth tones.\n\nAdd realistic fabric movement, architectural texture, foliage, atmospheric mist, natural skin texture, detailed hair, and subtle cinematic grain.\n\nKeep the fantasy elements photorealistic and sophisticated.\n\nAvoid changing faces, unrealistic aging, glowing eyes, exaggerated magical effects, giant weapons, distorted hands, extra fingers, duplicated family members, plastic skin, or cartoon/CGI appearance.\n\nThe final image should look like a high-budget cinematic fantasy family portrait while every person remains unmistakably recognizable.\n\nAspect ratio: 4:5 vertical.",
+    "featured": false,
+    "trending": false
+  },
+  {
+    "id": 59,
+    "slug": "celebration-birthday-party-scene",
+    "title": "Celebration / Birthday Party Scene",
+    "shortDescription": "Joyful cinematic family birthday celebration with warm lighting, decorations, cake, and genuine interactions.",
+    "category": "Family",
+    "gender": "Unisex",
+    "style": "Celebration",
+    "tags": ["birthday", "celebration", "party", "family", "festive", "joyful"],
+    "image": "/images/styles/family/celebration-birthday-party-scene.webp",
+    "prompt": "Turn our uploaded family photograph into a joyful cinematic family celebration scene while preserving everyone's exact real identity.\n\nKeep every family member recognizable as the same person from the uploaded photo. Preserve each individual's facial structure, eyes, nose, lips, jawline, skin tone, natural skin texture, age, hairstyle, and body proportions. Do not replace, merge, or redesign anyone's face.\n\nDress the family in attractive modern festive clothing suitable for a birthday celebration. Use coordinated but individual outfits with tasteful colors and age-appropriate styling.\n\nCreate a warm indoor birthday-party environment with a beautifully decorated table, birthday cake, balloons, subtle fairy lights, tasteful decorations, wrapped gifts, flowers, and soft ambient lighting.\n\nShow a genuine family celebration rather than a static studio pose. Some family members can stand behind the cake while others sit or interact naturally. Children can smile, parents can look toward them, and family members can share a joyful moment.\n\nMake the birthday cake and decorations realistic and proportional. Avoid excessive decorations that distract from the people.\n\nUse warm cinematic lighting from the room combined with soft portrait illumination so every face remains clearly visible.\n\nCapture the scene with a professional 35mm or 50mm lens, realistic depth of field, natural perspective, and enough environmental context.\n\nUse warm cream, gold, soft pastel, and festive colors while keeping skin tones natural.\n\nInclude realistic cake texture, balloons, fabric details, hair strands, skin texture, natural shadows, and subtle photographic grain.\n\nAvoid face changes, duplicated people, unnatural smiles, distorted hands, extra fingers, floating objects, unrealistic cake proportions, excessive skin smoothing, or CGI appearance.\n\nThe final image should feel like a genuine memorable family birthday photograph captured by a professional photographer.\n\nAspect ratio: 4:5 vertical.",
+    "featured": false,
+    "trending": false
   }
+
 
 ]
