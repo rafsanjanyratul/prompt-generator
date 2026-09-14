@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
-import { ArrowLeft, Check, Copy, ImageOff } from 'lucide-react'
+import { ArrowLeft, ArrowUpRight, Check, Copy, ImageOff, Sparkles } from 'lucide-react'
 import { Link, useParams } from 'react-router-dom'
 import promptStyles from '../data/prompts.js'
 import StyleCard from '../components/discover/StyleCard'
@@ -116,6 +116,13 @@ function StyleDetailPage() {
   const copyLabel =
     copyState === 'success' ? 'Copied!' : copyState === 'error' ? 'Copy failed' : 'Copy Prompt'
 
+  const workflowSteps = [
+    { number: '01', label: 'Copy' },
+    { number: '02', label: 'Upload' },
+    { number: '03', label: 'Paste' },
+    { number: '04', label: 'Create' },
+  ]
+
   return (
     <div className="mx-auto w-[min(var(--container-width),calc(100%-2rem))] py-8 pb-16 md:py-10">
       <motion.div
@@ -126,10 +133,10 @@ function StyleDetailPage() {
         <div className="mb-6 flex items-center justify-between gap-3">
           <Link
             to="/explore"
-            className="inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm font-medium text-[var(--text-muted)] transition-colors hover:text-[var(--text)]"
+            className="inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--surface)] px-2.5 py-2 text-xs font-semibold uppercase tracking-[0.08em] text-[var(--text-muted)] transition-colors hover:border-[var(--border-strong)] hover:text-[var(--text)]"
           >
-            <ArrowLeft className="size-4" />
-            Back to Explore
+            <ArrowLeft className="size-3.5" />
+            Browse more
           </Link>
         </div>
 
@@ -207,43 +214,146 @@ function StyleDetailPage() {
               </div>
             </div>
 
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <Button
-                type="button"
-                className={`inline-flex items-center gap-2 ${
-                  copyState === 'success'
-                    ? 'bg-[var(--success)] text-[var(--background)] hover:-translate-y-0'
-                    : copyState === 'error'
-                      ? 'border border-[var(--error)] bg-[var(--surface)] text-[var(--error)] hover:-translate-y-0'
-                      : ''
-                }`}
-                onClick={handleCopyPrompt}
-                aria-live="polite"
-                aria-label={`${copyLabel} prompt`}
-              >
-                {copyState === 'success' ? <Check className="size-4" /> : <Copy className="size-4" />}
-                {copyLabel}
-              </Button>
-              <Link to="/explore">
-                <Button variant="secondary" className="inline-flex items-center gap-2">
-                  <ArrowLeft className="size-4" />
-                  Browse more
-                </Button>
-              </Link>
-            </div>
+            <div className="space-y-4">
+              <div className="rounded-[22px] border border-[var(--border)] bg-[var(--surface)] p-4 shadow-[0_8px_22px_rgba(15,23,42,0.04)]">
+                <div className="mb-3 flex items-center justify-between gap-3">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--text-muted)]">
+                    Prompt
+                  </p>
+                  {copyState === 'error' ? (
+                    <span className="text-xs font-medium text-[var(--error)]">Copy unavailable</span>
+                  ) : null}
+                </div>
 
-            <div className="rounded-[22px] border border-[var(--border)] bg-[var(--surface)] p-4 shadow-[0_8px_22px_rgba(15,23,42,0.04)]">
-              <div className="mb-3 flex items-center justify-between gap-3">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--text-muted)]">
-                  Prompt
-                </p>
-                {copyState === 'error' ? (
-                  <span className="text-xs font-medium text-[var(--error)]">Copy unavailable</span>
-                ) : null}
+                <div className="relative">
+                  <div className="max-h-[280px] overflow-y-auto overscroll-contain rounded-[16px] border border-[var(--border)] bg-[var(--surface-muted)] px-3 py-3 text-sm leading-7 text-[var(--text)] [scrollbar-color:var(--border)_transparent] [scrollbar-width:thin] sm:max-h-[320px] md:text-[15px] [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[var(--border)] [&::-webkit-scrollbar-track]:bg-transparent">
+                    <p className="m-0 whitespace-pre-wrap break-words">{style.prompt}</p>
+                  </div>
+                  <div className="pointer-events-none absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-[var(--surface-muted)] to-transparent" />
+                </div>
+
+                <div className="mt-4">
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="secondary"
+                    className={`inline-flex w-full items-center justify-center gap-2 sm:w-auto ${
+                      copyState === 'success'
+                        ? 'border-[var(--success)] bg-[var(--success)] text-[var(--background)] hover:-translate-y-0'
+                        : copyState === 'error'
+                          ? 'border-[var(--error)] bg-[var(--surface)] text-[var(--error)] hover:-translate-y-0'
+                          : ''
+                    }`}
+                    onClick={handleCopyPrompt}
+                    aria-live="polite"
+                    aria-label={`${copyLabel} prompt`}
+                  >
+                    {copyState === 'success' ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
+                    {copyLabel}
+                  </Button>
+                </div>
               </div>
-              <p className="m-0 whitespace-pre-wrap break-words text-sm leading-7 text-[var(--text)] md:text-[15px]">
-                {style.prompt}
-              </p>
+
+              <motion.section
+                initial={prefersReducedMotion ? false : { opacity: 0, y: 12 }}
+                animate={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
+                transition={{ duration: 0.25, ease: 'easeOut' }}
+                className="relative overflow-hidden rounded-[26px] border border-[var(--border)] bg-[linear-gradient(180deg,var(--surface)_0%,var(--surface-muted)_100%)] p-4 shadow-[0_14px_35px_rgba(15,23,42,0.06)] sm:p-5"
+              >
+                <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(168,85,247,0.12),transparent_38%),radial-gradient(circle_at_left,rgba(52,211,153,0.1),transparent_30%)]" />
+
+                <div className="relative">
+                  <div className="mb-4 flex items-center gap-3 text-[var(--text)]">
+                    <span className="flex h-8 w-8 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--brand-soft)] text-[var(--text)] shadow-[inset_0_1px_0_rgba(255,255,255,0.4)]">
+                      <Sparkles className="size-4" aria-hidden="true" />
+                    </span>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--text-muted)]">
+                      Ready to Create?
+                    </p>
+                  </div>
+
+                  <div className="mb-4 space-y-1">
+                    <p className="m-0 text-base font-semibold text-[var(--text)] sm:text-lg">
+                      Your prompt is ready.
+                    </p>
+                    <p className="m-0 text-sm text-[var(--text-muted)]">
+                      Choose an AI tool and create your image.
+                    </p>
+                  </div>
+
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <a
+                      href="https://chatgpt.com/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() =>
+                        trackEvent('create_with_chatgpt', {
+                          style_id: style.id,
+                          style_slug: style.slug,
+                          style_title: style.title,
+                          category: style.category,
+                        })
+                      }
+                      aria-label="Create with ChatGPT opens in a new tab"
+                      className="group relative flex min-h-[52px] flex-1 items-center justify-between gap-2 rounded-[18px] border border-[var(--border)] bg-[linear-gradient(180deg,rgba(155,135,255,0.12),rgba(145,158,255,0.04))] px-4 py-3 text-left text-[var(--text)] transition-all duration-200 hover:-translate-y-0.5 hover:border-[var(--focus)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <span className="flex h-8 w-8 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface)] text-[var(--text)]">
+                          <Sparkles className="size-3.5" aria-hidden="true" />
+                        </span>
+                        <span className="text-sm font-semibold">
+                          Create with
+                          <span className="mt-0.5 block text-base font-bold">ChatGPT</span>
+                        </span>
+                      </div>
+                      <ArrowUpRight className="size-4 shrink-0 text-[var(--text-muted)] transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true" />
+                    </a>
+
+                    <a
+                      href="https://gemini.google.com/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() =>
+                        trackEvent('create_with_gemini', {
+                          style_id: style.id,
+                          style_slug: style.slug,
+                          style_title: style.title,
+                          category: style.category,
+                        })
+                      }
+                      aria-label="Create with Gemini opens in a new tab"
+                      className="group relative flex min-h-[52px] flex-1 items-center justify-between gap-2 rounded-[18px] border border-[var(--border)] bg-[var(--surface)] px-4 py-3 text-left text-[var(--text)] transition-all duration-200 hover:-translate-y-0.5 hover:border-[var(--focus)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <span className="flex h-8 w-8 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface-muted)] text-[var(--text)]">
+                          <Sparkles className="size-3.5" aria-hidden="true" />
+                        </span>
+                        <span className="text-sm font-semibold">
+                          Create with
+                          <span className="mt-0.5 block text-base font-bold">Gemini</span>
+                        </span>
+                      </div>
+                      <ArrowUpRight className="size-4 shrink-0 text-[var(--text-muted)] transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true" />
+                    </a>
+                  </div>
+
+                  <div className="mt-5 border-t border-[var(--border)] pt-4">
+                    <div className="flex flex-wrap items-center justify-center gap-2 text-[10px] font-medium uppercase tracking-[0.14em] text-[var(--text-muted)] sm:justify-start">
+                      {workflowSteps.map((step, index) => (
+                        <div key={step.number} className="flex items-center gap-2">
+                          <span className="flex h-6 w-6 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface)] text-[9px] font-semibold text-[var(--text)]">
+                            {step.number}
+                          </span>
+                          <span>{step.label}</span>
+                          {index < workflowSteps.length - 1 ? (
+                            <span className="h-px w-3 bg-[var(--border)]" aria-hidden="true" />
+                          ) : null}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </motion.section>
             </div>
 
             <div className="flex flex-wrap gap-2">

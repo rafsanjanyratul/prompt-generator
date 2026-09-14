@@ -8,6 +8,7 @@ const navItems = [
   { label: 'Home', to: '/', end: true },
   { label: 'Explore', to: '/explore' },
   { label: 'Styles', to: '/styles/1980s-vintage-portrait' },
+  { label: 'Create', to: '/create' },
 ]
 
 function Header() {
