@@ -164,6 +164,7 @@ function CreatePage() {
   const visiblePoses = useMemo(() => {
     const list = poses.filter(
       (option) =>
+        option.value === 'none' ||
         relevantPoses.size === 0 ||
         relevantPoses.has(option.value) ||
         option.value === 'standing' ||
@@ -180,6 +181,7 @@ function CreatePage() {
         group,
         options: options.filter(
           (option) =>
+            option.value === 'none' ||
             relevantOutfits.size === 0 ||
             relevantOutfits.has(option.value) ||
             option.value === 'casual' ||
@@ -199,7 +201,10 @@ function CreatePage() {
         group,
         options: options.filter(
           (option) =>
-            relevantBackgrounds.size === 0 || relevantBackgrounds.has(option.value) || option.value === 'studio'
+            option.value === 'none' ||
+            relevantBackgrounds.size === 0 ||
+            relevantBackgrounds.has(option.value) ||
+            option.value === 'studio'
         ),
       }))
       .filter((group) => group.options.length)
@@ -210,9 +215,15 @@ function CreatePage() {
   const toggleMultiSelect = (field, value) => {
     setBuilder((current) => {
       const selected = current[field] || []
-      const next = selected.includes(value)
-        ? selected.filter((item) => item !== value)
-        : [...selected, value]
+
+      if (value === 'none') {
+        return { ...current, [field]: selected.includes('none') ? [] : ['none'] }
+      }
+
+      const withoutNone = selected.filter((item) => item !== 'none')
+      const next = withoutNone.includes(value)
+        ? withoutNone.filter((item) => item !== value)
+        : [...withoutNone, value]
 
       return { ...current, [field]: next }
     })
@@ -427,7 +438,9 @@ function CreatePage() {
                                   ? 'Travel'
                                   : group === 'special'
                                     ? 'Special / Creative'
-                                    : 'Local'}
+                                    : group === 'none'
+                                      ? 'None'
+                                      : 'Local'}
                           </p>
                           <div className="flex flex-wrap gap-2">
                             {options.map((option) => (
@@ -458,7 +471,9 @@ function CreatePage() {
                               ? 'General'
                               : group === 'desi'
                                 ? 'Bangladeshi / Desi'
-                                : 'Custom'}
+                                : group === 'none'
+                                  ? 'None'
+                                  : 'Custom'}
                           </p>
                           <div className="flex flex-wrap gap-2">
                             {options.map((option) => (

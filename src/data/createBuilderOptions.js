@@ -116,6 +116,7 @@ export const backgrounds = {
     { value: 'rural-bangladesh', label: 'Rural Bangladesh' },
     { value: 'urban-bangladesh', label: 'Urban Bangladesh' },
   ],
+  none: [{ value: 'none', label: 'None' }],
 }
 
 export const outfits = {
@@ -144,6 +145,7 @@ export const outfits = {
     { value: 'lungi-t-shirt', label: 'Lungi & T-shirt' },
   ],
   custom: [{ value: 'custom', label: 'Custom' }],
+  none: [{ value: 'none', label: 'None' }],
 }
 
 export const poses = [
@@ -165,6 +167,7 @@ export const poses = [
   { value: 'holding-hands', label: 'Holding Hands' },
   { value: 'family-group-portrait', label: 'Family Group Portrait' },
   { value: 'custom', label: 'Custom' },
+  { value: 'none', label: 'None' },
 ]
 
 export const expressions = [
@@ -180,6 +183,7 @@ export const expressions = [
   { value: 'emotional', label: 'Emotional' },
   { value: 'playful', label: 'Playful' },
   { value: 'professional', label: 'Professional' },
+  { value: 'none', label: 'None' },
 ]
 
 export const moods = [
@@ -195,6 +199,7 @@ export const moods = [
   { value: 'powerful', label: 'Powerful' },
   { value: 'luxury', label: 'Luxury' },
   { value: 'moody', label: 'Moody' },
+  { value: 'none', label: 'None' },
 ]
 
 export const lighting = [
@@ -211,6 +216,7 @@ export const lighting = [
   { value: 'window-light', label: 'Window Light' },
   { value: 'low-key', label: 'Low Key' },
   { value: 'high-key', label: 'High Key' },
+  { value: 'none', label: 'None' },
 ]
 
 export const timeOptions = [
@@ -221,6 +227,7 @@ export const timeOptions = [
   { value: 'blue-hour', label: 'Blue Hour' },
   { value: 'night', label: 'Night' },
   { value: 'midnight', label: 'Midnight' },
+  { value: 'none', label: 'None' },
 ]
 
 export const weather = [
@@ -232,6 +239,7 @@ export const weather = [
   { value: 'snowy', label: 'Snowy' },
   { value: 'stormy', label: 'Stormy' },
   { value: 'clear-sky', label: 'Clear Sky' },
+  { value: 'none', label: 'None' },
 ]
 
 export const colorGrading = [
@@ -248,6 +256,7 @@ export const colorGrading = [
   { value: 'moody', label: 'Moody' },
   { value: 'vibrant', label: 'Vibrant' },
   { value: 'cinematic', label: 'Cinematic' },
+  { value: 'none', label: 'None' },
 ]
 
 export const cultural = [
@@ -271,22 +280,26 @@ export const cameraSettings = {
     { value: 'dslr', label: 'DSLR' },
     { value: 'professional-portrait', label: 'Professional Portrait' },
     { value: '35mm-film', label: '35mm Film' },
+    { value: 'none', label: 'None' },
   ],
   lens: [
     { value: '50mm', label: '50mm' },
     { value: '85mm', label: '85mm' },
     { value: 'wide-angle', label: 'Wide Angle' },
+    { value: 'none', label: 'None' },
   ],
   framing: [
     { value: 'close-up', label: 'Close-up' },
     { value: 'medium-shot', label: 'Medium Shot' },
     { value: 'full-body', label: 'Full Body' },
     { value: 'environmental-portrait', label: 'Environmental Portrait' },
+    { value: 'none', label: 'None' },
   ],
   photographyStyle: [
     { value: 'editorial', label: 'Editorial' },
     { value: 'fashion', label: 'Fashion' },
     { value: 'documentary', label: 'Documentary' },
+    { value: 'none', label: 'None' },
   ],
 }
 
@@ -318,6 +331,7 @@ export const effects = [
   { value: 'soft-glow', label: 'Soft Glow' },
   { value: 'vintage-camera-texture', label: 'Vintage Camera Texture' },
   { value: 'analog-photography', label: 'Analog Photography' },
+  { value: 'none', label: 'None' },
 ]
 
 export const identityPreservation = {

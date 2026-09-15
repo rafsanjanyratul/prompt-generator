@@ -73,7 +73,7 @@ const flattenOutfits = () =>
     .flat()
     .map((option) => ({ ...option }))
 
-const removeTrailingPeriod = (text) => text.replace(/[.\s]+$/, '')
+const withArticle = (word) => (/^[aeiou8]/i.test(word) ? `an ${word}` : `a ${word}`)
 
 const pickTemplate = (subject, style) => {
   const templates = basePromptTemplates[subject] || []
@@ -119,15 +119,15 @@ const describePurpose = (purpose, customAspectRatio) => {
     custom: 'Use a composition that follows the requested custom direction while keeping the face clearly dominant.',
   }
 
-  const base = purposeMap[purposeOption.value] || 'Use a polished composition.'
+  const base = purposeMap[purposeOption.value] || 'Use a balanced portrait composition.'
   const ratio = purposeOption.ratio
 
   if (ratio === 'custom') {
     const custom = (customAspectRatio || '').trim()
-    return custom ? `${base} Use a ${custom} composition.` : base
+    return custom ? `${base} Use a ${custom} aspect ratio.` : base
   }
 
-  return `${base} Use a ${ratio} composition.`
+  return `${base} Use a ${ratio} aspect ratio.`
 }
 
 const shouldIncludeWeather = (backgroundValue, weatherValue) => {
@@ -160,43 +160,43 @@ const describeBackground = (background) => {
   if (!match) return ''
 
   const map = {
-    mountain: 'in a natural mountain setting with layered terrain and atmospheric depth',
-    forest: 'in a lush forest environment with soft natural depth and rich texture',
-    river: 'by a calm river with reflective water and natural movement',
-    lake: 'by a serene lake with gentle reflections and a grounded outdoor mood',
-    waterfall: 'in front of a waterfall with flowing water and a fresh, immersive atmosphere',
-    beach: 'on a beach with a relaxed coastal mood and natural sunlight',
-    field: 'in an open field with a clean, airy natural landscape',
-    village: 'in an authentic village setting with warm local character',
-    garden: 'in a peaceful garden with layered greenery and soft natural ambiance',
-    park: 'in a lively park environment with natural beauty and relaxed movement',
-    'tea-garden': 'in a tea garden environment with lush greenery and a calm, organic mood',
-    'dhaka-street': 'in a lively Dhaka street setting with texture, realism, and everyday urban atmosphere',
-    'modern-city': 'in a modern city environment with structured architecture and contemporary energy',
-    rooftop: 'on a rooftop setting with layered city views and a cinematic urban backdrop',
-    cafe: 'in a stylish café setting with natural social atmosphere and gentle character',
-    restaurant: 'in a refined restaurant environment with a polished, natural social mood',
-    mall: 'in a contemporary mall environment with clean architecture and modern visual rhythm',
-    office: 'in a professional office environment with clean lines and contemporary detail',
-    studio: 'in a polished studio setting with controlled light and refined realism',
-    'luxury-hotel': 'in a luxury hotel environment with elevated detail and polished ambiance',
-    airport: 'in an airport environment with modern travel energy and crisp architectural framing',
-    resort: 'in a premium resort setting with a luxury travel mood and natural light',
-    'historical-place': 'in a historic location with cultural character and elegant atmospheric detail',
-    desert: 'in a desert environment with warm natural contrast and cinematic atmosphere',
-    'snow-mountain': 'in a snow-covered mountain setting with cool contrast and dramatic light',
-    'european-street': 'in a European-style street environment with timeless architecture and refined atmosphere',
-    'tropical-island': 'on a tropical island with bright natural scenery and an elevated holiday mood',
-    palace: 'in a palace environment with grand architecture and rich cultural atmosphere',
-    mansion: 'in a refined mansion setting with elegant detailing and premium interior mood',
-    castle: 'in a castle setting with heritage atmosphere and dramatic visual textures',
-    'fantasy-kingdom': 'in a fantasy kingdom setting with elevated storytelling and rich magical atmosphere',
-    'cyberpunk-city': 'in a futuristic cyberpunk city with controlled neon illumination and a stylized urban mood',
-    'neon-street': 'on a neon-lit street with vivid atmosphere and energetic modern nightlife details',
-    'old-house': 'in an old house setting with nostalgic charm and authentic historical texture',
-    'vintage-studio': 'in a classic vintage studio backdrop with period-inspired mood and texture',
-    'rural-bangladesh': 'in an authentic rural Bangladesh setting with natural texture and local atmosphere',
-    'urban-bangladesh': 'in a contemporary Bangladesh setting with local detail and grounded realism',
+    mountain: 'in a mountain setting with layered terrain',
+    forest: 'in a forest setting',
+    river: 'by a river',
+    lake: 'by a lake',
+    waterfall: 'in front of a waterfall',
+    beach: 'on a beach',
+    field: 'in an open field',
+    village: 'in a village',
+    garden: 'in a garden',
+    park: 'in a park',
+    'tea-garden': 'in a tea garden',
+    'dhaka-street': 'on a Dhaka street',
+    'modern-city': 'in a modern city',
+    rooftop: 'on a rooftop',
+    cafe: 'in a café',
+    restaurant: 'in a restaurant',
+    mall: 'in a mall',
+    office: 'in an office',
+    studio: 'in a studio',
+    'luxury-hotel': 'in a luxury hotel',
+    airport: 'at an airport',
+    resort: 'at a resort',
+    'historical-place': 'at a historical place',
+    desert: 'in a desert',
+    'snow-mountain': 'on a snow-covered mountain',
+    'european-street': 'on a European-style street',
+    'tropical-island': 'on a tropical island',
+    palace: 'in a palace',
+    mansion: 'in a mansion',
+    castle: 'in a castle',
+    'fantasy-kingdom': 'in a fantasy kingdom',
+    'cyberpunk-city': 'in a cyberpunk city',
+    'neon-street': 'on a neon-lit street',
+    'old-house': 'in an old house',
+    'vintage-studio': 'in a vintage studio',
+    'rural-bangladesh': 'in a rural Bangladesh setting',
+    'urban-bangladesh': 'in an urban Bangladesh setting',
   }
 
   return map[match.value] || `in a ${match.label.toLowerCase()} setting`
@@ -210,27 +210,27 @@ const describeOutfit = (outfit) => {
   if (!match) return ''
 
   const map = {
-    casual: 'wearing a refined casual outfit with natural comfort and everyday authenticity',
-    formal: 'wearing a tailored formal outfit with a blazer and crisp shirt',
-    traditional: 'wearing a traditional outfit with elegant cultural detail and authenticity',
-    party: 'wearing a party-ready outfit with expressive styling and confident energy',
-    wedding: 'wearing a wedding-appropriate outfit with graceful detail and refined elegance',
-    streetwear: 'wearing modern streetwear with relaxed attitude and confident styling',
-    luxury: 'wearing luxury-inspired fashion with elevated tailoring and premium detail',
-    'old-money': 'wearing understated old-money-inspired clothing with refined tailoring and heritage elegance',
-    business: 'wearing a professional business look with clean structure and polished presentation',
-    sportswear: 'wearing sporty casual clothing with energetic comfort and modern style',
-    vacation: 'wearing vacation-ready clothes with relaxed elegance and a light, easygoing mood',
-    winter: 'wearing a winter-ready outfit with warm layers and a polished seasonal finish',
-    summer: 'wearing a summer-appropriate outfit with light fabric and relaxed seasonal styling',
-    'traditional-bangladeshi': 'wearing a traditional Bangladeshi outfit with cultural authenticity and refined detail',
-    panjabi: 'wearing an elegant traditional Panjabi',
-    saree: 'wearing a graceful traditional saree',
-    kurta: 'wearing a refined kurta with classic comfort and strong visual detail',
-    suit: 'wearing a tailored formal suit',
-    't-shirt-jeans': 'wearing a simple, authentic T-shirt and jeans combination',
-    'lungi-t-shirt': 'wearing a simple authentic lungi and T-shirt',
-    custom: 'wearing a custom outfit based on the user’s requested styling',
+    casual: 'wearing casual clothing',
+    formal: 'wearing formal clothing',
+    traditional: 'wearing traditional clothing',
+    party: 'wearing a party outfit',
+    wedding: 'wearing a wedding outfit',
+    streetwear: 'wearing streetwear',
+    luxury: 'wearing luxury clothing',
+    'old-money': 'wearing old-money-style clothing',
+    business: 'wearing business attire',
+    sportswear: 'wearing sportswear',
+    vacation: 'wearing vacation clothing',
+    winter: 'wearing winter clothing',
+    summer: 'wearing summer clothing',
+    'traditional-bangladeshi': 'wearing traditional Bangladeshi clothing',
+    panjabi: 'wearing a panjabi',
+    saree: 'wearing a saree',
+    kurta: 'wearing a kurta',
+    suit: 'wearing a suit',
+    't-shirt-jeans': 'wearing a T-shirt and jeans',
+    'lungi-t-shirt': 'wearing a lungi and T-shirt',
+    custom: 'wearing a custom outfit based on the requested styling',
   }
 
   return map[match.value] || `wearing ${match.label.toLowerCase()}`
@@ -241,30 +241,30 @@ const describePose = (pose, subject) => {
   if (!match) return ''
 
   const map = {
-    standing: 'standing naturally in a composed posture',
-    sitting: 'sitting naturally with an easy, relaxed posture',
-    walking: 'captured naturally while walking',
-    'looking-at-camera': 'looking naturally toward the camera with relaxed confidence',
-    'looking-away': 'gazing naturally away from the camera for a candid, authentic look',
-    'side-profile': 'showing a side-profile pose with a strong silhouette and natural elegance',
-    leaning: 'leaning naturally in a relaxed and confident pose',
-    'hands-in-pocket': 'standing naturally with the hands placed casually in the pockets',
-    'casual-standing': 'standing in a relaxed casual posture with natural confidence',
-    'walking-toward-camera': 'walking toward the camera with calm movement and confident energy',
-    'sitting-on-chair': 'sitting on a chair in a poised and comfortable portrait posture',
-    'sitting-on-ground': 'sitting naturally on the ground with an authentic, grounded feeling',
-    candid: 'captured in a natural candid moment with a genuine expression',
-    'couple-walking': 'walking together naturally as a couple with connected movement and ease',
-    'couple-sitting': 'sitting together naturally as a couple with relaxed comfort and closeness',
-    'holding-hands': 'holding hands naturally while maintaining a calm and intimate connection',
-    'family-group-portrait': 'arranged naturally in a cohesive family group portrait',
-    custom: 'posed according to the user’s specified composition direction',
+    standing: 'standing',
+    sitting: 'sitting',
+    walking: 'walking',
+    'looking-at-camera': 'looking toward the camera',
+    'looking-away': 'looking away from the camera',
+    'side-profile': 'in a side-profile pose',
+    leaning: 'leaning',
+    'hands-in-pocket': 'with hands in the pockets',
+    'casual-standing': 'standing in a casual pose',
+    'walking-toward-camera': 'walking toward the camera',
+    'sitting-on-chair': 'sitting on a chair',
+    'sitting-on-ground': 'sitting on the ground',
+    candid: 'in a candid pose',
+    'couple-walking': 'walking together as a couple',
+    'couple-sitting': 'sitting together as a couple',
+    'holding-hands': 'holding hands',
+    'family-group-portrait': 'posed as a family group',
+    custom: 'posed according to the requested composition direction',
   }
 
   return map[match.value] || 'posed naturally and comfortably'
 }
 
-const describeMood = (mood, expression, lighting) => {
+const describeMood = (mood, expression, lightingValue) => {
   const moodOption = findOption(moods, mood)
   const expressionOption = findOption(
     [
@@ -283,25 +283,47 @@ const describeMood = (mood, expression, lighting) => {
     ],
     expression
   )
-  const lightingOption = findOption(lighting, lighting)
+  const lightingOption = findOption(lighting, lightingValue)
 
   const moodText = moodOption ? moodOption.label.toLowerCase() : 'balanced'
   const expressionText = expressionOption ? expressionOption.label.toLowerCase() : 'natural'
   const lightingText = lightingOption ? lightingOption.label.toLowerCase() : 'soft'
 
-  return `Use a ${expressionText} expression with a ${moodText} mood and ${lightingText} lighting.`
+  const hasExpression = expression && expression !== 'none'
+  const hasMood = mood && mood !== 'none'
+  const hasLighting = lightingValue && lightingValue !== 'none'
+
+  if (hasExpression && hasMood && hasLighting) {
+    return `Use a ${expressionText} expression with a ${moodText} mood and ${lightingText} lighting.`
+  }
+
+  const clauses = []
+  if (hasExpression) clauses.push(`a ${expressionText} expression`)
+  if (hasMood) clauses.push(`a ${moodText} mood`)
+  if (hasLighting) clauses.push(`${lightingText} lighting`)
+
+  if (!clauses.length) return ''
+
+  const joined =
+    clauses.length === 1
+      ? clauses[0]
+      : clauses.length === 2
+        ? `${clauses[0]} and ${clauses[1]}`
+        : `${clauses.slice(0, -1).join(', ')}, and ${clauses.slice(-1)}`
+
+  return `Use ${joined}.`
 }
 
 const describeTimeWeather = (time, weatherState) => {
   const clauses = []
 
   const timeSelection = findOption(timeOptions, time)
-  if (timeSelection) {
+  if (timeSelection && timeSelection.value !== 'none') {
     clauses.push(`Set the scene during ${timeSelection.label.toLowerCase()}.`)
   }
 
   const weatherSelection = findOption(weather, weatherState)
-  if (weatherSelection) {
+  if (weatherSelection && weatherSelection.value !== 'none') {
     clauses.push(`The atmosphere should feel ${weatherSelection.label.toLowerCase()}.`)
   }
 
@@ -311,8 +333,6 @@ const describeTimeWeather = (time, weatherState) => {
 const describeCulturalContext = (culturalChoice) => {
   const match = findOption(cultural, culturalChoice)
   if (!match || match.value === 'none') return ''
-
-  if (!match) return ''
 
   const map = {
     bangladeshi: 'retain authentic Bangladeshi visual and cultural details without forcing stereotype or excess.',
@@ -332,30 +352,33 @@ const describeCulturalContext = (culturalChoice) => {
 }
 
 const describeCameraSettings = (camera, lens, framing, photographyStyle) => {
-  const segments = []
-
   const cameraOption = findOption(cameraSettings.camera, camera)
-  if (cameraOption) {
-    segments.push(cameraOption.label.toLowerCase())
-  }
-
   const lensOption = findOption(cameraSettings.lens, lens)
-  if (lensOption) {
-    segments.push(`${lensOption.label.toLowerCase()} lens`)
-  }
-
   const framingOption = findOption(cameraSettings.framing, framing)
-  if (framingOption) {
-    segments.push(`${framingOption.label.toLowerCase()} framing`)
-  }
-
   const styleOption = findOption(cameraSettings.photographyStyle, photographyStyle)
-  if (styleOption) {
-    segments.push(`${styleOption.label.toLowerCase()} photography`)
-  }
 
-  if (!segments.length) return ''
-  return `Use ${segments.join(', ')} with a clean, realistic finish.`
+  const cameraLabel = cameraOption && cameraOption.value !== 'none' ? cameraOption.label.toLowerCase() : ''
+  const lensLabel = lensOption && lensOption.value !== 'none' ? lensOption.label.toLowerCase() : ''
+  const framingLabel = framingOption && framingOption.value !== 'none' ? framingOption.label.toLowerCase() : ''
+  const styleLabel = styleOption && styleOption.value !== 'none' ? styleOption.label.toLowerCase() : ''
+
+  const clauses = []
+  if (cameraLabel) clauses.push(cameraLabel)
+  if (lensLabel) clauses.push(`${withArticle(lensLabel)} lens`)
+  if (framingLabel) clauses.push(`${framingLabel} framing`)
+  if (styleLabel) clauses.push(`${withArticle(styleLabel)} style`)
+
+  if (!clauses.length) return ''
+
+  const [lead, ...rest] = clauses
+  if (!rest.length) return `Use ${lead}.`
+
+  const tail =
+    rest.length === 1
+      ? rest[0]
+      : `${rest.slice(0, -1).join(', ')}, and ${rest.slice(-1)}`
+
+  return `Use ${lead} with ${tail}.`
 }
 
 const describeAccessories = (selectedAccessories) => {
@@ -363,70 +386,86 @@ const describeAccessories = (selectedAccessories) => {
   const cleaned = selectedAccessories.filter((item) => item && item !== 'none')
   if (!cleaned.length) return ''
 
-  const labels = cleaned
-    .map((value) => {
-      const match = findOption(accessories, value)
-      return match ? match.label.toLowerCase() : value
-    })
-    .join(', ')
+  const labels = cleaned.map((value) => {
+    const match = findOption(accessories, value)
+    return match ? match.label.toLowerCase() : value
+  })
 
-  if (cleaned.length === 1) {
-    return `Add a tasteful ${labels} as a supporting accessory.`
+  if (labels.length === 1) {
+    return `Include ${labels[0]} as an accessory.`
   }
 
-  const lastLabel = labels.includes(',') ? labels.split(', ').slice(-1)[0] : labels
-  const leading = labels.includes(',') ? labels.replace(/,\s([^,]+)$/, ', and $1') : labels
+  const leading = `${labels.slice(0, -1).join(', ')}, and ${labels.slice(-1)[0]}`
+  return `Include ${leading} as accessories.`
+}
 
-  return `Add tasteful ${leading} as supporting accessories.`
+const weatherEffectOverlaps = {
+  rainy: ['rain'],
+  foggy: ['fog'],
+}
+
+const filterOverlappingEffects = (weatherValue, effectValues = []) => {
+  const overlaps = weatherEffectOverlaps[weatherValue] || []
+  if (!overlaps.length) return effectValues
+  return effectValues.filter((value) => !overlaps.includes(value))
 }
 
 const describeEffects = (selectedEffects) => {
   if (!selectedEffects || !selectedEffects.length) return ''
-  const cleaned = selectedEffects.filter(Boolean)
+  const cleaned = selectedEffects.filter((item) => item && item !== 'none')
   if (!cleaned.length) return ''
 
-  const labels = cleaned
-    .map((value) => {
-      const match = findOption(effects, value)
-      return match ? match.label.toLowerCase() : value
-    })
-    .join(', ')
+  const labels = cleaned.map((value) => {
+    const match = findOption(effects, value)
+    return match ? match.label.toLowerCase() : value
+  })
 
-  return `Add subtle ${labels} for a polished, filmic finish.`
+  if (labels.length === 1) {
+    return `Add ${labels[0]}.`
+  }
+
+  const leading = `${labels.slice(0, -1).join(', ')}, and ${labels.slice(-1)[0]}`
+  return `Add ${leading}.`
 }
 
 const describeColorGrading = (colorValue) => {
   const match = findOption(colorGrading, colorValue)
-  if (!match) return ''
+  if (!match || match.value === 'none') return ''
 
   const map = {
-    natural: 'Use natural colour grading with realistic tonal balance.',
-    warm: 'Use warm colour grading with a flattering, natural richness.',
-    cool: 'Use cool-toned grading with clean contrast.',
-    'kodak-film': 'Use subtle Kodak-inspired film colour grading.',
-    'faded-vintage': 'Use gently faded vintage tones with a soft nostalgic feel.',
-    matte: 'Use matte colour grading for a natural finish.',
-    'high-contrast': 'Use high-contrast colour grading with crisp separation.',
-    'soft-pastel': 'Use soft pastel tones with a gentle palette.',
-    earthy: 'Use earthy tones with grounded warmth.',
-    'black-and-white': 'Use black-and-white tonal grading with clean detail.',
-    moody: 'Use moody tonal grading with depth and atmosphere.',
-    vibrant: 'Use vibrant colour grading with clear energy.',
-    cinematic: 'Use cinematic colour grading with strong contrast and polish.',
+    natural: 'Use natural colour grading.',
+    warm: 'Use warm colour grading.',
+    cool: 'Use cool colour grading.',
+    'kodak-film': 'Use Kodak-inspired film colour grading.',
+    'faded-vintage': 'Use faded vintage colour grading.',
+    matte: 'Use matte colour grading.',
+    'high-contrast': 'Use high-contrast colour grading.',
+    'soft-pastel': 'Use soft pastel colour grading.',
+    earthy: 'Use earthy colour grading.',
+    'black-and-white': 'Use black-and-white colour grading.',
+    moody: 'Use moody colour grading.',
+    vibrant: 'Use vibrant colour grading.',
+    cinematic: 'Use cinematic colour grading.',
   }
 
   return map[match.value] || `Use ${match.label.toLowerCase()} colour grading.`
 }
 
-const describeSubject = (subject, purpose, customInstruction) => {
-  const map = {
-    boys: 'Create a refined portrait of the man in my uploaded photograph.',
-    girls: 'Create a refined portrait of the woman in my uploaded photograph.',
-    couples: 'Create a refined portrait of the couple in my uploaded photograph.',
-    family: 'Create a refined family portrait of the family in my uploaded photograph.',
-  }
+const subjectNouns = {
+  boys: { noun: 'man', isFamily: false },
+  girls: { noun: 'woman', isFamily: false },
+  couples: { noun: 'couple', isFamily: false },
+  family: { noun: 'family', isFamily: true },
+}
 
-  return map[subject] || 'Create a refined portrait of the person in my uploaded photograph.'
+const describeSubject = (subject, template) => {
+  // The matched base template anchors the neutral subject opening only.
+  // Its creative basePrompt text is intentionally NOT inserted into the prompt,
+  // so no unselected creative direction is introduced.
+  const cohort = (template && template.subject) || subject
+  const data = subjectNouns[cohort] || subjectNouns[subject] || { noun: 'person', isFamily: false }
+  const portrait = data.isFamily ? 'family portrait' : 'portrait'
+  return `Create a ${portrait} of the ${data.noun} in my uploaded photograph.`
 }
 
 export function buildPrompt(selections = {}) {
@@ -457,7 +496,7 @@ export function buildPrompt(selections = {}) {
 
   const promptParts = []
 
-  promptParts.push(describeSubject(safe.subject, safe.purpose, safe.customInstruction))
+  promptParts.push(describeSubject(safe.subject, template))
 
   if (safe.identityPreservation !== false) {
     promptParts.push(describeIdentityPreservation())
@@ -465,15 +504,15 @@ export function buildPrompt(selections = {}) {
 
   promptParts.push(describePurpose(safe.purpose, safe.customAspectRatio))
 
-  if (backgroundLabel) {
+  if (backgroundLabel && backgroundLabel.value !== 'none') {
     promptParts.push(`Place the subject ${describeBackground(backgroundLabel.value)}.`)
   }
 
-  if (outfitLabel) {
+  if (outfitLabel && outfitLabel.value !== 'none') {
     promptParts.push(`Dress the subject ${describeOutfit(outfitLabel.value)}.`)
   }
 
-  if (poseLabel) {
+  if (poseLabel && poseLabel.value !== 'none') {
     promptParts.push(`Pose the subject ${describePose(poseLabel.value, safe.subject)}.`)
   }
 
@@ -507,7 +546,14 @@ export function buildPrompt(selections = {}) {
     promptParts.push(accessoryText)
   }
 
-  const effectText = describeEffects(safe.effects)
+  const weatherIncluded = Boolean(
+    weatherLabel &&
+      weatherLabel.value !== 'none' &&
+      shouldIncludeWeather(safe.background, safe.weather)
+  )
+  const effectText = describeEffects(
+    weatherIncluded ? filterOverlappingEffects(safe.weather, safe.effects) : safe.effects
+  )
   if (effectText) {
     promptParts.push(effectText)
   }
@@ -518,7 +564,7 @@ export function buildPrompt(selections = {}) {
   }
 
   promptParts.push(
-    'Keep the result natural, realistic, and anatomically consistent, with no distorted facial features, duplicate faces, warped clothing, or obvious artificial artifacts.'
+    'Keep the result anatomically consistent, with no distorted facial features, duplicate faces, warped clothing, or obvious artificial artifacts.'
   )
 
   const prompt = promptParts
