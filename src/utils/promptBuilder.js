@@ -1,6 +1,5 @@
 import {
   accessories,
-  aspectRatios,
   backgrounds,
   basePromptTemplates,
   cameraSettings,
@@ -22,7 +21,7 @@ import {
 export const defaultBuilderSelections = {
   subject: 'boys',
   purpose: 'general-portrait',
-  aspectRatio: '4:5',
+  customAspectRatio: '',
   style: 'cinematic',
   background: 'studio',
   outfit: 'casual',
@@ -33,7 +32,7 @@ export const defaultBuilderSelections = {
   time: 'golden-hour',
   weather: 'clear-sky',
   colorGrading: 'warm',
-  cultural: 'bangladeshi',
+  cultural: 'none',
   camera: 'professional-portrait',
   lens: '85mm',
   framing: 'medium-shot',
@@ -96,32 +95,64 @@ const pickTemplate = (subject, style) => {
   return candidate || null
 }
 
-const describePurpose = (purpose, aspectRatio) => {
+const describePurpose = (purpose, customAspectRatio) => {
   const purposeOption = findOption(purposes, purpose)
-  const ratioText = aspectRatio ? `Use a ${aspectRatio} composition.` : 'Use a balanced photographic composition.'
 
   if (!purposeOption) {
-    return ratioText
+    return 'Use a balanced portrait composition.'
   }
 
   const purposeMap = {
-    'facebook-profile': 'Prepare this as a profile-friendly portrait with a clear, centered face and polished personal presentation.',
-    'facebook-cover': 'Compose the scene for a wide Facebook cover layout with enough breathing room around the subject.',
-    'facebook-post': 'Compose the scene for a polished Facebook post with a naturally balanced social-media crop.',
-    'facebook-story': 'Use a vertical social-story composition that keeps the subject prominent and readable.',
-    'facebook-reels': 'Frame the subject for a vertical, mobile-first reel composition with clear movement and focus.',
-    'instagram-post': 'Compose the image for an Instagram post with a refined, feed-friendly crop and strong subject focus.',
-    'instagram-story': 'Build a vertical Instagram-story composition with strong subject readability and a clean, social-media-friendly look.',
-    'instagram-reels': 'Use a vertical, mobile-optimized reel composition with natural motion and clear focus.',
-    'whatsapp-dp': 'Create a centered square-friendly portrait that feels clean, clear, and easy to read at small sizes.',
-    'youtube-thumbnail': 'Use a bold, readable thumbnail composition with a strong focal subject and clear visual hierarchy.',
-    'youtube-shorts': 'Create a vertical shorts-friendly composition with a clear subject and confident framing.',
-    'linkedin-profile': 'Use a professional portrait composition that feels polished, confident, and credible.',
-    'general-portrait': 'Frame the subject as a clean general portrait with strong facial clarity and a premium editorial finish.',
-    custom: 'Keep the composition flexible and polished while preserving the intended creative direction.',
+    'facebook-profile': 'Use a clean profile-friendly portrait composition with a centered face and clear focus.',
+    'facebook-cover': 'Use a wide cover composition with enough space around the subject for a clean social layout.',
+    'facebook-post': 'Use a balanced social-post composition with the face clearly prioritized.',
+    'facebook-story': 'Use a vertical story composition with strong subject readability and clean framing.',
+    'facebook-reels': 'Use a vertical reel composition with clear focus and natural motion.',
+    'instagram-post': 'Use a feed-friendly portrait composition with the subject clearly centered and readable.',
+    'instagram-story': 'Use a vertical story composition that keeps the subject crisp and easy to read.',
+    'instagram-reels': 'Use a vertical reel composition with clear subject focus and natural movement.',
+    'whatsapp-dp': 'Use a centered, clean small-size portrait composition with strong facial clarity.',
+    'youtube-thumbnail': 'Use a bold thumbnail composition with clear subject hierarchy and readable framing.',
+    'youtube-shorts': 'Use a vertical shorts composition with strong subject readability and clean focus.',
+    'linkedin-profile': 'Use a professional portrait composition with clear facial focus and polished presentation.',
+    'general-portrait': 'Use a clean portrait composition with strong facial focus and natural framing.',
+    custom: 'Use a composition that follows the requested custom direction while keeping the face clearly dominant.',
   }
 
-  return `${purposeMap[purposeOption.value] || 'Use a polished composition.'} ${ratioText}`
+  const base = purposeMap[purposeOption.value] || 'Use a polished composition.'
+  const ratio = purposeOption.ratio
+
+  if (ratio === 'custom') {
+    const custom = (customAspectRatio || '').trim()
+    return custom ? `${base} Use a ${custom} composition.` : base
+  }
+
+  return `${base} Use a ${ratio} composition.`
+}
+
+const shouldIncludeWeather = (backgroundValue, weatherValue) => {
+  if (!weatherValue || weatherValue === 'none') return false
+
+  const studioLike = new Set([
+    'studio',
+    'vintage-studio',
+    'office',
+    'mall',
+    'airport',
+    'restaurant',
+    'cafe',
+    'luxury-hotel',
+    'resort',
+    'palace',
+    'mansion',
+    'castle',
+  ])
+
+  if (studioLike.has(backgroundValue)) {
+    return false
+  }
+
+  return true
 }
 
 const describeBackground = (background) => {
@@ -171,13 +202,16 @@ const describeBackground = (background) => {
   return map[match.value] || `in a ${match.label.toLowerCase()} setting`
 }
 
+const describeIdentityPreservation = () =>
+  'Preserve the exact facial structure, eyes, nose, lips, jawline, skin tone, natural skin texture, age, facial proportions, and recognizable appearance. Keep the identity believable and consistent without replacing the face with a generic model, over-beautifying the subject, or distorting facial features.'
+
 const describeOutfit = (outfit) => {
   const match = findOption(flattenOutfits(), outfit)
   if (!match) return ''
 
   const map = {
     casual: 'wearing a refined casual outfit with natural comfort and everyday authenticity',
-    formal: 'wearing a polished formal outfit with a sharp, premium silhouette',
+    formal: 'wearing a tailored formal outfit with a blazer and crisp shirt',
     traditional: 'wearing a traditional outfit with elegant cultural detail and authenticity',
     party: 'wearing a party-ready outfit with expressive styling and confident energy',
     wedding: 'wearing a wedding-appropriate outfit with graceful detail and refined elegance',
@@ -255,7 +289,7 @@ const describeMood = (mood, expression, lighting) => {
   const expressionText = expressionOption ? expressionOption.label.toLowerCase() : 'natural'
   const lightingText = lightingOption ? lightingOption.label.toLowerCase() : 'soft'
 
-  return `Give the subject a ${expressionText} expression and create a ${moodText} atmosphere using ${lightingText} light.`
+  return `Use a ${expressionText} expression with a ${moodText} mood and ${lightingText} lighting.`
 }
 
 const describeTimeWeather = (time, weatherState) => {
@@ -276,6 +310,8 @@ const describeTimeWeather = (time, weatherState) => {
 
 const describeCulturalContext = (culturalChoice) => {
   const match = findOption(cultural, culturalChoice)
+  if (!match || match.value === 'none') return ''
+
   if (!match) return ''
 
   const map = {
@@ -300,25 +336,26 @@ const describeCameraSettings = (camera, lens, framing, photographyStyle) => {
 
   const cameraOption = findOption(cameraSettings.camera, camera)
   if (cameraOption) {
-    segments.push(`Use ${cameraOption.label.toLowerCase()} photography with a realistic professional finish.`)
+    segments.push(cameraOption.label.toLowerCase())
   }
 
   const lensOption = findOption(cameraSettings.lens, lens)
   if (lensOption) {
-    segments.push(`Use an ${lensOption.label.toLowerCase()} lens aesthetic.`)
+    segments.push(`${lensOption.label.toLowerCase()} lens`)
   }
 
   const framingOption = findOption(cameraSettings.framing, framing)
   if (framingOption) {
-    segments.push(`Keep the framing ${framingOption.label.toLowerCase()}.`)
+    segments.push(`${framingOption.label.toLowerCase()} framing`)
   }
 
   const styleOption = findOption(cameraSettings.photographyStyle, photographyStyle)
   if (styleOption) {
-    segments.push(`Apply a ${styleOption.label.toLowerCase()} photography approach.`)
+    segments.push(`${styleOption.label.toLowerCase()} photography`)
   }
 
-  return segments.join(' ')
+  if (!segments.length) return ''
+  return `Use ${segments.join(', ')} with a clean, realistic finish.`
 }
 
 const describeAccessories = (selectedAccessories) => {
@@ -333,7 +370,14 @@ const describeAccessories = (selectedAccessories) => {
     })
     .join(', ')
 
-  return `Add tasteful accessories including ${labels} as supporting details.`
+  if (cleaned.length === 1) {
+    return `Add a tasteful ${labels} as a supporting accessory.`
+  }
+
+  const lastLabel = labels.includes(',') ? labels.split(', ').slice(-1)[0] : labels
+  const leading = labels.includes(',') ? labels.replace(/,\s([^,]+)$/, ', and $1') : labels
+
+  return `Add tasteful ${leading} as supporting accessories.`
 }
 
 const describeEffects = (selectedEffects) => {
@@ -348,7 +392,7 @@ const describeEffects = (selectedEffects) => {
     })
     .join(', ')
 
-  return `Finish the image with subtle ${labels} texture and atmosphere.`
+  return `Add subtle ${labels} for a polished, filmic finish.`
 }
 
 const describeColorGrading = (colorValue) => {
@@ -356,46 +400,33 @@ const describeColorGrading = (colorValue) => {
   if (!match) return ''
 
   const map = {
-    natural: 'keep the colour treatment natural and realistic.',
-    warm: 'apply a warm, flattering colour treatment with gentle richness.',
-    cool: 'use a cool-toned grading with clean contrast.',
-    'kodak-film': 'apply a subtle Kodak-inspired film colour character.',
-    'faded-vintage': 'use gently faded vintage tones with a soft nostalgic feel.',
-    matte: 'use a matte finish with natural tonal balance.',
-    'high-contrast': 'use high contrast with crisp separation and premium punch.',
-    'soft-pastel': 'use soft pastel tones with a gentle and refined palette.',
-    earthy: 'apply earthy tones with grounded warmth and natural realism.',
-    'black-and-white': 'render the image in refined black-and-white tones.',
-    moody: 'use moody tonal treatment with a rich atmospheric feel.',
-    vibrant: 'use vibrant, lively colour with confident clarity.',
-    cinematic: 'use cinematic colour grading with clean contrast and premium atmosphere.',
+    natural: 'Use natural colour grading with realistic tonal balance.',
+    warm: 'Use warm colour grading with a flattering, natural richness.',
+    cool: 'Use cool-toned grading with clean contrast.',
+    'kodak-film': 'Use subtle Kodak-inspired film colour grading.',
+    'faded-vintage': 'Use gently faded vintage tones with a soft nostalgic feel.',
+    matte: 'Use matte colour grading for a natural finish.',
+    'high-contrast': 'Use high-contrast colour grading with crisp separation.',
+    'soft-pastel': 'Use soft pastel tones with a gentle palette.',
+    earthy: 'Use earthy tones with grounded warmth.',
+    'black-and-white': 'Use black-and-white tonal grading with clean detail.',
+    moody: 'Use moody tonal grading with depth and atmosphere.',
+    vibrant: 'Use vibrant colour grading with clear energy.',
+    cinematic: 'Use cinematic colour grading with strong contrast and polish.',
   }
 
-  return map[match.value] || `use ${match.label.toLowerCase()} colour treatment.`
+  return map[match.value] || `Use ${match.label.toLowerCase()} colour grading.`
 }
 
 const describeSubject = (subject, purpose, customInstruction) => {
   const map = {
-    boys: 'Create a refined portrait of the man or person in my uploaded photograph',
-    girls: 'Create a refined portrait of the woman or person in my uploaded photograph',
-    couples: 'Create a refined portrait of the two people in my uploaded photograph',
-    family: 'Create a refined family portrait of the people in my uploaded photograph',
+    boys: 'Create a refined portrait of the man in my uploaded photograph.',
+    girls: 'Create a refined portrait of the woman in my uploaded photograph.',
+    couples: 'Create a refined portrait of the couple in my uploaded photograph.',
+    family: 'Create a refined family portrait of the family in my uploaded photograph.',
   }
 
-  const prefix = map[subject] || 'Create a refined portrait of the person in my uploaded photograph'
-  const purposeText = purpose === 'custom' && customInstruction ? 'based on the custom direction below' : 'with a premium, photo-real transformation finish'
-  return `${prefix} ${purposeText}.`
-}
-
-const describeAspectRatio = (aspectRatio) => {
-  if (!aspectRatio || aspectRatio === 'custom') return 'Use a composition that follows the requested custom format.'
-  const value = aspectRatio.toLowerCase()
-  if (value === '1:1') return 'Use a square 1:1 composition.'
-  if (value === '4:5') return 'Use a vertical 4:5 portrait composition.'
-  if (value === '9:16') return 'Use a full vertical 9:16 composition.'
-  if (value === '16:9') return 'Use a wide 16:9 composition.'
-  if (value === '3:4') return 'Use a vertical 3:4 composition.'
-  return 'Use the selected aspect ratio throughout the composition.'
+  return map[subject] || 'Create a refined portrait of the person in my uploaded photograph.'
 }
 
 export function buildPrompt(selections = {}) {
@@ -426,23 +457,16 @@ export function buildPrompt(selections = {}) {
 
   const promptParts = []
 
-  if (template?.basePrompt) {
-    promptParts.push(removeTrailingPeriod(template.basePrompt))
-  }
-
   promptParts.push(describeSubject(safe.subject, safe.purpose, safe.customInstruction))
 
   if (safe.identityPreservation !== false) {
-    promptParts.push(
-      'Maintain a strong identity-preservation standard: preserve the exact facial structure, eyes, nose, lips, jawline, skin tone, natural skin texture, age, facial proportions, and recognizable appearance. Do not replace the face with a generic model or create an unrelated identity. Do not over-beautify or distort the face into a different person.'
-    )
+    promptParts.push(describeIdentityPreservation())
   }
 
-  promptParts.push(describePurpose(safe.purpose, safe.aspectRatio))
-  promptParts.push(describeAspectRatio(safe.aspectRatio))
+  promptParts.push(describePurpose(safe.purpose, safe.customAspectRatio))
 
   if (backgroundLabel) {
-    promptParts.push(`Set the scene ${describeBackground(backgroundLabel.value)}.`)
+    promptParts.push(`Place the subject ${describeBackground(backgroundLabel.value)}.`)
   }
 
   if (outfitLabel) {
@@ -457,7 +481,7 @@ export function buildPrompt(selections = {}) {
     promptParts.push(describeMood(safe.mood, safe.expression, safe.lighting))
   }
 
-  if (timeLabel || weatherLabel) {
+  if ((timeLabel || weatherLabel) && shouldIncludeWeather(safe.background, safe.weather)) {
     promptParts.push(describeTimeWeather(safe.time, safe.weather))
   }
 
@@ -471,27 +495,11 @@ export function buildPrompt(selections = {}) {
 
   if (safe.style) {
     const styleLabel = styleOption ? styleOption.label.toLowerCase() : String(safe.style).replace(/-/g, ' ')
-    promptParts.push(`Apply a ${styleLabel} visual treatment with polished visual direction and a premium, believable finish.`)
-  }
-
-  if (moodLabel) {
-    promptParts.push(`The overall mood should feel ${moodLabel.label.toLowerCase()}.`)
-  }
-
-  if (lightingLabel) {
-    promptParts.push(`Use ${lightingLabel.label.toLowerCase()} lighting to support the emotional tone.`)
+    promptParts.push(`Apply a ${styleLabel} visual treatment.`)
   }
 
   if (colorLabel) {
     promptParts.push(describeColorGrading(colorLabel.value))
-  }
-
-  if (safe.subject === 'couples') {
-    promptParts.push('Keep the visual relationship believable and natural, preserving both identities distinctly and avoiding merged or duplicated features.')
-  }
-
-  if (safe.subject === 'family') {
-    promptParts.push('Keep each family member clearly recognizable, preserving distinct identities and avoiding duplicated faces or merged features.')
   }
 
   const accessoryText = describeAccessories(safe.accessories)
@@ -504,18 +512,14 @@ export function buildPrompt(selections = {}) {
     promptParts.push(effectText)
   }
 
-  promptParts.push(
-    'Use natural composition, realistic proportions, believable anatomy, detailed face rendering, natural skin texture, clean hands, coherent lighting, realistic depth, and professional photographic quality.'
-  )
-
-  promptParts.push(
-    'Avoid distorted facial features, altered identity, extra fingers, warped clothing, low-detail skin, duplicate people, merged faces, random text, watermarks, malformed anatomy, and obvious artificial artifacts.'
-  )
-
   if (safe.customInstruction && safe.customInstruction.trim()) {
     const custom = safe.customInstruction.trim()
-    promptParts.push(`Additional instruction: ${custom}`)
+    promptParts.push(custom)
   }
+
+  promptParts.push(
+    'Keep the result natural, realistic, and anatomically consistent, with no distorted facial features, duplicate faces, warped clothing, or obvious artificial artifacts.'
+  )
 
   const prompt = promptParts
     .filter((part) => typeof part === 'string' && part.trim().length > 0)
@@ -528,7 +532,7 @@ export function buildPrompt(selections = {}) {
     subject: subjectOption?.label || safe.subject,
     style: styleOption?.label || safe.style,
     purpose: purposeOption?.label || safe.purpose,
-    aspectRatio: safe.aspectRatio,
+    aspectRatio: purposeOption?.ratio || null,
     identityPreservation: Boolean(safe.identityPreservation),
     customInstructionPresent: Boolean(safe.customInstruction && safe.customInstruction.trim()),
     template: template?.id || null,

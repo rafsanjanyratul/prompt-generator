@@ -14,7 +14,6 @@ import {
 } from 'lucide-react'
 import {
   accessories,
-  aspectRatios,
   backgrounds,
   cameraSettings,
   colorGrading,
@@ -356,7 +355,7 @@ function CreatePage() {
                     >
                       <span className="flex flex-col items-center justify-center text-center">
                         <span>{option.label}</span>
-                        {option.ratio ? (
+                        {option.ratio && option.ratio !== 'custom' ? (
                           <span className="mt-1 text-[10px] uppercase tracking-[0.12em] text-[var(--text-muted)]">
                             {option.ratio}
                           </span>
@@ -365,29 +364,30 @@ function CreatePage() {
                     </SelectCardButton>
                   ))}
                 </div>
+
+                {builder.purpose === 'custom' ? (
+                  <div className="mt-3">
+                    <label
+                      htmlFor="custom-aspect-ratio"
+                      className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--text-muted)]"
+                    >
+                      Custom Aspect Ratio
+                    </label>
+                    <input
+                      id="custom-aspect-ratio"
+                      type="text"
+                      value={builder.customAspectRatio || ''}
+                      onChange={(event) => updateField('customAspectRatio', event.target.value)}
+                      placeholder="e.g. 2:3 or 5:4"
+                      className="w-full rounded-[18px] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm text-[var(--text)] placeholder:text-[var(--text-muted)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
+                    />
+                  </div>
+                ) : null}
               </div>
 
               <div className="rounded-[24px] border border-[var(--border)] bg-[var(--surface)] p-4 sm:p-5">
                 <SectionHeader label="03 — Style & Scene" description="Pick the main creative direction." />
                 <div className="space-y-4">
-                  <div>
-                    <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--text-muted)]">
-                      Aspect Ratio
-                    </p>
-                    <div className="grid grid-cols-3 gap-2">
-                      {aspectRatios.map((option) => (
-                        <SelectCardButton
-                          key={option.value}
-                          isSelected={builder.aspectRatio === option.value}
-                          onClick={() => updateField('aspectRatio', option.value)}
-                          ariaLabel={`Select aspect ratio ${option.label}`}
-                        >
-                          {option.label}
-                        </SelectCardButton>
-                      ))}
-                    </div>
-                  </div>
-
                   <div>
                     <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--text-muted)]">
                       Style

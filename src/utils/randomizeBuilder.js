@@ -1,6 +1,5 @@
 import {
   accessories,
-  aspectRatios,
   backgrounds,
   cameraSettings,
   colorGrading,
@@ -89,7 +88,6 @@ export function randomizeBuilderSelections(currentSelections = createDefaultBuil
     ...currentSelections,
     subject,
     purpose: pickRandom(purposePool.map((option) => option.value)) || currentSelections.purpose,
-    aspectRatio: pickRandom(aspectRatios.filter((option) => option.value !== 'custom').map((option) => option.value)) || currentSelections.aspectRatio,
     style: pickRandom(stylePool.map((option) => option.value)) || currentSelections.style,
     background: pickRandom(backgroundPool.map((option) => option.value)) || currentSelections.background,
     outfit: pickRandom(outfitPool.map((option) => option.value)) || currentSelections.outfit,

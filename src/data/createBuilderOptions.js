@@ -1,7 +1,6 @@
 export const builderSections = [
   'subject',
   'purpose',
-  'aspectRatio',
   'style',
   'background',
   'outfit',
@@ -42,15 +41,6 @@ export const purposes = [
   { value: 'linkedin-profile', label: 'LinkedIn Profile', ratio: '1:1' },
   { value: 'general-portrait', label: 'General Portrait', ratio: '4:5' },
   { value: 'custom', label: 'Custom', ratio: 'custom' },
-]
-
-export const aspectRatios = [
-  { value: '1:1', label: '1:1' },
-  { value: '4:5', label: '4:5' },
-  { value: '9:16', label: '9:16' },
-  { value: '16:9', label: '16:9' },
-  { value: '3:4', label: '3:4' },
-  { value: 'custom', label: 'Custom' },
 ]
 
 export const styles = [
@@ -261,6 +251,7 @@ export const colorGrading = [
 ]
 
 export const cultural = [
+  { value: 'none', label: 'None' },
   { value: 'bangladeshi', label: 'Bangladeshi' },
   { value: 'bengali', label: 'Bengali' },
   { value: 'south-asian', label: 'South Asian' },
@@ -596,7 +587,6 @@ export const createBuilderData = {
   builderSections,
   subjects,
   purposes,
-  aspectRatios,
   styles,
   backgrounds,
   outfits,
