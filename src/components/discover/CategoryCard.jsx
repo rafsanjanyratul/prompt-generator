@@ -1,16 +1,16 @@
 import { motion, useReducedMotion } from 'motion/react'
-import { ArrowUpRight, Heart, Sparkles, Users } from 'lucide-react'
+import { ArrowUpRight, Heart, UserRound, Users } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { trackEvent } from '../../lib/analytics.js'
 
 const categoryMeta = {
   Boys: {
     accent: 'from-[#e8d5c4] to-[#f6efe8]',
-    icon: Sparkles,
+    icon: UserRound,
   },
   Girls: {
     accent: 'from-[#f1d7e6] to-[#f9f1f5]',
-    icon: Sparkles,
+    icon: UserRound,
   },
   Couples: {
     accent: 'from-[#d9d9ed] to-[#f3f1f8]',
@@ -25,7 +25,7 @@ const categoryMeta = {
 function CategoryCard({ category, description, href = '#', displayCategory = category }) {
   const meta = categoryMeta[category] ?? {
     accent: 'from-[#f0efe9] to-[#f7f5f2]',
-    icon: Sparkles,
+    icon: UserRound,
   }
   const Icon = meta.icon
   const prefersReducedMotion = useReducedMotion()

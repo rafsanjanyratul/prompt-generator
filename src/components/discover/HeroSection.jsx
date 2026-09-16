@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
-import { ArrowUpRight, Sparkles, Star } from 'lucide-react'
+import { ArrowUpRight } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import Button from '../ui/Button'
 import { trackEvent } from '../../lib/analytics.js'
@@ -144,9 +144,14 @@ function HeroSection() {
 
           <h1
             aria-label={headlineText}
-            className="m-0 text-[clamp(2.8rem,6vw,5.1rem)] leading-[0.94] tracking-[-0.07em] text-[var(--text)]"
+            className="relative m-0 text-[clamp(2.8rem,6vw,5.1rem)] leading-[0.94] tracking-[-0.07em] text-[var(--text)]"
           >
-            <span className="block min-h-[1.2em]">
+            {/* Invisible full headline reserves the exact final wrapped height so the
+                typewriter animation never changes the container height. */}
+            <span className="invisible block" aria-hidden="true">
+              {headlineText}
+            </span>
+            <span className="absolute inset-0 block">
               {prefersReducedMotion ? headlineText : visibleHeadline}
               {!prefersReducedMotion && visibleHeadline.length < headlineText.length ? (
                 <span className="ml-0.5 inline-block h-[0.9em] w-[2px] translate-y-[0.05em] rounded-full bg-[var(--text)] align-middle opacity-80" />
@@ -168,13 +173,6 @@ function HeroSection() {
         >
           <div className="relative mx-auto h-[300px] w-full max-w-[26rem] overflow-hidden rounded-[30px] border border-[var(--border)] bg-[var(--surface)]/85 p-3 shadow-[0_24px_64px_rgba(15,23,42,0.08)] sm:h-[340px] md:h-[420px] lg:h-[460px]">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_15%,rgba(245,192,128,0.18),transparent_28%),radial-gradient(circle_at_80%_18%,rgba(157,178,255,0.12),transparent_32%),linear-gradient(135deg,rgba(255,255,255,0.22),transparent_55%)]" />
-
-            <div className="absolute left-5 top-5 hidden h-16 w-16 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface)]/80 text-[var(--text-muted)] shadow-[0_10px_24px_rgba(15,23,42,0.04)] md:flex">
-              <Star className="size-4" aria-hidden="true" />
-            </div>
-            <div className="absolute right-6 top-8 hidden h-12 w-12 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface)]/80 text-[var(--text-muted)] shadow-[0_10px_24px_rgba(15,23,42,0.04)] md:flex">
-              <Sparkles className="size-4" aria-hidden="true" />
-            </div>
 
             <div className="absolute left-4 top-12 h-12 w-16 rounded-full border border-[var(--border)] opacity-70 md:h-16 md:w-24" style={{ borderColor: 'var(--border)', borderTopColor: 'transparent', borderRightColor: 'transparent' }} />
             <div className="absolute right-4 bottom-8 h-12 w-14 rounded-full border border-[var(--border)] opacity-60 md:h-16 md:w-20" style={{ borderColor: 'var(--border)', borderLeftColor: 'transparent', borderBottomColor: 'transparent' }} />

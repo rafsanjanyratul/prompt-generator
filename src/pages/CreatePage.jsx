@@ -9,8 +9,6 @@ import {
   Copy,
   RotateCcw,
   Shuffle,
-  Sparkles,
-  Wand2,
 } from 'lucide-react'
 import {
   accessories,
@@ -107,15 +105,12 @@ function CreateIntro() {
       initial={prefersReducedMotion ? false : { opacity: 0, y: 14 }}
       animate={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
       transition={{ duration: 0.28, ease: 'easeOut' }}
-      className="mb-8"
+      className="mb-8 max-md:transform-none!"
     >
       <div className="rounded-[30px] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[0_12px_30px_rgba(15,23,42,0.04)] sm:p-6 lg:p-8">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-2xl space-y-4">
             <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--text-muted)]">
-              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--brand-soft)] text-[var(--text)]">
-                <Sparkles className="size-3.5" aria-hidden="true" />
-              </span>
               Create Your Style
             </div>
 
@@ -130,7 +125,6 @@ function CreateIntro() {
           </div>
 
           <div className="flex items-center gap-2 self-start rounded-full border border-[var(--border)] bg-[var(--surface-muted)] px-3 py-2 text-[11px] font-medium uppercase tracking-[0.14em] text-[var(--text-muted)] lg:self-center">
-            <Wand2 className="size-3.5" aria-hidden="true" />
             Builder Preview
           </div>
         </div>
@@ -298,7 +292,7 @@ function CreatePage() {
         initial={prefersReducedMotion ? false : { opacity: 0, y: 16 }}
         animate={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
         transition={{ duration: 0.28, ease: 'easeOut', delay: 0.06 }}
-        className="relative overflow-hidden rounded-[30px] border border-[var(--border)] bg-[linear-gradient(180deg,var(--surface)_0%,var(--surface-muted)_100%)] p-4 shadow-[0_16px_38px_rgba(15,23,42,0.04)] sm:p-6 lg:p-8"
+        className="relative overflow-hidden rounded-[30px] border border-[var(--border)] bg-[linear-gradient(180deg,var(--surface)_0%,var(--surface-muted)_100%)] p-4 shadow-[0_16px_38px_rgba(15,23,42,0.04)] sm:p-6 lg:p-8 max-md:transform-none!"
       >
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(168,85,247,0.08),transparent_30%),radial-gradient(circle_at_bottom_right,rgba(52,211,153,0.08),transparent_28%)]" />
 
@@ -914,9 +908,6 @@ function CreatePage() {
 
             <div className="rounded-[24px] border border-[var(--border)] bg-[linear-gradient(180deg,var(--surface)_0%,var(--surface-muted)_100%)] p-4 shadow-[0_12px_30px_rgba(15,23,42,0.04)] sm:p-5">
               <div className="mb-3 flex items-center gap-3 text-[var(--text)]">
-                <span className="flex h-8 w-8 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--brand-soft)] text-[var(--text)]">
-                  <Sparkles className="size-4" aria-hidden="true" />
-                </span>
                 <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--text-muted)]">
                   Ready to Create?
                 </p>
@@ -952,9 +943,6 @@ function CreatePage() {
                   className="group flex min-h-[52px] items-center justify-between gap-3 rounded-[18px] border border-[var(--border)] bg-[linear-gradient(180deg,rgba(113,79,246,0.08),rgba(255,255,255,0.02))] px-4 py-3 text-left text-[var(--text)] transition-all duration-200 hover:-translate-y-0.5 hover:border-[var(--focus)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
                 >
                   <div className="flex items-center gap-2.5">
-                    <span className="flex h-8 w-8 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface)] text-[var(--text)]">
-                      <Sparkles className="size-3.5" aria-hidden="true" />
-                    </span>
                     <span className="text-sm font-semibold">
                       Create with
                       <span className="mt-0.5 block text-base font-bold">ChatGPT</span>
@@ -972,9 +960,6 @@ function CreatePage() {
                   className="group flex min-h-[52px] items-center justify-between gap-3 rounded-[18px] border border-[var(--border)] bg-[var(--surface)] px-4 py-3 text-left text-[var(--text)] transition-all duration-200 hover:-translate-y-0.5 hover:border-[var(--focus)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
                 >
                   <div className="flex items-center gap-2.5">
-                    <span className="flex h-8 w-8 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface-muted)] text-[var(--text)]">
-                      <Sparkles className="size-3.5" aria-hidden="true" />
-                    </span>
                     <span className="text-sm font-semibold">
                       Create with
                       <span className="mt-0.5 block text-base font-bold">Gemini</span>

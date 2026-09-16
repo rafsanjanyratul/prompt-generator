@@ -207,6 +207,7 @@ function ExplorePage() {
         initial={prefersReducedMotion ? false : { opacity: 0, y: 16 }}
         animate={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
         transition={{ duration: 0.3, ease: 'easeOut' }}
+        className="max-md:transform-none!"
       >
         <SectionHeader
           eyebrow="Browse"
@@ -346,6 +347,7 @@ function ExplorePage() {
                 initial={prefersReducedMotion ? false : { opacity: 0, y: 12 }}
                 animate={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
                 transition={{ duration: 0.25, delay: index * 0.03, ease: 'easeOut' }}
+                className="max-md:transform-none!"
               >
                 <StyleCard item={item} />
               </motion.div>

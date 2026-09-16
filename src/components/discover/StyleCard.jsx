@@ -20,7 +20,7 @@ function StyleCard({ item }) {
       viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.35, ease: 'easeOut' }}
       whileHover={prefersReducedMotion ? undefined : { y: -4, scale: 1.01 }}
-      className="h-full"
+      className="h-full max-md:transform-none!"
     >
       <Link
         to={`/styles/${item.slug}`}

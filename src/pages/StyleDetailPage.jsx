@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
-import { ArrowLeft, ArrowUpRight, Check, Copy, ImageOff, Sparkles } from 'lucide-react'
+import { ArrowLeft, ArrowUpRight, Check, Copy, ImageOff } from 'lucide-react'
 import { Link, useParams } from 'react-router-dom'
 import promptStyles from '../data/prompts.js'
 import StyleCard from '../components/discover/StyleCard'
@@ -264,9 +264,6 @@ function StyleDetailPage() {
 
                 <div className="relative">
                   <div className="mb-4 flex items-center gap-3 text-[var(--text)]">
-                    <span className="flex h-8 w-8 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--brand-soft)] text-[var(--text)] shadow-[inset_0_1px_0_rgba(255,255,255,0.4)]">
-                      <Sparkles className="size-4" aria-hidden="true" />
-                    </span>
                     <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--text-muted)]">
                       Ready to Create?
                     </p>
@@ -298,9 +295,6 @@ function StyleDetailPage() {
                       className="group relative flex min-h-[52px] flex-1 items-center justify-between gap-2 rounded-[18px] border border-[var(--border)] bg-[linear-gradient(180deg,rgba(155,135,255,0.12),rgba(145,158,255,0.04))] px-4 py-3 text-left text-[var(--text)] transition-all duration-200 hover:-translate-y-0.5 hover:border-[var(--focus)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
                     >
                       <div className="flex items-center gap-2.5">
-                        <span className="flex h-8 w-8 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface)] text-[var(--text)]">
-                          <Sparkles className="size-3.5" aria-hidden="true" />
-                        </span>
                         <span className="text-sm font-semibold">
                           Create with
                           <span className="mt-0.5 block text-base font-bold">ChatGPT</span>
@@ -325,9 +319,6 @@ function StyleDetailPage() {
                       className="group relative flex min-h-[52px] flex-1 items-center justify-between gap-2 rounded-[18px] border border-[var(--border)] bg-[var(--surface)] px-4 py-3 text-left text-[var(--text)] transition-all duration-200 hover:-translate-y-0.5 hover:border-[var(--focus)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
                     >
                       <div className="flex items-center gap-2.5">
-                        <span className="flex h-8 w-8 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface-muted)] text-[var(--text)]">
-                          <Sparkles className="size-3.5" aria-hidden="true" />
-                        </span>
                         <span className="text-sm font-semibold">
                           Create with
                           <span className="mt-0.5 block text-base font-bold">Gemini</span>
