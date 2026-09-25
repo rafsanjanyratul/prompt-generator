@@ -1,0 +1,10 @@
+15: appearanceBackgroundsBySubject,
+22: garmentOptions,
+26: outfitColorGroups,
+82: const garmentGroupByValue = Object.entries(garmentOptions).reduce((acc, [group, options]) => {
+90: const garmentLabelByValue = Object.values(garmentOptions)
+102: .flatMap((key) => outfitColorGroups[key] || [])
+251: const groups = Object.entries(backgrounds)
+257: relevantBackgrounds.size === 0 ||
+258: relevantBackgrounds.has(option.value) ||
+265: }, [relevantBackgrounds])

@@ -1,0 +1,4 @@
+crlf=1031
+loneLF=0
+bom=false
+lines=1032

@@ -77,14 +77,19 @@ export const backgrounds = {
     { value: 'waterfall', label: 'Waterfall' },
     { value: 'beach', label: 'Beach' },
     { value: 'field', label: 'Field' },
+    { value: 'sunset-field', label: 'Sunset Field' },
     { value: 'village', label: 'Village' },
+    { value: 'village-road', label: 'Village Road' },
     { value: 'garden', label: 'Garden' },
+    { value: 'flower-garden', label: 'Flower Garden' },
+    { value: 'romantic-garden', label: 'Romantic Garden' },
     { value: 'park', label: 'Park' },
     { value: 'tea-garden', label: 'Tea Garden' },
   ],
   urban: [
     { value: 'dhaka-street', label: 'Dhaka Street' },
     { value: 'modern-city', label: 'Modern City' },
+    { value: 'city-street', label: 'City Street' },
     { value: 'rooftop', label: 'Rooftop' },
     { value: 'cafe', label: 'Café' },
     { value: 'restaurant', label: 'Restaurant' },
@@ -119,6 +124,49 @@ export const backgrounds = {
   none: [{ value: 'none', label: 'None' }],
 }
 
+// Subject-aware view of background / location options for the Appearance section.
+// Values reuse existing background ids where an existing id already represents the same
+// location; only genuinely new locations get new ids.
+export const appearanceBackgroundsBySubject = {
+  boys: [
+    { value: 'tea-garden', label: 'Tea Garden', group: 'nature' },
+    { value: 'river', label: 'Riverside', group: 'nature' },
+    { value: 'village-road', label: 'Village Road', group: 'nature' },
+    { value: 'field', label: 'Open Field', group: 'nature' },
+    { value: 'forest', label: 'Forest', group: 'nature' },
+    { value: 'park', label: 'Park', group: 'nature' },
+  ],
+  girls: [
+    { value: 'flower-garden', label: 'Flower Garden', group: 'nature' },
+    { value: 'tea-garden', label: 'Tea Garden', group: 'nature' },
+    { value: 'river', label: 'Riverside', group: 'nature' },
+    { value: 'park', label: 'Park', group: 'nature' },
+    { value: 'forest', label: 'Forest', group: 'nature' },
+    { value: 'lake', label: 'Lakeside', group: 'nature' },
+  ],
+  couples: [
+    { value: 'river', label: 'Riverside', group: 'nature' },
+    { value: 'beach', label: 'Beach', group: 'nature' },
+    { value: 'tea-garden', label: 'Tea Garden', group: 'nature' },
+    { value: 'romantic-garden', label: 'Romantic Garden', group: 'nature' },
+    { value: 'city-street', label: 'City Street', group: 'urban' },
+    { value: 'cafe', label: 'Café', group: 'urban' },
+    { value: 'sunset-field', label: 'Sunset Field', group: 'nature' },
+  ],
+  family: [
+    { value: 'garden', label: 'Garden', group: 'nature' },
+    { value: 'park', label: 'Park', group: 'nature' },
+    { value: 'village-road', label: 'Village Road', group: 'nature' },
+    { value: 'river', label: 'Riverside', group: 'nature' },
+    { value: 'tea-garden', label: 'Tea Garden', group: 'nature' },
+    { value: 'field', label: 'Open Field', group: 'nature' },
+    { value: 'beach', label: 'Beach', group: 'nature' },
+    { value: 'lake', label: 'Lakeside', group: 'nature' },
+    { value: 'old-house', label: 'Old House', group: 'special' },
+    { value: 'rural-bangladesh', label: 'Rural Bangladesh', group: 'local' },
+  ],
+}
+
 export const outfits = {
   general: [
     { value: 'casual', label: 'Casual' },
@@ -146,6 +194,140 @@ export const outfits = {
   ],
   custom: [{ value: 'custom', label: 'Custom' }],
   none: [{ value: 'none', label: 'None' }],
+}
+
+// Garment-level options for the Appearance section.
+// These are intentionally separate from the scalar `outfits` list above, which stays untouched.
+// Multi-selection is handled the same way as `accessories` / `effects`.
+//
+// Phase 6: clothing is defined per person (`menGarmentOptions` / `womenGarmentOptions`) and the
+// subject-aware view (`garmentOptionsBySubject`) reuses those same option objects, so no garment
+// data is duplicated anywhere.
+const menGarmentOptions = {
+  upper: [
+    { value: 'shirt', label: 'Shirt' },
+    { value: 't-shirt', label: 'T-shirt' },
+    { value: 'panjabi', label: 'Panjabi' },
+  ],
+  outerwear: [{ value: 'blazer', label: 'Blazer' }],
+  lower: [
+    { value: 'trousers', label: 'Trousers / Pants' },
+    { value: 'jeans', label: 'Jeans' },
+  ],
+  traditionalLower: [
+    { value: 'pajama', label: 'Pajama' },
+    { value: 'lungi', label: 'Lungi' },
+  ],
+  footwear: [
+    { value: 'formal-shoes', label: 'Formal Shoes' },
+    { value: 'sneakers', label: 'Sneakers' },
+    { value: 'sandals', label: 'Sandals' },
+  ],
+  accessories: [
+    { value: 'belt', label: 'Belt' },
+    { value: 'tie', label: 'Tie' },
+    { value: 'watch', label: 'Watch' },
+  ],
+}
+
+// Women's clothing uses globally unique ids (`women-*`) and its own group keys (`women*`),
+// so a men's "Shirt" and a women's "Shirt" can never be confused in state or in the prompt.
+const womenGarmentOptions = {
+  womenUpper: [
+    { value: 'women-blouse', label: 'Blouse' },
+    { value: 'women-t-shirt', label: 'T-shirt' },
+    { value: 'women-shirt', label: 'Shirt' },
+  ],
+  womenTraditional: [
+    { value: 'women-saree', label: 'Saree' },
+    { value: 'women-salwar-kameez', label: 'Salwar Kameez' },
+    { value: 'women-kurti', label: 'Kurti' },
+  ],
+  womenLower: [
+    { value: 'women-skirt', label: 'Skirt' },
+    { value: 'women-jeans', label: 'Jeans' },
+    { value: 'women-trousers', label: 'Trousers / Pants' },
+  ],
+  womenOuterwear: [
+    { value: 'women-cardigan', label: 'Cardigan' },
+    { value: 'women-blazer', label: 'Blazer' },
+    { value: 'women-jacket', label: 'Jacket' },
+  ],
+  womenFootwear: [
+    { value: 'women-heels', label: 'Heels' },
+    { value: 'women-flats', label: 'Flats' },
+    { value: 'women-sneakers', label: 'Sneakers' },
+    { value: 'women-sandals', label: 'Sandals' },
+  ],
+  womenAccessories: [
+    { value: 'women-handbag', label: 'Handbag' },
+    { value: 'women-scarf', label: 'Scarf' },
+    { value: 'women-watch', label: 'Watch' },
+    { value: 'women-earrings', label: 'Earrings' },
+    { value: 'women-necklace', label: 'Necklace' },
+  ],
+}
+
+// Flat aggregate of every garment id, used by the prompt engine to resolve any selection.
+export const garmentOptions = {
+  ...menGarmentOptions,
+  ...womenGarmentOptions,
+}
+
+// Subject-aware clothing used by the Create page UI.
+// Single-person subjects show only their own list; couples / family expose both sides.
+export const garmentOptionsBySubject = {
+  boys: { men: menGarmentOptions },
+  girls: { women: womenGarmentOptions },
+  couples: { men: menGarmentOptions, women: womenGarmentOptions },
+  family: { men: menGarmentOptions, women: womenGarmentOptions },
+}
+
+// Color palettes for garment-level outfit colors.
+// Color ids are stable and intentionally reusable across groups. Phase 2 can assign a
+// color per selected garment, for example:
+//   { shirt: 'white', blazer: 'navy', trousers: 'black', 'formal-shoes': 'brown' }
+//   { 't-shirt': 'black', jeans: 'dark-blue', sneakers: 'white' }
+//   { panjabi: 'cream', pajama: 'white' }
+export const outfitColorGroups = {
+  upper: [
+    { value: 'white', label: 'White' },
+    { value: 'black', label: 'Black' },
+    { value: 'blue', label: 'Blue' },
+    { value: 'navy', label: 'Navy' },
+    { value: 'light-blue', label: 'Light Blue' },
+    { value: 'gray', label: 'Gray' },
+    { value: 'beige', label: 'Beige' },
+    { value: 'cream', label: 'Cream' },
+    { value: 'brown', label: 'Brown' },
+    { value: 'green', label: 'Green' },
+    { value: 'maroon', label: 'Maroon' },
+    { value: 'red', label: 'Red' },
+    { value: 'yellow', label: 'Yellow' },
+  ],
+  lower: [
+    { value: 'black', label: 'Black' },
+    { value: 'navy', label: 'Navy' },
+    { value: 'blue', label: 'Blue' },
+    { value: 'gray', label: 'Gray' },
+    { value: 'beige', label: 'Beige' },
+    { value: 'brown', label: 'Brown' },
+    { value: 'white', label: 'White' },
+    { value: 'khaki', label: 'Khaki' },
+    { value: 'dark-blue', label: 'Dark Blue' },
+  ],
+  traditionalLower: [
+    { value: 'white', label: 'White' },
+    { value: 'off-white', label: 'Off White' },
+    { value: 'cream', label: 'Cream' },
+    { value: 'black', label: 'Black' },
+    { value: 'blue', label: 'Blue' },
+    { value: 'navy', label: 'Navy' },
+    { value: 'gray', label: 'Gray' },
+    { value: 'brown', label: 'Brown' },
+    { value: 'green', label: 'Green' },
+    { value: 'maroon', label: 'Maroon' },
+  ],
 }
 
 export const poses = [
@@ -603,7 +785,11 @@ export const createBuilderData = {
   purposes,
   styles,
   backgrounds,
+  appearanceBackgroundsBySubject,
   outfits,
+  garmentOptions,
+  garmentOptionsBySubject,
+  outfitColorGroups,
   poses,
   expressions,
   moods,

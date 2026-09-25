@@ -1,0 +1,8 @@
+CRLF=987 LF=987
+158: const relevantBackgrounds = new Set(subjectRules.recommendedBackgrounds || [])
+194: const visibleBackgrounds = useMemo(() => {
+195: const groups = Object.entries(backgrounds)
+201: relevantBackgrounds.size === 0 ||
+202: relevantBackgrounds.has(option.value) ||
+209: }, [relevantBackgrounds])
+426: {visibleBackgrounds.map(({ group, options }) => (

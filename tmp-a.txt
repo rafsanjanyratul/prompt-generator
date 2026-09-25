@@ -1,0 +1,44 @@
+export const accessories = [
+  { value: 'sunglasses', label: 'Sunglasses' },
+  { value: 'watch', label: 'Watch' },
+  { value: 'hat', label: 'Hat' },
+  { value: 'cap', label: 'Cap' },
+  { value: 'jewelry', label: 'Jewelry' },
+  { value: 'earrings', label: 'Earrings' },
+  { value: 'necklace', label: 'Necklace' },
+  { value: 'bangles', label: 'Bangles' },
+  { value: 'handbag', label: 'Handbag' },
+  { value: 'flowers', label: 'Flowers' },
+  { value: 'scarf', label: 'Scarf' },
+  { value: 'traditional-accessories', label: 'Traditional Accessories' },
+  { value: 'none', label: 'None' },
+]
+
+GARMENT_HAS_NONE: false
+
+export const garmentOptions = {
+  upper: [
+    { value: 'shirt', label: 'Shirt' },
+    { value: 't-shirt', label: 'T-shirt' },
+    { value: 'panjabi', label: 'Panjabi' },
+  ],
+  outerwear: [{ value: 'blazer', label: 'Blazer' }],
+  lower: [
+    { value: 'trousers', label: 'Trousers / Pants' },
+    { value: 'jeans', label: 'Jeans' },
+  ],
+  traditionalLower: [
+    { value: 'pajama', label: 'Pajama' },
+    { value: 'lungi', label: 'Lungi' },
+  ],
+  footwear: [
+    { value: 'formal-shoes', label: 'Formal Shoes' },
+    { value: 'sneakers', label: 'Sneakers' },
+    { value: 'sandals', label: 'Sandals' },
+  ],
+  accessories: [
+    { value: 'belt', label: 'Belt' },
+    { value: 'tie', label: 'Tie' },
+    { value: 'watch', label: 'Watch' },
+  ],
+}

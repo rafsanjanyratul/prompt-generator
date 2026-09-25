@@ -1,0 +1,4 @@
+15: appearanceBackgroundsBySubject,
+97: const getGarmentColorOptions = (garmentValue) => {
+251: const subjectOptions = appearanceBackgroundsBySubject[builder.subject] || []
+254: subjectOptions.forEach((option) => {

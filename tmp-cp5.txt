@@ -1,0 +1,96 @@
+﻿diff --git a/src/pages/CreatePage.jsx b/src/pages/CreatePage.jsx
+index 3ae5169..90e7202 100644
+--- a/src/pages/CreatePage.jsx
++++ b/src/pages/CreatePage.jsx
+@@ -12,16 +12,18 @@ import {
+ } from 'lucide-react'
+ import {
+   accessories,
+-  backgrounds,
++  appearanceBackgroundsBySubject,
+   cameraSettings,
+   colorGrading,
+   compatibility,
+   cultural,
+   effects,
+   expressions,
++  garmentOptions,
+   identityPreservation,
+   lighting,
+   moods,
++  outfitColorGroups,
+   poses,
+   purposes,
+   styles,
+@@ -48,6 +50,63 @@ const subjectLabelMap = {
+   family: 'Family',
+ }
+ 
++const backgroundGroupLabels = {
++  nature: 'Nature',
++  urban: 'Urban',
++  travel: 'Travel',
++  special: 'Special / Creative',
++  local: 'Local',
++  none: 'None',
++}
++
++const garmentGroupLabels = {
++  upper: 'Upper',
++  outerwear: 'Outerwear',
++  lower: 'Lower',
++  traditionalLower: 'Traditional Lower',
++  footwear: 'Footwear',
++  accessories: 'Accessories',
++}
++
++// Mirrors the garment -> color-palette relationship already used by the prompt engine,
++// so the UI only offers colors that the selected garment accepts.
++const garmentColorGroupKeys = {
++  upper: ['upper'],
++  outerwear: ['upper'],
++  lower: ['lower'],
++  traditionalLower: ['traditionalLower'],
++  footwear: ['lower'],
++  accessories: ['upper', 'lower'],
++}
++
++const garmentGroupByValue = Object.entries(garmentOptions).reduce((acc, [group, options]) => {
++  options.forEach((option) => {
++    acc[option.value] = group
++  })
++
++  return acc
++}, {})
++
++const garmentLabelByValue = Object.values(garmentOptions)
++  .flat()
++  .reduce((acc, option) => {
++    acc[option.value] = option.label
++    return acc
++  }, {})
++
++const getGarmentColorOptions = (garmentValue) => {
++  const keys = garmentColorGroupKeys[garmentGroupByValue[garmentValue]] || []
++  const seen = new Set()
++
++  return keys
++    .flatMap((key) => outfitColorGroups[key] || [])
++    .filter((color) => {
++      if (seen.has(color.value)) return false
++      seen.add(color.value)
++      return true
++    })
++}
++
+ function SectionHeader({ label, description }) {
+   return (
+     <div className="mb-3 space-y-1">
+@@ -153,7 +212,6 @@ function CreatePage() {
+   const subjectRules = compatibility.subjectRules[builder.subject] || {}
+   const relevantPoses = new Set(subjectRules.relevantPoses || [])
+   const relevantOutfits = new Set(subjectRules.relevantOutfits || [])
+-  const relevantBackgrounds = new Set(subjectRules.recommendedBackgrounds || [])
+ 
+   const visiblePoses = useMemo(() => {
+     const list = poses.filter(

@@ -1,0 +1,15 @@
+﻿15:   appearanceBackgroundsBySubject,
+22:   garmentOptions,
+26:   outfitColorGroups,
+82: const garmentGroupByValue = Object.entries(garmentOptions).reduce((acc, [group, options]) => {
+90: const garmentLabelByValue = Object.values(garmentOptions)
+102:     .flatMap((key) => outfitColorGroups[key] || [])
+214:   const relevantOutfits = new Set(subjectRules.relevantOutfits || [])
+230:   const visibleOutfits = useMemo(() => {
+237:             relevantOutfits.size === 0 ||
+238:             relevantOutfits.has(option.value) ||
+248:   }, [relevantOutfits])
+250:   const visibleBackgrounds = useMemo(() => {
+251:     const subjectOptions = appearanceBackgroundsBySubject[builder.subject] || []
+480:                       {visibleBackgrounds.map(({ group, options }) => (
+517:                       {visibleOutfits.map(({ group, options }) => (

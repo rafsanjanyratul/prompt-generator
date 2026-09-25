@@ -1,0 +1,17 @@
+﻿14: accessories,
+20: effects,
+68: accessories: 'Accessories',
+79: accessories: ['upper', 'lower'],
+126: aria-pressed={isSelected}
+141: function MultiSelectButton({ selected, onClick, children, ariaLabel }) {
+146: aria-pressed={selected}
+265: const toggleMultiSelect = (field, value) => {
+814: Accessories
+817: {accessories.map((option) => (
+820: selected={(builder.accessories || []).includes(option.value)}
+821: onClick={() => toggleMultiSelect('accessories', option.value)}
+832: Effects
+835: {effects.map((option) => (
+838: selected={(builder.effects || []).includes(option.value)}
+839: onClick={() => toggleMultiSelect('effects', option.value)}
+853: aria-pressed={builder.identityPreservation}

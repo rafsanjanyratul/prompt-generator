@@ -1,0 +1,6 @@
+﻿ src/data/createBuilderOptions.js | 128 +++++++++++++++++++++++++++++++++++++++
+ src/pages/CreatePage.jsx         |   4 +-
+ src/utils/promptBuilder.js       | 105 ++++++++++++++++++++++++++++++++
+ 3 files changed, 236 insertions(+), 1 deletion(-)
+46cc011 mobile smooth scrolling and route changing done
+042f69d create page bug fixed duplication of prompt resolved

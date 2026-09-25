@@ -1,0 +1,44 @@
+﻿
+> src\utils\promptBuilder.js:9:  garmentOptions,
+  src\utils\promptBuilder.js:10:  identityPreservation,
+  src\utils\promptBuilder.js:11:  lighting,
+  src\utils\promptBuilder.js:12:  moods,
+> src\utils\promptBuilder.js:13:  outfitColorGroups,
+  src\utils\promptBuilder.js:14:  outfits,
+  src\utils\promptBuilder.js:15:  poses,
+  src\utils\promptBuilder.js:16:  purposes,
+  src\utils\promptBuilder.js:17:  styles,
+  src\utils\promptBuilder.js:18:  subjects,
+  src\utils\promptBuilder.js:19:  timeOptions,
+> src\utils\promptBuilder.js:258:  Object.values(garmentOptions)
+  src\utils\promptBuilder.js:259:    .flat()
+  src\utils\promptBuilder.js:260:    .map((option) => ({ ...option }))
+  src\utils\promptBuilder.js:261:
+  src\utils\promptBuilder.js:262:// Which color palette(s) belong to each garment group.
+  src\utils\promptBuilder.js:263:// Footwear has no dedicated palette in the option data, so it 
+uses the `lower` palette,
+  src\utils\promptBuilder.js:264:// which already holds the footwear colors (black, brown, beige, 
+white, navy, gray, ...).
+> src\utils\promptBuilder.js:274:const findGarmentGroup = (garmentValue) =>
+> src\utils\promptBuilder.js:275:  Object.entries(garmentOptions).find(([, list]) =>
+  src\utils\promptBuilder.js:276:    list.some((option) => option.value === garmentValue)
+  src\utils\promptBuilder.js:277:  )?.[0] || null
+  src\utils\promptBuilder.js:278:
+  src\utils\promptBuilder.js:279:// Resolves a garment color only against the palette(s) that 
+belong to that garment.
+  src\utils\promptBuilder.js:280:// Returns null when no color is set or the color is not valid for 
+that garment.
+  src\utils\promptBuilder.js:281:const findGarmentColor = (garmentValue, colorValue) => {
+> src\utils\promptBuilder.js:284:  const groupKeys = 
+garmentColorGroupKeys[findGarmentGroup(garmentValue)] || []
+  src\utils\promptBuilder.js:285:
+  src\utils\promptBuilder.js:286:  for (const key of groupKeys) {
+> src\utils\promptBuilder.js:287:    const match = findOption(outfitColorGroups[key], colorValue)
+  src\utils\promptBuilder.js:288:    if (match) return match.label.toLowerCase()
+  src\utils\promptBuilder.js:289:  }
+  src\utils\promptBuilder.js:290:
+  src\utils\promptBuilder.js:291:  return null
+  src\utils\promptBuilder.js:292:}
+  src\utils\promptBuilder.js:293:
+
+

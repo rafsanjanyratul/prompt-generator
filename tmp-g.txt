@@ -1,0 +1,44 @@
+9:   garmentOptions,
+13:   outfitColorGroups,
+30:   outfitGarments: [],
+31:   outfitColors: {},
+50: // Guard used to keep `outfitColors` a plain per-garment color map and never a shared reference.
+63:     outfitGarments: Array.isArray(overrides.outfitGarments)
+64:       ? [...overrides.outfitGarments]
+65:       : [...defaultBuilderSelections.outfitGarments],
+66:     outfitColors: isPlainColorMap(overrides.outfitColors)
+67:       ? { ...overrides.outfitColors }
+68:       : { ...defaultBuilderSelections.outfitColors },
+257: const flattenGarments = () =>
+258:   Object.values(garmentOptions)
+262: // Which color palette(s) belong to each garment group.
+263: // Footwear has no dedicated palette in the option data, so it uses the `lower` palette,
+265: const garmentColorGroupKeys = {
+274: const findGarmentGroup = (garmentValue) =>
+275:   Object.entries(garmentOptions).find(([, list]) =>
+276:     list.some((option) => option.value === garmentValue)
+279: // Resolves a garment color only against the palette(s) that belong to that garment.
+280: // Returns null when no color is set or the color is not valid for that garment.
+281: const findGarmentColor = (garmentValue, colorValue) => {
+284:   const groupKeys = garmentColorGroupKeys[findGarmentGroup(garmentValue)] || []
+287:     const match = findOption(outfitColorGroups[key], colorValue)
+294: // Garment labels that need prompt-specific casing/wording instead of a plain lowercase label.
+295: const garmentPromptLabels = {
+301: // Grammatically plural garments: they read naturally without an "a"/"an" article.
+302: const pluralGarments = new Set(['trousers', 'jeans', 'pajama', 'formal-shoes', 'sneakers', 'sandals'])
+304: const describeGarment = (garmentValue, outfitColors = {}) => {
+305:   const match = findOption(flattenGarments(), garmentValue)
+308:   const label = garmentPromptLabels[garmentValue] || match.label.toLowerCase()
+309:   const colorText = findGarmentColor(garmentValue, outfitColors[garmentValue])
+312:   return pluralGarments.has(garmentValue) ? core : withArticle(core)
+315: // Builds the garment-detail phrase, for example:
+318: const describeOutfitGarments = (garmentValues, outfitColors = {}) => {
+319:   if (!Array.isArray(garmentValues) || !garmentValues.length) return ''
+321:   const colors = isPlainColorMap(outfitColors) ? outfitColors : {}
+323:   const phrases = garmentValues
+325:     .map((value) => describeGarment(value, colors))
+574:     outfitGarments: Array.isArray(selections.outfitGarments) ? selections.outfitGarments : [],
+575:     outfitColors: isPlainColorMap(selections.outfitColors) ? selections.outfitColors : {},
+614:   const garmentText = describeOutfitGarments(safe.outfitGarments, safe.outfitColors)
+615:   if (garmentText) {
+617:     promptParts.push(`${outfitDescribed ? 'Specifically include' : 'Include'} ${garmentText}.`)

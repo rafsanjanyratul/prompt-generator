@@ -1,0 +1,10 @@
+﻿14: accessories,
+68: accessories: 'Accessories',
+79: accessories: ['upper', 'lower'],
+268: const toggleMultiSelect = (field, value) => {
+817: Accessories
+820: {accessories.map((option) => (
+823: selected={(builder.accessories || []).includes(option.value)}
+824: onClick={() => toggleMultiSelect('accessories', option.value)}
+838: {effects.map((option) => (
+842: onClick={() => toggleMultiSelect('effects', option.value)}

@@ -1,0 +1,9 @@
+﻿15: appearanceBackgroundsBySubject,
+22: garmentOptions,
+26: outfitColorGroups,
+158: const relevantBackgrounds = new Set(subjectRules.recommendedBackgrounds || [])
+194: const visibleBackgrounds = useMemo(() => {
+201: relevantBackgrounds.size === 0 ||
+202: relevantBackgrounds.has(option.value) ||
+209: }, [relevantBackgrounds])
+426: {visibleBackgrounds.map(({ group, options }) => (

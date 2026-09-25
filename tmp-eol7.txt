@@ -1,0 +1,1 @@
+CRLF=1041 LONE_LF=0 BOM=false lines=1042

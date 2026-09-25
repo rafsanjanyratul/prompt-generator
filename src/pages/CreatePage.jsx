@@ -12,16 +12,19 @@ import {
 } from 'lucide-react'
 import {
   accessories,
-  backgrounds,
+  appearanceBackgroundsBySubject,
   cameraSettings,
   colorGrading,
   compatibility,
   cultural,
   effects,
   expressions,
+  garmentOptions,
+  garmentOptionsBySubject,
   identityPreservation,
   lighting,
   moods,
+  outfitColorGroups,
   poses,
   purposes,
   styles,
@@ -46,6 +49,80 @@ const subjectLabelMap = {
   girls: 'Women',
   couples: 'Couples',
   family: 'Family',
+}
+
+const backgroundGroupLabels = {
+  nature: 'Nature',
+  urban: 'Urban',
+  travel: 'Travel',
+  special: 'Special / Creative',
+  local: 'Local',
+  none: 'None',
+}
+
+const garmentGroupLabels = {
+  upper: 'Upper',
+  outerwear: 'Outerwear',
+  lower: 'Lower',
+  traditionalLower: 'Traditional Lower',
+  footwear: 'Footwear',
+  accessories: 'Accessories',
+  womenUpper: 'Upper',
+  womenTraditional: 'Traditional / One-piece',
+  womenLower: 'Lower',
+  womenOuterwear: 'Outerwear',
+  womenFootwear: 'Footwear',
+  womenAccessories: 'Accessories',
+}
+
+const garmentPersonSectionLabels = {
+  men: 'Men',
+  women: 'Women',
+}
+
+// Mirrors the garment -> color-palette relationship already used by the prompt engine,
+// so the UI only offers colors that the selected garment accepts.
+const garmentColorGroupKeys = {
+  upper: ['upper'],
+  outerwear: ['upper'],
+  lower: ['lower'],
+  traditionalLower: ['traditionalLower'],
+  footwear: ['lower'],
+  accessories: ['upper', 'lower'],
+  womenUpper: ['upper'],
+  womenTraditional: ['upper', 'traditionalLower'],
+  womenLower: ['lower'],
+  womenOuterwear: ['upper'],
+  womenFootwear: ['lower'],
+  womenAccessories: ['upper', 'lower'],
+}
+
+const garmentGroupByValue = Object.entries(garmentOptions).reduce((acc, [group, options]) => {
+  options.forEach((option) => {
+    acc[option.value] = group
+  })
+
+  return acc
+}, {})
+
+const garmentLabelByValue = Object.values(garmentOptions)
+  .flat()
+  .reduce((acc, option) => {
+    acc[option.value] = option.label
+    return acc
+  }, {})
+
+const getGarmentColorOptions = (garmentValue) => {
+  const keys = garmentColorGroupKeys[garmentGroupByValue[garmentValue]] || []
+  const seen = new Set()
+
+  return keys
+    .flatMap((key) => outfitColorGroups[key] || [])
+    .filter((color) => {
+      if (seen.has(color.value)) return false
+      seen.add(color.value)
+      return true
+    })
 }
 
 function SectionHeader({ label, description }) {
@@ -94,6 +171,27 @@ function MultiSelectButton({ selected, onClick, children, ariaLabel }) {
     >
       <span className="flex items-center gap-2">{children}</span>
     </button>
+  )
+}
+
+function CustomField({ id, field, value, placeholder, label = 'Custom', onChange }) {
+  return (
+    <div className="mt-3">
+      <label
+        htmlFor={id}
+        className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--text-muted)]"
+      >
+        {label}
+      </label>
+      <input
+        id={id}
+        type="text"
+        value={value || ''}
+        onChange={(event) => onChange(field, event.target.value)}
+        placeholder={placeholder}
+        className="w-full rounded-[18px] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm text-[var(--text)] placeholder:text-[var(--text-muted)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
+      />
+    </div>
   )
 }
 
@@ -153,7 +251,6 @@ function CreatePage() {
   const subjectRules = compatibility.subjectRules[builder.subject] || {}
   const relevantPoses = new Set(subjectRules.relevantPoses || [])
   const relevantOutfits = new Set(subjectRules.relevantOutfits || [])
-  const relevantBackgrounds = new Set(subjectRules.recommendedBackgrounds || [])
 
   const visiblePoses = useMemo(() => {
     const list = poses.filter(
@@ -190,21 +287,28 @@ function CreatePage() {
   }, [relevantOutfits])
 
   const visibleBackgrounds = useMemo(() => {
-    const groups = Object.entries(backgrounds)
-      .map(([group, options]) => ({
-        group,
-        options: options.filter(
-          (option) =>
-            option.value === 'none' ||
-            relevantBackgrounds.size === 0 ||
-            relevantBackgrounds.has(option.value) ||
-            option.value === 'studio'
-        ),
-      }))
-      .filter((group) => group.options.length)
+    const subjectOptions = appearanceBackgroundsBySubject[builder.subject] || []
+    const grouped = new Map()
 
-    return groups
-  }, [relevantBackgrounds])
+    subjectOptions.forEach((option) => {
+      const group = option.group || 'nature'
+      if (!grouped.has(group)) grouped.set(group, [])
+      grouped.get(group).push(option)
+    })
+
+    grouped.set('none', [{ value: 'none', label: 'None' }])
+
+    return Array.from(grouped, ([group, options]) => ({ group, options }))
+  }, [builder.subject])
+
+  // Only real garments coming from garmentOptions, never the `none` marker.
+  const selectedGarments = useMemo(
+    () =>
+      (builder.outfitGarments || []).filter(
+        (garment) => garment !== 'none' && Boolean(garmentGroupByValue[garment])
+      ),
+    [builder.outfitGarments]
+  )
 
   const toggleMultiSelect = (field, value) => {
     setBuilder((current) => {
@@ -220,6 +324,52 @@ function CreatePage() {
         : [...withoutNone, value]
 
       return { ...current, [field]: next }
+    })
+  }
+
+  // Garment multi-select. `none` stays mutually exclusive with real garments and
+  // dropping a garment also drops its color so outfitColors never keeps stale keys.
+  const toggleGarment = (garment) => {
+    setBuilder((current) => {
+      const selected = current.outfitGarments || []
+
+      if (garment === 'none') {
+        return selected.includes('none')
+          ? { ...current, outfitGarments: [] }
+          : { ...current, outfitGarments: ['none'], outfitColors: {} }
+      }
+
+      const withoutNone = selected.filter((item) => item !== 'none')
+
+      if (withoutNone.includes(garment)) {
+        const nextColors = { ...(current.outfitColors || {}) }
+        delete nextColors[garment]
+
+        return {
+          ...current,
+          outfitGarments: withoutNone.filter((item) => item !== garment),
+          outfitColors: nextColors,
+        }
+      }
+
+      return { ...current, outfitGarments: [...withoutNone, garment] }
+    })
+  }
+
+  const updateGarmentColor = (garment, colorValue) => {
+    setBuilder((current) => {
+      const selected = current.outfitGarments || []
+      if (garment === 'none' || !selected.includes(garment)) return current
+
+      const nextColors = { ...(current.outfitColors || {}) }
+
+      if (colorValue) {
+        nextColors[garment] = colorValue
+      } else {
+        delete nextColors[garment]
+      }
+
+      return { ...current, outfitColors: nextColors }
     })
   }
 
@@ -388,6 +538,13 @@ function CreatePage() {
                     />
                   </div>
                 ) : null}
+                <CustomField
+                  id="custom-purpose"
+                  field="customPurpose"
+                  value={builder.customPurpose}
+                  placeholder="Other composition direction..."
+                  onChange={updateField}
+                />
               </div>
 
               <div className="rounded-[24px] border border-[var(--border)] bg-[var(--surface)] p-4 sm:p-5">
@@ -409,6 +566,13 @@ function CreatePage() {
                         </MultiSelectButton>
                       ))}
                     </div>
+                    <CustomField
+                      id="custom-style"
+                      field="customStyle"
+                      value={builder.customStyle}
+                      placeholder="Other style..."
+                      onChange={updateField}
+                    />
                   </div>
                 </div>
               </div>
@@ -424,17 +588,7 @@ function CreatePage() {
                       {visibleBackgrounds.map(({ group, options }) => (
                         <div key={group}>
                           <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--text-muted)]">
-                            {group === 'nature'
-                              ? 'Nature'
-                              : group === 'urban'
-                                ? 'Urban'
-                                : group === 'travel'
-                                  ? 'Travel'
-                                  : group === 'special'
-                                    ? 'Special / Creative'
-                                    : group === 'none'
-                                      ? 'None'
-                                      : 'Local'}
+                            {backgroundGroupLabels[group] ?? 'Local'}
                           </p>
                           <div className="flex flex-wrap gap-2">
                             {options.map((option) => (
@@ -451,6 +605,13 @@ function CreatePage() {
                         </div>
                       ))}
                     </div>
+                    <CustomField
+                      id="custom-background"
+                      field="customBackground"
+                      value={builder.customBackground}
+                      placeholder="Other background / location..."
+                      onChange={updateField}
+                    />
                   </div>
 
                   <div>
@@ -484,6 +645,123 @@ function CreatePage() {
                         </div>
                       ))}
                     </div>
+                    <CustomField
+                      id="custom-outfit"
+                      field="customOutfit"
+                      value={builder.customOutfit}
+                      placeholder="Other outfit..."
+                      label="Other"
+                      onChange={updateField}
+                    />
+                  </div>
+                  <div>
+                    <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--text-muted)]">
+                      Specific Clothing
+                    </p>
+                    <div className="space-y-4">
+                      {(() => {
+                        const subjectGarments = garmentOptionsBySubject[builder.subject] || { men: garmentOptions }
+                        const personEntries = Object.entries(subjectGarments)
+                        const showPersonHeaders = personEntries.length > 1
+
+                        return personEntries.map(([person, groups]) => (
+                          <div key={person} className="space-y-3">
+                            {showPersonHeaders ? (
+                              <p className="border-b border-[var(--border)] pb-1 text-xs font-bold uppercase tracking-[0.14em] text-[var(--text)]">
+                                {garmentPersonSectionLabels[person] ?? person}
+                              </p>
+                            ) : null}
+
+                            {Object.entries(groups).map(([group, options]) => (
+                              <div key={group}>
+                                <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--text-muted)]">
+                                  {garmentGroupLabels[group] ?? group}
+                                </p>
+                                <div className="flex flex-wrap gap-2">
+                                  {options.map((option) => (
+                                    <MultiSelectButton
+                                      key={option.value}
+                                      selected={(builder.outfitGarments || []).includes(option.value)}
+                                      onClick={() => toggleGarment(option.value)}
+                                      ariaLabel={`Toggle clothing ${option.label}`}
+                                    >
+                                      {option.label}
+                                    </MultiSelectButton>
+                                  ))}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        ))
+                      })()}
+
+                      <div>
+                        <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--text-muted)]">
+                          None
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                          <MultiSelectButton
+                            selected={(builder.outfitGarments || []).includes('none')}
+                            onClick={() => toggleGarment('none')}
+                            ariaLabel="Clear specific clothing selection"
+                          >
+                            None
+                          </MultiSelectButton>
+                        </div>
+                      </div>
+                    </div>
+
+                    <CustomField
+                      id="custom-garments"
+                      field="customGarments"
+                      value={builder.customGarments}
+                      placeholder="Other clothing item..."
+                      label="Custom Clothing"
+                      onChange={updateField}
+                    />
+
+                    {selectedGarments.length ? (
+                      <div className="mt-4 space-y-3">
+                        <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--text-muted)]">
+                          Clothing Color
+                        </p>
+                        {selectedGarments.map((garment) => (
+                          <div key={garment}>
+                            <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--text-muted)]">
+                              {garmentLabelByValue[garment] ?? garment}
+                            </p>
+                            <div className="flex flex-wrap gap-2">
+                              <MultiSelectButton
+                                selected={!(builder.outfitColors || {})[garment]}
+                                onClick={() => updateGarmentColor(garment, null)}
+                                ariaLabel={`Clear color for ${garmentLabelByValue[garment] ?? garment}`}
+                              >
+                                No Color
+                              </MultiSelectButton>
+                              {getGarmentColorOptions(garment).map((color) => (
+                                <MultiSelectButton
+                                  key={color.value}
+                                  selected={(builder.outfitColors || {})[garment] === color.value}
+                                  onClick={() => updateGarmentColor(garment, color.value)}
+                                  ariaLabel={`Set ${garmentLabelByValue[garment] ?? garment} color ${color.label}`}
+                                >
+                                  {color.label}
+                                </MultiSelectButton>
+                              ))}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : null}
+
+                    <CustomField
+                      id="custom-garment-color"
+                      field="customGarmentColor"
+                      value={builder.customGarmentColor}
+                      placeholder="Other clothing color..."
+                      label="Custom Clothing Color"
+                      onChange={updateField}
+                    />
                   </div>
                 </div>
               </div>
@@ -507,6 +785,13 @@ function CreatePage() {
                         </MultiSelectButton>
                       ))}
                     </div>
+                    <CustomField
+                      id="custom-pose"
+                      field="customPose"
+                      value={builder.customPose}
+                      placeholder="Other pose..."
+                      onChange={updateField}
+                    />
                   </div>
 
                   <div>
@@ -525,6 +810,13 @@ function CreatePage() {
                         </MultiSelectButton>
                       ))}
                     </div>
+                    <CustomField
+                      id="custom-mood"
+                      field="customMood"
+                      value={builder.customMood}
+                      placeholder="Other mood..."
+                      onChange={updateField}
+                    />
                   </div>
 
                   <div className="md:col-span-2">
@@ -543,6 +835,13 @@ function CreatePage() {
                         </MultiSelectButton>
                       ))}
                     </div>
+                    <CustomField
+                      id="custom-lighting"
+                      field="customLighting"
+                      value={builder.customLighting}
+                      placeholder="Other lighting..."
+                      onChange={updateField}
+                    />
                   </div>
                 </div>
               </div>
@@ -595,6 +894,13 @@ function CreatePage() {
                               </MultiSelectButton>
                             ))}
                           </div>
+                          <CustomField
+                            id="custom-expression"
+                            field="customExpression"
+                            value={builder.customExpression}
+                            placeholder="Other expression..."
+                            onChange={updateField}
+                          />
                         </div>
 
                         <div>
@@ -613,6 +919,13 @@ function CreatePage() {
                               </MultiSelectButton>
                             ))}
                           </div>
+                          <CustomField
+                            id="custom-time"
+                            field="customTime"
+                            value={builder.customTime}
+                            placeholder="Other time..."
+                            onChange={updateField}
+                          />
                         </div>
 
                         <div>
@@ -631,6 +944,13 @@ function CreatePage() {
                               </MultiSelectButton>
                             ))}
                           </div>
+                          <CustomField
+                            id="custom-weather"
+                            field="customWeather"
+                            value={builder.customWeather}
+                            placeholder="Other weather..."
+                            onChange={updateField}
+                          />
                         </div>
                       </div>
 
@@ -651,6 +971,13 @@ function CreatePage() {
                               </MultiSelectButton>
                             ))}
                           </div>
+                          <CustomField
+                            id="custom-color-grading"
+                            field="customColorGrading"
+                            value={builder.customColorGrading}
+                            placeholder="Other color grading..."
+                            onChange={updateField}
+                          />
                         </div>
 
                         <div>
@@ -669,6 +996,13 @@ function CreatePage() {
                               </MultiSelectButton>
                             ))}
                           </div>
+                          <CustomField
+                            id="custom-cultural"
+                            field="customCultural"
+                            value={builder.customCultural}
+                            placeholder="Other cultural detail..."
+                            onChange={updateField}
+                          />
                         </div>
                       </div>
 
@@ -750,6 +1084,13 @@ function CreatePage() {
                               </div>
                             </div>
                           </div>
+                          <CustomField
+                            id="custom-camera"
+                            field="customCamera"
+                            value={builder.customCamera}
+                            placeholder="Other camera / photography..."
+                            onChange={updateField}
+                          />
                         </div>
 
                         <div className="grid gap-4 md:grid-cols-2">
@@ -769,6 +1110,13 @@ function CreatePage() {
                                 </MultiSelectButton>
                               ))}
                             </div>
+                            <CustomField
+                              id="custom-accessories"
+                              field="customAccessories"
+                              value={builder.customAccessories}
+                              placeholder="Other accessory..."
+                              onChange={updateField}
+                            />
                           </div>
 
                           <div>
@@ -787,6 +1135,13 @@ function CreatePage() {
                                 </MultiSelectButton>
                               ))}
                             </div>
+                            <CustomField
+                              id="custom-effects"
+                              field="customEffects"
+                              value={builder.customEffects}
+                              placeholder="Other effect..."
+                              onChange={updateField}
+                            />
                           </div>
                         </div>
 

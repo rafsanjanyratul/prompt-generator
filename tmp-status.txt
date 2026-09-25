@@ -1,0 +1,8 @@
+﻿ M src/data/createBuilderOptions.js
+ M src/pages/CreatePage.jsx
+ M src/utils/promptBuilder.js
+?? tmp-c.txt
+?? tmp-check1.txt
+?? tmp-check2.txt
+?? tmp-g.txt
+?? tmp-status.txt

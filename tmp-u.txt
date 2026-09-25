@@ -1,0 +1,9 @@
+﻿18: compatibility,
+212: const subjectRules = compatibility.subjectRules[builder.subject] || {}
+215: const relevantBackgrounds = new Set(subjectRules.recommendedBackgrounds || [])
+251: const visibleBackgrounds = useMemo(() => {
+258: relevantBackgrounds.size === 0 ||
+259: relevantBackgrounds.has(option.value) ||
+266: }, [relevantBackgrounds])
+397: {subjects.map((option) => (
+483: {visibleBackgrounds.map(({ group, options }) => (

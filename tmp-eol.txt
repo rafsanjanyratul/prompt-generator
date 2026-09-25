@@ -1,0 +1,3 @@
+﻿src/pages/CreatePage.jsx CRLF=1043 LF=0
+src/utils/promptBuilder.js CRLF=697 LF=0
+src/data/createBuilderOptions.js CRLF=751 LF=0

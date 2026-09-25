@@ -1,0 +1,14 @@
+﻿9:   garmentOptions,
+13:   outfitColorGroups,
+23: export const defaultBuilderSelections = {
+53: export function createDefaultBuilderSelections(overrides = {}) {
+258:   Object.values(garmentOptions)
+262: // Which color palette(s) belong to each garment group.
+263: // Footwear has no dedicated palette in the option data, so it uses the `lower` palette,
+265: const garmentColorGroupKeys = {
+275:   Object.entries(garmentOptions).find(([, list]) =>
+279: // Resolves a garment color only against the palette(s) that belong to that garment.
+287:     const match = findOption(outfitColorGroups[key], colorValue)
+295: const garmentPromptLabels = {
+568: export function buildPrompt(selections = {}) {
+698: export default buildPrompt

@@ -1,0 +1,263 @@
+
+> prompt-generator@0.0.0 lint
+> oxlint
+
+
+  ! eslint(no-unused-vars): Variable 'c4' is declared but never used. Unused variables should start with a '_'.
+    ,-[.tmp-generate-assets.mjs:65:22]
+ 64 | function createSvg(theme) {
+ 65 |   const [c1, c2, c3, c4] = theme.palette;
+    :                      ^|
+    :                       `-- 'c4' is declared here
+ 66 |   const background = `
+    `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Function 'App' is declared but never used.
+   ,-[src/App.jsx:4:10]
+ 3 | 
+ 4 | function App() {
+   :          ^|^
+   :           `-- 'App' is declared here
+ 5 |   console.log('Prompt styles sample count:', promptStyles.length)
+   `----
+  help: Consider removing this declaration.
+
+  ! react(only-export-components): Fast refresh only works when a file has exports. Move your component(s) to a separate file.
+   ,-[src/App.jsx:4:10]
+ 3 | 
+ 4 | function App() {
+   :          ^^^
+ 5 |   console.log('Prompt styles sample count:', promptStyles.length)
+   `----
+
+  ! eslint(no-unused-vars): Parameter 'subject' is declared but never used. Unused parameters should start with a '_'.
+     ,-[src/utils/promptBuilder.js:437:29]
+ 436 | 
+ 437 | const describePose = (pose, subject) => {
+     :                             ^^^|^^^
+     :                                `-- 'subject' is declared here
+ 438 |   const match = findOption(poses, pose)
+     `----
+  help: Consider removing this parameter.
+
+  ! eslint(no-unused-vars): Variable 'moodLabel' is declared but never used. Unused variables should start with a '_'.
+     ,-[src/utils/promptBuilder.js:699:9]
+ 698 |   const poseLabel = findOption(poses, safe.pose)
+ 699 |   const moodLabel = findOption(moods, safe.mood)
+     :         ^^^^|^^^^
+     :             `-- 'moodLabel' is declared here
+ 700 |   const lightingLabel = findOption(lighting, safe.lighting)
+     `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Variable 'lightingLabel' is declared but never used. Unused variables should start with a '_'.
+     ,-[src/utils/promptBuilder.js:700:9]
+ 699 |   const moodLabel = findOption(moods, safe.mood)
+ 700 |   const lightingLabel = findOption(lighting, safe.lighting)
+     :         ^^^^^^|^^^^^^
+     :               `-- 'lightingLabel' is declared here
+ 701 |   const timeLabel = findOption(timeOptions, safe.time)
+     `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Function 'ensureMetaTag' is declared but never used.
+   ,-[src/hooks/useDocumentMeta.js:3:10]
+ 2 | 
+ 3 | function ensureMetaTag(selector, attributeName, attributeValue, tagName = 'meta') {
+   :          ^^^^^^|^^^^^^
+   :                `-- 'ensureMetaTag' is declared here
+ 4 |   let element = document.head.querySelector(`${tagName}[${attributeName}="${attributeValue}"]`)
+   `----
+  help: Consider removing this declaration.
+
+  ! eslint(no-unused-vars): Function 'ensureMetaBySelector' is declared but never used.
+    ,-[src/hooks/useDocumentMeta.js:15:10]
+ 14 | 
+ 15 | function ensureMetaBySelector(selector) {
+    :          ^^^^^^^^^^|^^^^^^^^^
+    :                    `-- 'ensureMetaBySelector' is declared here
+ 16 |   return document.head.querySelector(selector) || document.createElement('meta')
+    `----
+  help: Consider removing this declaration.
+
+  ! react(set-state-in-effect): Calling setState synchronously within an effect can trigger cascading renders
+    ,-[src/components/discover/CategorySection.jsx:47:5]
+ 38 | 
+ 39 |   useEffect(() => {
+    :   ^^^^|^^^^
+    :       `-- This is the containing effect
+ 40 |     if (typeof window === 'undefined') {
+ 41 |       return undefined
+ 42 |     }
+ 43 | 
+ 44 |     const mediaQuery = window.matchMedia('(max-width: 767px)')
+ 45 |     const handleChange = (event) => setIsSmallScreen(event.matches)
+ 46 | 
+ 47 |     setIsSmallScreen(mediaQuery.matches)
+    :     ^^^^^^^^|^^^^^^^
+    :             `-- Avoid calling setState() directly within an effect
+ 48 | 
+    `----
+  help: Effects should synchronize React with external systems. Calling setState synchronously inside an effect starts another render and is usually unnecessary. Derive the value during render, initialize state directly, or update it from the event that caused the change. Use an effect only when synchronizing with an external system.
+  note: React Compiler skipped optimizing this component or hook. Additional guidance: https://react.dev/reference/eslint-plugin-react-hooks/lints/set-state-in-effect
+
+  ! react(set-state-in-effect): Calling setState synchronously within an effect can trigger cascading renders
+    ,-[src/components/discover/HeroSection.jsx:70:7]
+ 67 | 
+ 68 |   useEffect(() => {
+    :   ^^^^|^^^^
+    :       `-- This is the containing effect
+ 69 |     if (prefersReducedMotion) {
+ 70 |       setVisibleHeadline(headlineText)
+    :       ^^^^^^^^^|^^^^^^^^
+    :                `-- Avoid calling setState() directly within an effect
+ 71 |       return undefined
+    `----
+  help: Effects should synchronize React with external systems. Calling setState synchronously inside an effect starts another render and is usually unnecessary. Derive the value during render, initialize state directly, or update it from the event that caused the change. Use an effect only when synchronizing with an external system.
+  note: React Compiler skipped optimizing this component or hook. Additional guidance: https://react.dev/reference/eslint-plugin-react-hooks/lints/set-state-in-effect
+
+  ! react(set-state-in-effect): Calling setState synchronously within an effect can trigger cascading renders
+    ,-[src/components/discover/DiscoverySection.jsx:19:5]
+ 10 | 
+ 11 |   useEffect(() => {
+    :   ^^^^|^^^^
+    :       `-- This is the containing effect
+ 12 |     if (typeof window === 'undefined') {
+ 13 |       return undefined
+ 14 |     }
+ 15 | 
+ 16 |     const mediaQuery = window.matchMedia('(max-width: 767px)')
+ 17 |     const handleChange = (event) => setIsSmallScreen(event.matches)
+ 18 | 
+ 19 |     setIsSmallScreen(mediaQuery.matches)
+    :     ^^^^^^^^|^^^^^^^
+    :             `-- Avoid calling setState() directly within an effect
+ 20 | 
+    `----
+  help: Effects should synchronize React with external systems. Calling setState synchronously inside an effect starts another render and is usually unnecessary. Derive the value during render, initialize state directly, or update it from the event that caused the change. Use an effect only when synchronizing with an external system.
+  note: React Compiler skipped optimizing this component or hook. Additional guidance: https://react.dev/reference/eslint-plugin-react-hooks/lints/set-state-in-effect
+
+  ! react(set-state-in-effect): Calling setState synchronously within an effect can trigger cascading renders
+    ,-[src/pages/ExplorePage.jsx:69:5]
+ 67 | 
+ 68 |   useEffect(() => {
+    :   ^^^^|^^^^
+    :       `-- This is the containing effect
+ 69 |     setFilters((current) => ({
+    :     ^^^^^|^^^^
+    :          `-- Avoid calling setState() directly within an effect
+ 70 |       ...current,
+    `----
+  help: Effects should synchronize React with external systems. Calling setState synchronously inside an effect starts another render and is usually unnecessary. Derive the value during render, initialize state directly, or update it from the event that caused the change. Use an effect only when synchronizing with an external system.
+  note: React Compiler skipped optimizing this component or hook. Additional guidance: https://react.dev/reference/eslint-plugin-react-hooks/lints/set-state-in-effect
+
+  ! react(set-state-in-effect): Calling setState synchronously within an effect can trigger cascading renders
+    ,-[src/pages/StyleDetailPage.jsx:24:5]
+ 22 | 
+ 23 |   useEffect(() => {
+    :   ^^^^|^^^^
+    :       `-- This is the containing effect
+ 24 |     setImageFailed(false)
+    :     ^^^^^^^|^^^^^^
+    :            `-- Avoid calling setState() directly within an effect
+ 25 |     setCopyState('idle')
+    `----
+  help: Effects should synchronize React with external systems. Calling setState synchronously inside an effect starts another render and is usually unnecessary. Derive the value during render, initialize state directly, or update it from the event that caused the change. Use an effect only when synchronizing with an external system.
+  note: React Compiler skipped optimizing this component or hook. Additional guidance: https://react.dev/reference/eslint-plugin-react-hooks/lints/set-state-in-effect
+
+  ! eslint(no-unused-vars): Identifier 'garmentOptionsBySubject' is imported but never used.
+    ,-[src/pages/CreatePage.jsx:23:3]
+ 22 |   garmentOptions,
+ 23 |   garmentOptionsBySubject,
+    :   ^^^^^^^^^^^|^^^^^^^^^^^
+    :              `-- 'garmentOptionsBySubject' is imported here
+ 24 |   identityPreservation,
+    `----
+  help: Consider removing this import.
+
+  ! eslint(no-unused-vars): Identifier 'identityPreservation' is imported but never used.
+    ,-[src/pages/CreatePage.jsx:24:3]
+ 23 |   garmentOptionsBySubject,
+ 24 |   identityPreservation,
+    :   ^^^^^^^^^^|^^^^^^^^^
+    :             `-- 'identityPreservation' is imported here
+ 25 |   lighting,
+    `----
+  help: Consider removing this import.
+
+  ! react-hooks(exhaustive-deps): React hook useMemo depends on `relevantPoses`, which changes every render
+     ,-[src/pages/CreatePage.jsx:250:7]
+ 234 |   const subjectRules = compatibility.subjectRules[builder.subject] || {}
+ 235 |   const relevantPoses = new Set(subjectRules.relevantPoses || [])
+     :         ^^^^^^|^^^^^^
+     :               `-- `relevantPoses` is declared here
+ 236 |   const relevantOutfits = new Set(subjectRules.relevantOutfits || [])
+ 237 | 
+ 238 |   const visiblePoses = useMemo(() => {
+ 239 |     const list = poses.filter(
+ 240 |       (option) =>
+ 241 |         option.value === 'none' ||
+ 242 |         relevantPoses.size === 0 ||
+ 243 |         relevantPoses.has(option.value) ||
+ 244 |         option.value === 'standing' ||
+ 245 |         option.value === 'sitting' ||
+ 246 |         option.value === 'looking-at-camera'
+ 247 |     )
+ 248 | 
+ 249 |     return list
+ 250 |   }, [relevantPoses])
+     :       ^^^^^^|^^^^^^
+     :             `-- it will always cause this hook to re-evaluate
+ 251 | 
+     `----
+  help: Try memoizing this variable with `useRef` or `useCallback`.
+
+  ! react-hooks(exhaustive-deps): React hook useMemo depends on `relevantOutfits`, which changes every render
+     ,-[src/pages/CreatePage.jsx:270:7]
+ 235 |   const relevantPoses = new Set(subjectRules.relevantPoses || [])
+ 236 |   const relevantOutfits = new Set(subjectRules.relevantOutfits || [])
+     :         ^^^^^^^|^^^^^^^
+     :                `-- `relevantOutfits` is declared here
+ 237 | 
+ 238 |   const visiblePoses = useMemo(() => {
+ 239 |     const list = poses.filter(
+ 240 |       (option) =>
+ 241 |         option.value === 'none' ||
+ 242 |         relevantPoses.size === 0 ||
+ 243 |         relevantPoses.has(option.value) ||
+ 244 |         option.value === 'standing' ||
+ 245 |         option.value === 'sitting' ||
+ 246 |         option.value === 'looking-at-camera'
+ 247 |     )
+ 248 | 
+ 249 |     return list
+ 250 |   }, [relevantPoses])
+ 251 | 
+ 252 |   const visibleOutfits = useMemo(() => {
+ 253 |     const groups = Object.entries(outfits)
+ 254 |       .map(([group, options]) => ({
+ 255 |         group,
+ 256 |         options: options.filter(
+ 257 |           (option) =>
+ 258 |             option.value === 'none' ||
+ 259 |             relevantOutfits.size === 0 ||
+ 260 |             relevantOutfits.has(option.value) ||
+ 261 |             option.value === 'casual' ||
+ 262 |             option.value === 'formal' ||
+ 263 |             option.value === 'traditional' ||
+ 264 |             option.value === 'custom'
+ 265 |         ),
+ 266 |       }))
+ 267 |       .filter((group) => group.options.length)
+ 268 | 
+ 269 |     return groups
+ 270 |   }, [relevantOutfits])
+     :       ^^^^^^^|^^^^^^^
+     :              `-- it will always cause this hook to re-evaluate
+ 271 | 
+     `----
+  help: Try memoizing this variable with `useRef` or `useCallback`.
+
+Found 17 warnings and 0 errors.
+Finished in 38ms on 32 files with 104 rules using 12 threads.

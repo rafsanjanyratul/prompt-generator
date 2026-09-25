@@ -6,9 +6,12 @@ import {
   colorGrading,
   cultural,
   effects,
+  garmentOptions,
+  garmentOptionsBySubject,
   identityPreservation,
   lighting,
   moods,
+  outfitColorGroups,
   outfits,
   poses,
   purposes,
@@ -25,6 +28,8 @@ export const defaultBuilderSelections = {
   style: 'cinematic',
   background: 'studio',
   outfit: 'casual',
+  outfitGarments: [],
+  outfitColors: {},
   pose: 'looking-at-camera',
   mood: 'cinematic',
   lighting: 'soft',
@@ -41,7 +46,29 @@ export const defaultBuilderSelections = {
   effects: [],
   identityPreservation: identityPreservation.defaultValue,
   customInstruction: '',
+  // Phase 4: optional free-text escape hatches, one per builder section.
+  // An empty string always means "no prompt change".
+  customPurpose: '',
+  customStyle: '',
+  customBackground: '',
+  customOutfit: '',
+  customGarments: '',
+  customGarmentColor: '',
+  customPose: '',
+  customExpression: '',
+  customMood: '',
+  customLighting: '',
+  customTime: '',
+  customWeather: '',
+  customColorGrading: '',
+  customCultural: '',
+  customCamera: '',
+  customAccessories: '',
+  customEffects: '',
 }
+
+// Guard used to keep `outfitColors` a plain per-garment color map and never a shared reference.
+const isPlainColorMap = (value) => Boolean(value) && typeof value === 'object' && !Array.isArray(value)
 
 export function createDefaultBuilderSelections(overrides = {}) {
   return {
@@ -53,6 +80,12 @@ export function createDefaultBuilderSelections(overrides = {}) {
     effects: Array.isArray(overrides.effects)
       ? [...overrides.effects]
       : [...defaultBuilderSelections.effects],
+    outfitGarments: Array.isArray(overrides.outfitGarments)
+      ? [...overrides.outfitGarments]
+      : [...defaultBuilderSelections.outfitGarments],
+    outfitColors: isPlainColorMap(overrides.outfitColors)
+      ? { ...overrides.outfitColors }
+      : { ...defaultBuilderSelections.outfitColors },
   }
 }
 
@@ -74,6 +107,10 @@ const flattenOutfits = () =>
     .map((option) => ({ ...option }))
 
 const withArticle = (word) => (/^[aeiou8]/i.test(word) ? `an ${word}` : `a ${word}`)
+
+// Phase 4 custom free text. Only trimmed, non-empty strings are used, so undefined, null,
+// numbers, arrays, or objects can never reach the generated prompt.
+const cleanCustomText = (value) => (typeof value === 'string' ? value.trim() : '')
 
 const pickTemplate = (subject, style) => {
   const templates = basePromptTemplates[subject] || []
@@ -171,8 +208,13 @@ const describeBackground = (background) => {
     garden: 'in a garden',
     park: 'in a park',
     'tea-garden': 'in a tea garden',
+    'village-road': 'on a rural village road',
+    'flower-garden': 'in a flower garden',
+    'romantic-garden': 'in a romantic garden',
+    'sunset-field': 'in an open field at sunset',
     'dhaka-street': 'on a Dhaka street',
     'modern-city': 'in a modern city',
+    'city-street': 'on a city street',
     rooftop: 'on a rooftop',
     cafe: 'in a café',
     restaurant: 'in a restaurant',
@@ -236,6 +278,162 @@ const describeOutfit = (outfit) => {
   return map[match.value] || `wearing ${match.label.toLowerCase()}`
 }
 
+const flattenGarments = () =>
+  Object.values(garmentOptions)
+    .flat()
+    .map((option) => ({ ...option }))
+
+// Which color palette(s) belong to each garment group.
+// Footwear has no dedicated palette in the option data, so it uses the `lower` palette,
+// which already holds the footwear colors (black, brown, beige, white, navy, gray, ...).
+// Women's groups reuse these palettes; traditional one-piece wear (saree, salwar kameez, kurti)
+// accepts both the upper and the traditional palette.
+const garmentColorGroupKeys = {
+  upper: ['upper'],
+  outerwear: ['upper'],
+  lower: ['lower'],
+  traditionalLower: ['traditionalLower'],
+  footwear: ['lower'],
+  accessories: ['upper', 'lower'],
+  womenUpper: ['upper'],
+  womenTraditional: ['upper', 'traditionalLower'],
+  womenLower: ['lower'],
+  womenOuterwear: ['upper'],
+  womenFootwear: ['lower'],
+  womenAccessories: ['upper', 'lower'],
+}
+
+const findGarmentGroup = (garmentValue) =>
+  Object.entries(garmentOptions).find(([, list]) =>
+    list.some((option) => option.value === garmentValue)
+  )?.[0] || null
+
+// Which person a garment belongs to, derived from the subject-aware option data so the
+// men's and women's garment lists are defined exactly once.
+const garmentPersonByValue = Object.entries(garmentOptionsBySubject).reduce((acc, [, persons]) => {
+  Object.entries(persons).forEach(([person, groups]) => {
+    Object.values(groups)
+      .flat()
+      .forEach((option) => {
+        acc[option.value] = person
+      })
+  })
+
+  return acc
+}, {})
+
+// Subjects that describe more than one person need gendered wording, otherwise a men's garment
+// and a women's garment in the same selection would be ambiguous in the prompt.
+const multiPersonSubjects = new Set(['couples', 'family'])
+
+// Couples are singular, while a family is described generically so the prompt never claims
+// that the family contains exactly one man and one woman.
+const garmentPersonNouns = {
+  couples: { men: 'the man', women: 'the woman' },
+  family: { men: 'the men', women: 'the women' },
+}
+
+// Resolves a garment color only against the palette(s) that belong to that garment.
+// Returns null when no color is set or the color is not valid for that garment.
+const findGarmentColor = (garmentValue, colorValue) => {
+  if (!colorValue || colorValue === 'none') return null
+
+  const groupKeys = garmentColorGroupKeys[findGarmentGroup(garmentValue)] || []
+
+  for (const key of groupKeys) {
+    const match = findOption(outfitColorGroups[key], colorValue)
+    if (match) return match.label.toLowerCase()
+  }
+
+  return null
+}
+
+// Garment labels that need prompt-specific casing/wording instead of a plain lowercase label.
+const garmentPromptLabels = {
+  't-shirt': 'T-shirt',
+  panjabi: 'Panjabi',
+  trousers: 'trousers',
+  'women-trousers': 'trousers',
+}
+
+// Grammatically plural garments: they read naturally without an "a"/"an" article.
+const pluralGarments = new Set([
+  'trousers',
+  'jeans',
+  'pajama',
+  'formal-shoes',
+  'sneakers',
+  'sandals',
+  'women-trousers',
+  'women-jeans',
+  'women-heels',
+  'women-flats',
+  'women-sneakers',
+  'women-sandals',
+  'women-earrings',
+])
+
+const describeGarment = (garmentValue, outfitColors = {}) => {
+  const match = findOption(flattenGarments(), garmentValue)
+  if (!match) return ''
+
+  const label = garmentPromptLabels[garmentValue] || match.label.toLowerCase()
+  const colorText = findGarmentColor(garmentValue, outfitColors[garmentValue])
+  const core = colorText ? `${colorText} ${label}` : label
+
+  return pluralGarments.has(garmentValue) ? core : withArticle(core)
+}
+
+// Joins phrases as "a", "a and b", or "a, b, and c".
+const joinPhraseList = (phrases) => {
+  if (phrases.length === 1) return phrases[0]
+  if (phrases.length === 2) return `${phrases[0]} and ${phrases[1]}`
+
+  return `${phrases.slice(0, -1).join(', ')}, and ${phrases.slice(-1)[0]}`
+}
+
+// Builds the garment-detail phrase, for example:
+//   boys:    "a white shirt, a navy blazer, black trousers, and brown formal shoes"
+//   couples: "the man wearing a white shirt and the woman wearing a red saree"
+//   family:  "the men wearing a panjabi and the women wearing a red saree"
+// Single-person subjects keep the original flat phrasing; couples and family split the
+// selection per person so male and female clothing never become ambiguous.
+// Returns '' when nothing usable is selected, so the caller adds nothing to the prompt.
+const describeOutfitGarments = (subject, garmentValues, outfitColors = {}) => {
+  if (!Array.isArray(garmentValues) || !garmentValues.length) return ''
+
+  const colors = isPlainColorMap(outfitColors) ? outfitColors : {}
+  const gendered = multiPersonSubjects.has(subject)
+
+  const flatPhrases = []
+  const personPhrases = { men: [], women: [] }
+
+  garmentValues
+    .filter((value) => value && value !== 'none')
+    .forEach((value) => {
+      const phrase = describeGarment(value, colors)
+      if (!phrase) return
+
+      if (!gendered) {
+        flatPhrases.push(phrase)
+        return
+      }
+
+      personPhrases[garmentPersonByValue[value] || 'men'].push(phrase)
+    })
+
+  if (!gendered) {
+    return flatPhrases.length ? joinPhraseList(flatPhrases) : ''
+  }
+
+  const nouns = garmentPersonNouns[subject] || {}
+  const phrases = ['men', 'women']
+    .filter((person) => personPhrases[person].length)
+    .map((person) => `${nouns[person]} wearing ${joinPhraseList(personPhrases[person])}`)
+
+  return phrases.length ? joinPhraseList(phrases) : ''
+}
+
 const describePose = (pose, subject) => {
   const match = findOption(poses, pose)
   if (!match) return ''
@@ -264,7 +462,7 @@ const describePose = (pose, subject) => {
   return map[match.value] || 'posed naturally and comfortably'
 }
 
-const describeMood = (mood, expression, lightingValue) => {
+const describeMood = (mood, expression, lightingValue, customValues = {}) => {
   const moodOption = findOption(moods, mood)
   const expressionOption = findOption(
     [
@@ -285,13 +483,18 @@ const describeMood = (mood, expression, lightingValue) => {
   )
   const lightingOption = findOption(lighting, lightingValue)
 
-  const moodText = moodOption ? moodOption.label.toLowerCase() : 'balanced'
-  const expressionText = expressionOption ? expressionOption.label.toLowerCase() : 'natural'
+  // Custom expression/mood text replaces the matching predefined wording there, and also
+  // counts as a present clause so a custom value on its own still produces a sentence.
+  const customExpression = customValues.expression || ''
+  const customMood = customValues.mood || ''
+
+  const moodText = customMood || (moodOption ? moodOption.label.toLowerCase() : 'balanced')
+  const expressionText = customExpression || (expressionOption ? expressionOption.label.toLowerCase() : 'natural')
   const lightingText = lightingOption ? lightingOption.label.toLowerCase() : 'soft'
 
-  const hasExpression = expression && expression !== 'none'
-  const hasMood = mood && mood !== 'none'
-  const hasLighting = lightingValue && lightingValue !== 'none'
+  const hasExpression = Boolean(customExpression) || Boolean(expression && expression !== 'none')
+  const hasMood = Boolean(customMood) || Boolean(mood && mood !== 'none')
+  const hasLighting = Boolean(lightingValue && lightingValue !== 'none')
 
   if (hasExpression && hasMood && hasLighting) {
     return `Use a ${expressionText} expression with a ${moodText} mood and ${lightingText} lighting.`
@@ -314,16 +517,24 @@ const describeMood = (mood, expression, lightingValue) => {
   return `Use ${joined}.`
 }
 
-const describeTimeWeather = (time, weatherState) => {
+const describeTimeWeather = (time, weatherState, customValues = {}) => {
   const clauses = []
 
+  const customTime = customValues.time || ''
+  const customWeather = customValues.weather || ''
+  const includePredefinedWeather = customValues.includePredefinedWeather !== false
+
   const timeSelection = findOption(timeOptions, time)
-  if (timeSelection && timeSelection.value !== 'none') {
+  if (customTime) {
+    clauses.push(`Set the scene at this time: ${customTime}.`)
+  } else if (timeSelection && timeSelection.value !== 'none') {
     clauses.push(`Set the scene during ${timeSelection.label.toLowerCase()}.`)
   }
 
   const weatherSelection = findOption(weather, weatherState)
-  if (weatherSelection && weatherSelection.value !== 'none') {
+  if (customWeather) {
+    clauses.push(`Use this weather: ${customWeather}.`)
+  } else if (includePredefinedWeather && weatherSelection && weatherSelection.value !== 'none') {
     clauses.push(`The atmosphere should feel ${weatherSelection.label.toLowerCase()}.`)
   }
 
@@ -474,6 +685,8 @@ export function buildPrompt(selections = {}) {
     ...selections,
     accessories: Array.isArray(selections.accessories) ? selections.accessories : [],
     effects: Array.isArray(selections.effects) ? selections.effects : [],
+    outfitGarments: Array.isArray(selections.outfitGarments) ? selections.outfitGarments : [],
+    outfitColors: isPlainColorMap(selections.outfitColors) ? selections.outfitColors : {},
   }
 
   const subjectOption = findOption(subjects, safe.subject)
@@ -494,6 +707,27 @@ export function buildPrompt(selections = {}) {
   const frameValue = findOption(cameraSettings.framing, safe.framing)
   const photoStyleValue = findOption(cameraSettings.photographyStyle, safe.photographyStyle)
 
+  // Trimmed custom free text for every section. Blank, missing, or non-string values stay ''.
+  const custom = {
+    purpose: cleanCustomText(safe.customPurpose),
+    style: cleanCustomText(safe.customStyle),
+    background: cleanCustomText(safe.customBackground),
+    outfit: cleanCustomText(safe.customOutfit),
+    garments: cleanCustomText(safe.customGarments),
+    garmentColor: cleanCustomText(safe.customGarmentColor),
+    pose: cleanCustomText(safe.customPose),
+    expression: cleanCustomText(safe.customExpression),
+    mood: cleanCustomText(safe.customMood),
+    lighting: cleanCustomText(safe.customLighting),
+    time: cleanCustomText(safe.customTime),
+    weather: cleanCustomText(safe.customWeather),
+    colorGrading: cleanCustomText(safe.customColorGrading),
+    cultural: cleanCustomText(safe.customCultural),
+    camera: cleanCustomText(safe.customCamera),
+    accessories: cleanCustomText(safe.customAccessories),
+    effects: cleanCustomText(safe.customEffects),
+  }
+
   const promptParts = []
 
   promptParts.push(describeSubject(safe.subject, template))
@@ -504,46 +738,101 @@ export function buildPrompt(selections = {}) {
 
   promptParts.push(describePurpose(safe.purpose, safe.customAspectRatio))
 
-  if (backgroundLabel && backgroundLabel.value !== 'none') {
+  if (custom.purpose) {
+    promptParts.push(`Use this composition direction: ${custom.purpose}.`)
+  }
+
+  if (custom.background) {
+    promptParts.push(`Place the subject in this setting: ${custom.background}.`)
+  } else if (backgroundLabel && backgroundLabel.value !== 'none') {
     promptParts.push(`Place the subject ${describeBackground(backgroundLabel.value)}.`)
   }
 
-  if (outfitLabel && outfitLabel.value !== 'none') {
+  if (custom.outfit) {
+    promptParts.push(`Dress the subject in this outfit: ${custom.outfit}.`)
+  } else if (outfitLabel && outfitLabel.value !== 'none') {
     promptParts.push(`Dress the subject ${describeOutfit(outfitLabel.value)}.`)
   }
 
-  if (poseLabel && poseLabel.value !== 'none') {
+  const garmentText = describeOutfitGarments(safe.subject, safe.outfitGarments, safe.outfitColors)
+  if (garmentText) {
+    const outfitDescribed = Boolean(outfitLabel && outfitLabel.value !== 'none') || Boolean(custom.outfit)
+    promptParts.push(`${outfitDescribed ? 'Specifically include' : 'Include'} ${garmentText}.`)
+  }
+
+  if (custom.garments) {
+    promptParts.push(`${garmentText ? 'Also include' : 'Include'} these clothing details: ${custom.garments}.`)
+  }
+
+  if (custom.garmentColor) {
+    promptParts.push(`Use this clothing colour: ${custom.garmentColor}.`)
+  }
+
+  if (custom.pose) {
+    promptParts.push(`Pose the subject like this: ${custom.pose}.`)
+  } else if (poseLabel && poseLabel.value !== 'none') {
     promptParts.push(`Pose the subject ${describePose(poseLabel.value, safe.subject)}.`)
   }
 
-  if (safe.expression || safe.mood || safe.lighting) {
-    promptParts.push(describeMood(safe.mood, safe.expression, safe.lighting))
+  const moodSentence = describeMood(
+    safe.mood,
+    safe.expression,
+    custom.lighting ? 'none' : safe.lighting,
+    { expression: custom.expression, mood: custom.mood }
+  )
+
+  if (moodSentence) {
+    promptParts.push(moodSentence)
   }
 
-  if ((timeLabel || weatherLabel) && shouldIncludeWeather(safe.background, safe.weather)) {
+  if (custom.lighting) {
+    promptParts.push(`Use this lighting: ${custom.lighting}.`)
+  }
+
+  if (custom.time || custom.weather) {
+    promptParts.push(
+      describeTimeWeather(safe.time, safe.weather, {
+        time: custom.time,
+        weather: custom.weather,
+        includePredefinedWeather: shouldIncludeWeather(safe.background, safe.weather),
+      })
+    )
+  } else if ((timeLabel || weatherLabel) && shouldIncludeWeather(safe.background, safe.weather)) {
     promptParts.push(describeTimeWeather(safe.time, safe.weather))
   }
 
-  if (culturalLabel) {
+  if (custom.cultural) {
+    promptParts.push(`Include this cultural detail: ${custom.cultural}.`)
+  } else if (culturalLabel) {
     promptParts.push(describeCulturalContext(culturalLabel.value))
   }
 
-  if (cameraValue || lensValue || frameValue || photoStyleValue) {
+  if (custom.camera) {
+    promptParts.push(`Use this camera setup: ${custom.camera}.`)
+  } else if (cameraValue || lensValue || frameValue || photoStyleValue) {
     promptParts.push(describeCameraSettings(safe.camera, safe.lens, safe.framing, safe.photographyStyle))
   }
 
-  if (safe.style) {
+  if (custom.style) {
+    promptParts.push(`Apply this visual treatment: ${custom.style}.`)
+  } else if (safe.style) {
     const styleLabel = styleOption ? styleOption.label.toLowerCase() : String(safe.style).replace(/-/g, ' ')
     promptParts.push(`Apply a ${styleLabel} visual treatment.`)
   }
 
-  if (colorLabel) {
+  if (custom.colorGrading) {
+    promptParts.push(`Use this colour grading: ${custom.colorGrading}.`)
+  } else if (colorLabel) {
     promptParts.push(describeColorGrading(colorLabel.value))
   }
 
   const accessoryText = describeAccessories(safe.accessories)
   if (accessoryText) {
     promptParts.push(accessoryText)
+  }
+
+  if (custom.accessories) {
+    promptParts.push(`${accessoryText ? 'Also include' : 'Include'} these accessories: ${custom.accessories}.`)
   }
 
   const weatherIncluded = Boolean(
@@ -558,9 +847,13 @@ export function buildPrompt(selections = {}) {
     promptParts.push(effectText)
   }
 
+  if (custom.effects) {
+    promptParts.push(`${effectText ? 'Also add' : 'Add'} these effects: ${custom.effects}.`)
+  }
+
   if (safe.customInstruction && safe.customInstruction.trim()) {
-    const custom = safe.customInstruction.trim()
-    promptParts.push(custom)
+    const customInstructionText = safe.customInstruction.trim()
+    promptParts.push(customInstructionText)
   }
 
   promptParts.push(

@@ -1,0 +1,75 @@
+                  <div>
+                    <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--text-muted)]">
+                      Specific Clothing
+                    </p>
+                    <div className="space-y-3">
+                      {Object.entries(garmentOptions).map(([group, options]) => (
+                        <div key={group}>
+                          <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--text-muted)]">
+                            {garmentGroupLabels[group] ?? group}
+                          </p>
+                          <div className="flex flex-wrap gap-2">
+                            {options.map((option) => (
+                              <MultiSelectButton
+                                key={option.value}
+                                selected={(builder.outfitGarments || []).includes(option.value)}
+                                onClick={() => toggleGarment(option.value)}
+                                ariaLabel={`Toggle garment ${option.label}`}
+                              >
+                                {option.label}
+                              </MultiSelectButton>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+
+                      <div>
+                        <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--text-muted)]">
+                          None
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                          <MultiSelectButton
+                            selected={(builder.outfitGarments || []).includes('none')}
+                            onClick={() => toggleGarment('none')}
+                            ariaLabel="Clear specific clothing selection"
+                          >
+                            None
+                          </MultiSelectButton>
+                        </div>
+                      </div>
+                    </div>
+
+                    {selectedGarments.length > 0 ? (
+                      <div className="mt-4 space-y-3">
+                        <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--text-muted)]">
+                          Garment Colors
+                        </p>
+                        {selectedGarments.map((garment) => (
+                          <div key={garment}>
+                            <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--text-muted)]">
+                              {garmentLabelByValue[garment] || garment}
+                            </p>
+                            <div className="flex flex-wrap gap-2">
+                              <MultiSelectButton
+                                selected={!(builder.outfitColors || {})[garment]}
+                                onClick={() => updateGarmentColor(garment, null)}
+                                ariaLabel={`Clear color for ${garmentLabelByValue[garment] || garment}`}
+                              >
+                                No Color
+                              </MultiSelectButton>
+                              {getGarmentColorOptions(garment).map((color) => (
+                                <MultiSelectButton
+                                  key={color.value}
+                                  selected={(builder.outfitColors || {})[garment] === color.value}
+                                  onClick={() => updateGarmentColor(garment, color.value)}
+                                  ariaLabel={`Set ${garmentLabelByValue[garment] || garment} color ${color.label}`}
+                                >
+                                  {color.label}
+                                </MultiSelectButton>
+                              ))}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : null}
+                  </div>

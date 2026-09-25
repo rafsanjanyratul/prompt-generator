@@ -1,0 +1,100 @@
+1: import { useEffect, useMemo, useRef, useState } from 'react'
+2: import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
+3: import {
+13: import {
+22:   garmentOptions,
+26:   outfitColorGroups,
+30:   subjects,
+35: import { trackEvent } from '../lib/analytics.js'
+36: import Button from '../components/ui/Button.jsx'
+37: import {
+41: import { randomizeBuilderSelections } from '../utils/randomizeBuilder.js'
+43: const builderProgress = ['Subject', 'Format', 'Style', 'Scene', 'Advanced']
+46: const subjectLabelMap = {
+53: const backgroundGroupLabels = {
+62: const garmentGroupLabels = {
+71: // Mirrors the garment -> color-palette relationship already used by the prompt engine,
+72: // so the UI only offers colors that the selected garment accepts.
+73: const garmentColorGroupKeys = {
+82: const garmentGroupByValue = Object.entries(garmentOptions).reduce((acc, [group, options]) => {
+90: const garmentLabelByValue = Object.values(garmentOptions)
+97: const getGarmentColorOptions = (garmentValue) => {
+98:   const keys = garmentColorGroupKeys[garmentGroupByValue[garmentValue]] || []
+102:     .flatMap((key) => outfitColorGroups[key] || [])
+141: function MultiSelectButton({ selected, onClick, children, ariaLabel }) {
+212:   const subjectRules = compatibility.subjectRules[builder.subject] || {}
+213:   const relevantPoses = new Set(subjectRules.relevantPoses || [])
+214:   const relevantOutfits = new Set(subjectRules.relevantOutfits || [])
+250:   const visibleBackgrounds = useMemo(() => {
+251:     const subjectOptions = appearanceBackgroundsBySubject[builder.subject] || []
+254:     subjectOptions.forEach((option) => {
+263:   }, [builder.subject])
+265:   const toggleMultiSelect = (field, value) => {
+282:   const updateField = (field, value) => {
+308:         subject: builder.subject,
+324:       subject: next.subject,
+334:       subject: next.subject,
+394:                   {subjects.map((option) => (
+397:                       isSelected={builder.subject === option.value}
+398:                       onClick={() => updateField('subject', option.value)}
+399:                       ariaLabel={`Select subject ${option.label}`}
+401:                       {subjectLabelMap[option.value] ?? option.label}
+414:                       onClick={() => updateField('purpose', option.value)}
+441:                       onChange={(event) => updateField('customAspectRatio', event.target.value)}
+458:                         <MultiSelectButton
+461:                           onClick={() => updateField('style', option.value)}
+465:                         </MultiSelectButton>
+480:                       {visibleBackgrounds.map(({ group, options }) => (
+497:                               <MultiSelectButton
+500:                                 onClick={() => updateField('background', option.value)}
+504:                               </MultiSelectButton>
+530:                               <MultiSelectButton
+533:                                 onClick={() => updateField('outfit', option.value)}
+537:                               </MultiSelectButton>
+556:                         <MultiSelectButton
+559:                           onClick={() => updateField('pose', option.value)}
+563:                         </MultiSelectButton>
+574:                         <MultiSelectButton
+577:                           onClick={() => updateField('mood', option.value)}
+581:                         </MultiSelectButton>
+592:                         <MultiSelectButton
+595:                           onClick={() => updateField('lighting', option.value)}
+599:                         </MultiSelectButton>
+644:                               <MultiSelectButton
+647:                                 onClick={() => updateField('expression', option.value)}
+651:                               </MultiSelectButton>
+662:                               <MultiSelectButton
+665:                                 onClick={() => updateField('time', option.value)}
+669:                               </MultiSelectButton>
+680:                               <MultiSelectButton
+683:                                 onClick={() => updateField('weather', option.value)}
+687:                               </MultiSelectButton>
+700:                               <MultiSelectButton
+703:                                 onClick={() => updateField('colorGrading', option.value)}
+707:                               </MultiSelectButton>
+718:                               <MultiSelectButton
+721:                                 onClick={() => updateField('cultural', option.value)}
+725:                               </MultiSelectButton>
+743:                                   <MultiSelectButton
+746:                                     onClick={() => updateField('camera', option.value)}
+750:                                   </MultiSelectButton>
+761:                                   <MultiSelectButton
+764:                                     onClick={() => updateField('lens', option.value)}
+768:                                   </MultiSelectButton>
+779:                                   <MultiSelectButton
+782:                                     onClick={() => updateField('framing', option.value)}
+786:                                   </MultiSelectButton>
+797:                                   <MultiSelectButton
+800:                                     onClick={() => updateField('photographyStyle', option.value)}
+804:                                   </MultiSelectButton>
+818:                                 <MultiSelectButton
+821:                                   onClick={() => toggleMultiSelect('accessories', option.value)}
+825:                                 </MultiSelectButton>
+836:                                 <MultiSelectButton
+839:                                   onClick={() => toggleMultiSelect('effects', option.value)}
+843:                                 </MultiSelectButton>
+854:                               onClick={() => updateField('identityPreservation', !builder.identityPreservation)}
+879:                             onChange={(event) => updateField('customInstruction', event.target.value)}
+949:                     {generatedPrompt.metadata.subject}
+997:                   onClick={() => trackEvent('builder_create_chatgpt', { subject: builder.subject, style: builder.style })}
+1014:                   onClick={() => trackEvent('builder_create_gemini', { subject: builder.subject, style: builder.style })}

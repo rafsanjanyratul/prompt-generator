@@ -1,0 +1,20 @@
+30: outfitGarments: [],
+31: outfitColors: {},
+50: // Guard used to keep `outfitColors` a plain per-garment color map and never a shared reference.
+51: const isPlainColorMap = (value) => Boolean(value) && typeof value === 'object' && !Array.isArray(value)
+63: outfitGarments: Array.isArray(overrides.outfitGarments)
+64: ? [...overrides.outfitGarments]
+65: : [...defaultBuilderSelections.outfitGarments],
+66: outfitColors: isPlainColorMap(overrides.outfitColors)
+67: ? { ...overrides.outfitColors }
+68: : { ...defaultBuilderSelections.outfitColors },
+257: const flattenGarments = () =>
+304: const describeGarment = (garmentValue, outfitColors = {}) => {
+305: const match = findOption(flattenGarments(), garmentValue)
+309: const colorText = findGarmentColor(garmentValue, outfitColors[garmentValue])
+318: const describeOutfitGarments = (garmentValues, outfitColors = {}) => {
+321: const colors = isPlainColorMap(outfitColors) ? outfitColors : {}
+574: outfitGarments: Array.isArray(selections.outfitGarments) ? selections.outfitGarments : [],
+575: outfitColors: isPlainColorMap(selections.outfitColors) ? selections.outfitColors : {},
+611: promptParts.push(`Dress the subject ${describeOutfit(outfitLabel.value)}.`)
+614: const garmentText = describeOutfitGarments(safe.outfitGarments, safe.outfitColors)

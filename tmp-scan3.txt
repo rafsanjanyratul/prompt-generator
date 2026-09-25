@@ -1,0 +1,36 @@
+lines=1042
+CRLF=1041 loneLF=0
+BOM=false
+visibleBackgrounds=YES
+relevantBackgrounds=no 
+appearanceBackgroundsBySubject=YES
+garmentOptions=YES
+outfitColorGroups=YES
+outfitGarments=no 
+outfitColors=no 
+garmentColorGroupKeys=YES
+toggleMultiSelect=YES
+backgrounds=no 
+Specific Clothing=no 
+
+--- lines containing key markers ---
+15: appearanceBackgroundsBySubject,
+22: garmentOptions,
+26: outfitColorGroups,
+73: const garmentColorGroupKeys = {
+82: const garmentGroupByValue = Object.entries(garmentOptions).reduce((acc, [group, options]) => {
+90: const garmentLabelByValue = Object.values(garmentOptions)
+98: const keys = garmentColorGroupKeys[garmentGroupByValue[garmentValue]] || []
+102: .flatMap((key) => outfitColorGroups[key] || [])
+214: const relevantOutfits = new Set(subjectRules.relevantOutfits || [])
+230: const visibleOutfits = useMemo(() => {
+237: relevantOutfits.size === 0 ||
+238: relevantOutfits.has(option.value) ||
+248: }, [relevantOutfits])
+250: const visibleBackgrounds = useMemo(() => {
+251: const subjectOptions = appearanceBackgroundsBySubject[builder.subject] || []
+265: const toggleMultiSelect = (field, value) => {
+480: {visibleBackgrounds.map(({ group, options }) => (
+517: {visibleOutfits.map(({ group, options }) => (
+821: onClick={() => toggleMultiSelect('accessories', option.value)}
+839: onClick={() => toggleMultiSelect('effects', option.value)}
