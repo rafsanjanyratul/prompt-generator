@@ -208,11 +208,24 @@ const menGarmentOptions = {
     { value: 'shirt', label: 'Shirt' },
     { value: 't-shirt', label: 'T-shirt' },
     { value: 'panjabi', label: 'Panjabi' },
+    { value: 'men-polo-shirt', label: 'Polo Shirt' },
+    { value: 'men-kurta', label: 'Kurta' },
+    { value: 'men-tank-top', label: 'Tank Top' },
   ],
-  outerwear: [{ value: 'blazer', label: 'Blazer' }],
+  outerwear: [
+    { value: 'blazer', label: 'Blazer' },
+    { value: 'men-hoodie', label: 'Hoodie' },
+    { value: 'men-sweater', label: 'Sweater' },
+    { value: 'men-denim-jacket', label: 'Denim Jacket' },
+    { value: 'men-leather-jacket', label: 'Leather Jacket' },
+  ],
   lower: [
-    { value: 'trousers', label: 'Trousers / Pants' },
     { value: 'jeans', label: 'Jeans' },
+    { value: 'men-trousers', label: 'Trousers' },
+    { value: 'men-pants', label: 'Pants' },
+    { value: 'men-chinos', label: 'Chinos' },
+    { value: 'men-shorts', label: 'Shorts' },
+    { value: 'men-cargo-pants', label: 'Cargo Pants' },
   ],
   traditionalLower: [
     { value: 'pajama', label: 'Pajama' },
@@ -222,11 +235,16 @@ const menGarmentOptions = {
     { value: 'formal-shoes', label: 'Formal Shoes' },
     { value: 'sneakers', label: 'Sneakers' },
     { value: 'sandals', label: 'Sandals' },
+    { value: 'men-loafers', label: 'Loafers' },
+    { value: 'men-boots', label: 'Boots' },
   ],
   accessories: [
     { value: 'belt', label: 'Belt' },
     { value: 'tie', label: 'Tie' },
     { value: 'watch', label: 'Watch' },
+    { value: 'men-cap', label: 'Cap' },
+    { value: 'men-sunglasses', label: 'Sunglasses' },
+    { value: 'men-wallet', label: 'Wallet' },
   ],
 }
 
@@ -237,27 +255,44 @@ const womenGarmentOptions = {
     { value: 'women-blouse', label: 'Blouse' },
     { value: 'women-t-shirt', label: 'T-shirt' },
     { value: 'women-shirt', label: 'Shirt' },
+    { value: 'women-tunic', label: 'Tunic' },
+    { value: 'women-polo-shirt', label: 'Polo Shirt' },
+    { value: 'women-crop-top', label: 'Crop Top' },
+    { value: 'women-tank-top', label: 'Tank Top' },
   ],
   womenTraditional: [
     { value: 'women-saree', label: 'Saree' },
     { value: 'women-salwar-kameez', label: 'Salwar Kameez' },
     { value: 'women-kurti', label: 'Kurti' },
+    { value: 'women-anarkali', label: 'Anarkali' },
+    { value: 'women-gown', label: 'Gown' },
+    { value: 'women-maxi-dress', label: 'Maxi Dress' },
+    { value: 'women-abaya', label: 'Abaya' },
   ],
   womenLower: [
     { value: 'women-skirt', label: 'Skirt' },
     { value: 'women-jeans', label: 'Jeans' },
     { value: 'women-trousers', label: 'Trousers / Pants' },
+    { value: 'women-palazzo-pants', label: 'Palazzo Pants' },
+    { value: 'women-leggings', label: 'Leggings' },
   ],
   womenOuterwear: [
     { value: 'women-cardigan', label: 'Cardigan' },
     { value: 'women-blazer', label: 'Blazer' },
     { value: 'women-jacket', label: 'Jacket' },
+    { value: 'women-denim-jacket', label: 'Denim Jacket' },
+    { value: 'women-trench-coat', label: 'Trench Coat' },
+    { value: 'women-long-coat', label: 'Long Coat' },
+    { value: 'women-shawl', label: 'Shawl' },
   ],
   womenFootwear: [
     { value: 'women-heels', label: 'Heels' },
     { value: 'women-flats', label: 'Flats' },
     { value: 'women-sneakers', label: 'Sneakers' },
     { value: 'women-sandals', label: 'Sandals' },
+    { value: 'women-loafers', label: 'Loafers' },
+    { value: 'women-wedges', label: 'Wedges' },
+    { value: 'women-boots', label: 'Boots' },
   ],
   womenAccessories: [
     { value: 'women-handbag', label: 'Handbag' },
@@ -265,6 +300,114 @@ const womenGarmentOptions = {
     { value: 'women-watch', label: 'Watch' },
     { value: 'women-earrings', label: 'Earrings' },
     { value: 'women-necklace', label: 'Necklace' },
+    { value: 'women-sunglasses', label: 'Sunglasses' },
+    { value: 'women-bracelet', label: 'Bracelet' },
+    { value: 'women-ring', label: 'Ring' },
+    { value: 'women-hairband', label: 'Hairband' },
+  ],
+}
+
+// Boys' clothing for family portraits, using unique ids (`boys-clothing-*`).
+const boysClothingGarmentOptions = {
+  boysClothingUpper: [
+    { value: 'boys-clothing-t-shirt', label: 'T-shirt' },
+    { value: 'boys-clothing-shirt', label: 'Shirt' },
+    { value: 'boys-clothing-polo-shirt', label: 'Polo Shirt' },
+  ],
+  boysClothingTraditional: [
+    { value: 'boys-clothing-panjabi', label: 'Panjabi' },
+    { value: 'boys-clothing-kurta', label: 'Kurta' },
+  ],
+  boysClothingLower: [
+    { value: 'boys-clothing-jeans', label: 'Jeans' },
+    { value: 'boys-clothing-trousers', label: 'Trousers' },
+    { value: 'boys-clothing-shorts', label: 'Shorts' },
+  ],
+  boysClothingOuterwear: [
+    { value: 'boys-clothing-jacket', label: 'Jacket' },
+    { value: 'boys-clothing-hoodie', label: 'Hoodie' },
+    { value: 'boys-clothing-sweater', label: 'Sweater' },
+  ],
+  boysClothingFootwear: [
+    { value: 'boys-clothing-sneakers', label: 'Sneakers' },
+    { value: 'boys-clothing-sandals', label: 'Sandals' },
+    { value: 'boys-clothing-school-shoes', label: 'School Shoes' },
+  ],
+  boysClothingAccessories: [
+    { value: 'boys-clothing-cap', label: 'Cap' },
+    { value: 'boys-clothing-backpack', label: 'Backpack' },
+    { value: 'boys-clothing-watch', label: 'Watch' },
+  ],
+}
+
+// Girls' clothing for family portraits, using unique ids (`girls-clothing-*`).
+const girlsClothingGarmentOptions = {
+  girlsClothingUpper: [
+    { value: 'girls-clothing-t-shirt', label: 'T-shirt' },
+    { value: 'girls-clothing-blouse', label: 'Blouse' },
+    { value: 'girls-clothing-shirt', label: 'Shirt' },
+  ],
+  girlsClothingTraditional: [
+    { value: 'girls-clothing-frock', label: 'Frock' },
+    { value: 'girls-clothing-kurti', label: 'Kurti' },
+    { value: 'girls-clothing-salwar-kameez', label: 'Salwar Kameez' },
+  ],
+  girlsClothingLower: [
+    { value: 'girls-clothing-skirt', label: 'Skirt' },
+    { value: 'girls-clothing-jeans', label: 'Jeans' },
+    { value: 'girls-clothing-trousers', label: 'Trousers' },
+  ],
+  girlsClothingOuterwear: [
+    { value: 'girls-clothing-jacket', label: 'Jacket' },
+    { value: 'girls-clothing-cardigan', label: 'Cardigan' },
+    { value: 'girls-clothing-sweater', label: 'Sweater' },
+  ],
+  girlsClothingFootwear: [
+    { value: 'girls-clothing-flats', label: 'Flats' },
+    { value: 'girls-clothing-sneakers', label: 'Sneakers' },
+    { value: 'girls-clothing-sandals', label: 'Sandals' },
+    { value: 'girls-clothing-school-shoes', label: 'School Shoes' },
+  ],
+  girlsClothingAccessories: [
+    { value: 'girls-clothing-hairband', label: 'Hairband' },
+    { value: 'girls-clothing-cap', label: 'Cap' },
+    { value: 'girls-clothing-backpack', label: 'Backpack' },
+    { value: 'girls-clothing-bracelet', label: 'Bracelet' },
+  ],
+}
+
+// Legacy kids dataset retained so older saved `kids-*` selections still resolve.
+const kidsGarmentOptions = {
+  kidsUpper: [
+    { value: 'kids-t-shirt', label: 'T-shirt' },
+    { value: 'kids-shirt', label: 'Shirt' },
+    { value: 'kids-polo-shirt', label: 'Polo Shirt' },
+  ],
+  kidsTraditional: [
+    { value: 'kids-panjabi', label: 'Panjabi' },
+    { value: 'kids-kurta', label: 'Kurta' },
+    { value: 'kids-frock', label: 'Frock / Dress' },
+  ],
+  kidsLower: [
+    { value: 'kids-jeans', label: 'Jeans' },
+    { value: 'kids-trousers', label: 'Trousers / Pants' },
+    { value: 'kids-shorts', label: 'Shorts' },
+    { value: 'kids-skirt', label: 'Skirt' },
+  ],
+  kidsOuterwear: [
+    { value: 'kids-jacket', label: 'Jacket' },
+    { value: 'kids-hoodie', label: 'Hoodie' },
+    { value: 'kids-sweater', label: 'Sweater' },
+  ],
+  kidsFootwear: [
+    { value: 'kids-sneakers', label: 'Sneakers' },
+    { value: 'kids-sandals', label: 'Sandals' },
+    { value: 'kids-school-shoes', label: 'School Shoes' },
+  ],
+  kidsAccessories: [
+    { value: 'kids-cap', label: 'Cap' },
+    { value: 'kids-watch', label: 'Watch' },
+    { value: 'kids-backpack', label: 'Backpack' },
   ],
 }
 
@@ -272,15 +415,23 @@ const womenGarmentOptions = {
 export const garmentOptions = {
   ...menGarmentOptions,
   ...womenGarmentOptions,
+  ...boysClothingGarmentOptions,
+  ...girlsClothingGarmentOptions,
+  ...kidsGarmentOptions,
 }
 
 // Subject-aware clothing used by the Create page UI.
-// Single-person subjects show only their own list; couples / family expose both sides.
+// Single-person subjects show only their own list; couples / family expose both sides (and kids for family).
 export const garmentOptionsBySubject = {
   boys: { men: menGarmentOptions },
   girls: { women: womenGarmentOptions },
   couples: { men: menGarmentOptions, women: womenGarmentOptions },
-  family: { men: menGarmentOptions, women: womenGarmentOptions },
+  family: {
+    men: menGarmentOptions,
+    women: womenGarmentOptions,
+    boysClothing: boysClothingGarmentOptions,
+    girlsClothing: girlsClothingGarmentOptions,
+  },
 }
 
 // Color palettes for garment-level outfit colors.

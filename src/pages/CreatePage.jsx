@@ -73,11 +73,40 @@ const garmentGroupLabels = {
   womenOuterwear: 'Outerwear',
   womenFootwear: 'Footwear',
   womenAccessories: 'Accessories',
+  kidsUpper: 'Upper',
+  kidsTraditional: 'Traditional / One-piece',
+  kidsLower: 'Lower',
+  kidsOuterwear: 'Outerwear',
+  kidsFootwear: 'Footwear',
+  kidsAccessories: 'Accessories',
+  boysClothingUpper: 'Upper',
+  boysClothingTraditional: 'Traditional / One-piece',
+  boysClothingLower: 'Lower',
+  boysClothingOuterwear: 'Outerwear',
+  boysClothingFootwear: 'Footwear',
+  boysClothingAccessories: 'Accessories',
+  girlsClothingUpper: 'Upper',
+  girlsClothingTraditional: 'Traditional / One-piece',
+  girlsClothingLower: 'Lower',
+  girlsClothingOuterwear: 'Outerwear',
+  girlsClothingFootwear: 'Footwear',
+  girlsClothingAccessories: 'Accessories',
 }
 
 const garmentPersonSectionLabels = {
   men: 'Men',
   women: 'Women',
+  kids: 'Kids',
+  boysClothing: "Boys' Clothing",
+  girlsClothing: "Girls' Clothing",
+}
+
+const personCustomFields = {
+  men: { item: 'customGarmentsMen', color: 'customGarmentColorMen' },
+  women: { item: 'customGarmentsWomen', color: 'customGarmentColorWomen' },
+  kids: { item: 'customGarmentsKids', color: 'customGarmentColorKids' },
+  boysClothing: { item: 'customGarmentsBoysClothing', color: 'customGarmentColorBoysClothing' },
+  girlsClothing: { item: 'customGarmentsGirlsClothing', color: 'customGarmentColorGirlsClothing' },
 }
 
 // Mirrors the garment -> color-palette relationship already used by the prompt engine,
@@ -95,6 +124,24 @@ const garmentColorGroupKeys = {
   womenOuterwear: ['upper'],
   womenFootwear: ['lower'],
   womenAccessories: ['upper', 'lower'],
+  kidsUpper: ['upper'],
+  kidsTraditional: ['upper', 'traditionalLower'],
+  kidsLower: ['lower'],
+  kidsOuterwear: ['upper'],
+  kidsFootwear: ['lower'],
+  kidsAccessories: ['upper', 'lower'],
+  boysClothingUpper: ['upper'],
+  boysClothingTraditional: ['upper', 'traditionalLower'],
+  boysClothingLower: ['lower'],
+  boysClothingOuterwear: ['upper'],
+  boysClothingFootwear: ['lower'],
+  boysClothingAccessories: ['upper', 'lower'],
+  girlsClothingUpper: ['upper'],
+  girlsClothingTraditional: ['upper', 'traditionalLower'],
+  girlsClothingLower: ['lower'],
+  girlsClothingOuterwear: ['upper'],
+  girlsClothingFootwear: ['lower'],
+  girlsClothingAccessories: ['upper', 'lower'],
 }
 
 const garmentGroupByValue = Object.entries(garmentOptions).reduce((acc, [group, options]) => {
@@ -329,14 +376,40 @@ function CreatePage() {
 
   // Garment multi-select. `none` stays mutually exclusive with real garments and
   // dropping a garment also drops its color so outfitColors never keeps stale keys.
-  const toggleGarment = (garment) => {
+  // For multi-person subjects, `none:<person>` clears only that person's garments;
+  // the global `none` keeps the legacy single-person behavior.
+  const toggleGarment = (garment, person = null) => {
     setBuilder((current) => {
       const selected = current.outfitGarments || []
 
-      if (garment === 'none') {
+      if (garment === 'none' && !person) {
         return selected.includes('none')
           ? { ...current, outfitGarments: [] }
           : { ...current, outfitGarments: ['none'], outfitColors: {} }
+      }
+
+      if (person) {
+        const personGarments = new Set(
+          Object.values(garmentOptionsBySubject[current.subject]?.[person] || {})
+            .flat()
+            .map((option) => option.value)
+        )
+        const nextGarments = selected.filter(
+          (item) => item === 'none' || !personGarments.has(item)
+        )
+        const fields = personCustomFields[person]
+        const next = { ...current, outfitGarments: nextGarments }
+        const nextColors = { ...(current.outfitColors || {}) }
+        personGarments.forEach((value) => {
+          delete nextColors[value]
+        })
+        next.outfitColors = nextColors
+        if (fields) {
+          next[fields.item] = ''
+          next[fields.color] = ''
+        }
+
+        return next
       }
 
       const withoutNone = selected.filter((item) => item !== 'none')
@@ -664,7 +737,7 @@ function CreatePage() {
                         const personEntries = Object.entries(subjectGarments)
                         const showPersonHeaders = personEntries.length > 1
 
-                        return personEntries.map(([person, groups]) => (
+                        const blocks = personEntries.map(([person, groups]) => (
                           <div key={person} className="space-y-3">
                             {showPersonHeaders ? (
                               <p className="border-b border-[var(--border)] pb-1 text-xs font-bold uppercase tracking-[0.14em] text-[var(--text)]">
@@ -691,34 +764,106 @@ function CreatePage() {
                                 </div>
                               </div>
                             ))}
+
+                            {showPersonHeaders ? (
+                              <div>
+                                <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--text-muted)]">
+                                  {`${garmentPersonSectionLabels[person] ?? person} — None`}
+                                </p>
+                                <div className="flex flex-wrap gap-2">
+                                  <MultiSelectButton
+                                    selected={Object.values(subjectGarments[person] || {})
+                                      .flat()
+                                      .every(
+                                        (option) =>
+                                          !(builder.outfitGarments || []).includes(option.value),
+                                      )}
+                                    onClick={() => toggleGarment('__person-none__', person)}
+                                    ariaLabel={`Clear ${garmentPersonSectionLabels[person] ?? person} clothing selection`}
+                                  >
+                                    None
+                                  </MultiSelectButton>
+                                </div>
+                              </div>
+                            ) : null}
+
+                            {showPersonHeaders && personCustomFields[person] ? (
+                              <>
+                                <CustomField
+                                  id={`custom-garments-${person}`}
+                                  field={personCustomFields[person].item}
+                                  value={builder[personCustomFields[person].item]}
+                                  placeholder="Other clothing item..."
+                                  label={`${garmentPersonSectionLabels[person] ?? person} Custom Clothing`}
+                                  onChange={updateField}
+                                />
+                                <CustomField
+                                  id={`custom-garment-color-${person}`}
+                                  field={personCustomFields[person].color}
+                                  value={builder[personCustomFields[person].color]}
+                                  placeholder="Other clothing color..."
+                                  label={`${garmentPersonSectionLabels[person] ?? person} Custom Clothing Color`}
+                                  onChange={updateField}
+                                />
+                              </>
+                            ) : null}
                           </div>
                         ))
+                        // Family groups boys/girls clothing under a shared Kids parent.
+                        const kidsBlock =
+                          builder.subject !== 'family' ? null : (
+                            <div key="kids" className="space-y-3">
+                              <p className="border-b border-[var(--border)] pb-1 text-xs font-bold uppercase tracking-[0.14em] text-[var(--text)]">
+                                Kids
+                              </p>
+                              <div className="space-y-4 border-l-2 border-[var(--border)] pl-3">
+                                {blocks.filter(
+                                  (block) =>
+                                    block.key === 'boysClothing' || block.key === 'girlsClothing',
+                                )}
+                              </div>
+                            </div>
+                          )
+
+                        return builder.subject === 'family' && kidsBlock
+                          ? [
+                              ...blocks.filter(
+                                (block) =>
+                                  block.key !== 'boysClothing' && block.key !== 'girlsClothing',
+                              ),
+                              kidsBlock,
+                            ]
+                          : blocks
                       })()}
 
-                      <div>
-                        <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--text-muted)]">
-                          None
-                        </p>
-                        <div className="flex flex-wrap gap-2">
-                          <MultiSelectButton
-                            selected={(builder.outfitGarments || []).includes('none')}
-                            onClick={() => toggleGarment('none')}
-                            ariaLabel="Clear specific clothing selection"
-                          >
+                      {builder.subject === 'couples' || builder.subject === 'family' ? null : (
+                        <div>
+                          <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--text-muted)]">
                             None
-                          </MultiSelectButton>
+                          </p>
+                          <div className="flex flex-wrap gap-2">
+                            <MultiSelectButton
+                              selected={(builder.outfitGarments || []).includes('none')}
+                              onClick={() => toggleGarment('none')}
+                              ariaLabel="Clear specific clothing selection"
+                            >
+                              None
+                            </MultiSelectButton>
+                          </div>
                         </div>
-                      </div>
+                      )}
                     </div>
 
-                    <CustomField
-                      id="custom-garments"
-                      field="customGarments"
-                      value={builder.customGarments}
-                      placeholder="Other clothing item..."
-                      label="Custom Clothing"
-                      onChange={updateField}
-                    />
+                    {builder.subject === 'couples' || builder.subject === 'family' ? null : (
+                      <CustomField
+                        id="custom-garments"
+                        field="customGarments"
+                        value={builder.customGarments}
+                        placeholder="Other clothing item..."
+                        label="Custom Clothing"
+                        onChange={updateField}
+                      />
+                    )}
 
                     {selectedGarments.length ? (
                       <div className="mt-4 space-y-3">
@@ -754,14 +899,16 @@ function CreatePage() {
                       </div>
                     ) : null}
 
-                    <CustomField
-                      id="custom-garment-color"
-                      field="customGarmentColor"
-                      value={builder.customGarmentColor}
-                      placeholder="Other clothing color..."
-                      label="Custom Clothing Color"
-                      onChange={updateField}
-                    />
+                    {builder.subject === 'couples' || builder.subject === 'family' ? null : (
+                      <CustomField
+                        id="custom-garment-color"
+                        field="customGarmentColor"
+                        value={builder.customGarmentColor}
+                        placeholder="Other clothing color..."
+                        label="Custom Clothing Color"
+                        onChange={updateField}
+                      />
+                    )}
                   </div>
                 </div>
               </div>

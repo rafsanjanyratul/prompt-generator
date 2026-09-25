@@ -54,6 +54,16 @@ export const defaultBuilderSelections = {
   customOutfit: '',
   customGarments: '',
   customGarmentColor: '',
+  customGarmentsMen: '',
+  customGarmentColorMen: '',
+  customGarmentsWomen: '',
+  customGarmentColorWomen: '',
+  customGarmentsKids: '',
+  customGarmentColorKids: '',
+  customGarmentsBoysClothing: '',
+  customGarmentColorBoysClothing: '',
+  customGarmentsGirlsClothing: '',
+  customGarmentColorGirlsClothing: '',
   customPose: '',
   customExpression: '',
   customMood: '',
@@ -286,8 +296,9 @@ const flattenGarments = () =>
 // Which color palette(s) belong to each garment group.
 // Footwear has no dedicated palette in the option data, so it uses the `lower` palette,
 // which already holds the footwear colors (black, brown, beige, white, navy, gray, ...).
-// Women's groups reuse these palettes; traditional one-piece wear (saree, salwar kameez, kurti)
+// Women's groups reuse these palettes; traditional one-piece wear (saree, salwar kameez, kurti, etc.)
 // accepts both the upper and the traditional palette.
+// Kids' groups reuse the same palettes cleanly.
 const garmentColorGroupKeys = {
   upper: ['upper'],
   outerwear: ['upper'],
@@ -301,6 +312,24 @@ const garmentColorGroupKeys = {
   womenOuterwear: ['upper'],
   womenFootwear: ['lower'],
   womenAccessories: ['upper', 'lower'],
+  kidsUpper: ['upper'],
+  kidsTraditional: ['upper', 'traditionalLower'],
+  kidsLower: ['lower'],
+  kidsOuterwear: ['upper'],
+  kidsFootwear: ['lower'],
+  kidsAccessories: ['upper', 'lower'],
+  boysClothingUpper: ['upper'],
+  boysClothingTraditional: ['upper', 'traditionalLower'],
+  boysClothingLower: ['lower'],
+  boysClothingOuterwear: ['upper'],
+  boysClothingFootwear: ['lower'],
+  boysClothingAccessories: ['upper', 'lower'],
+  girlsClothingUpper: ['upper'],
+  girlsClothingTraditional: ['upper', 'traditionalLower'],
+  girlsClothingLower: ['lower'],
+  girlsClothingOuterwear: ['upper'],
+  girlsClothingFootwear: ['lower'],
+  girlsClothingAccessories: ['upper', 'lower'],
 }
 
 const findGarmentGroup = (garmentValue) =>
@@ -309,7 +338,7 @@ const findGarmentGroup = (garmentValue) =>
   )?.[0] || null
 
 // Which person a garment belongs to, derived from the subject-aware option data so the
-// men's and women's garment lists are defined exactly once.
+// men's, women's, and kids' garment lists are defined exactly once.
 const garmentPersonByValue = Object.entries(garmentOptionsBySubject).reduce((acc, [, persons]) => {
   Object.entries(persons).forEach(([person, groups]) => {
     Object.values(groups)
@@ -322,15 +351,20 @@ const garmentPersonByValue = Object.entries(garmentOptionsBySubject).reduce((acc
   return acc
 }, {})
 
-// Subjects that describe more than one person need gendered wording, otherwise a men's garment
-// and a women's garment in the same selection would be ambiguous in the prompt.
+// Subjects that describe more than one person need gendered / person-specific wording, otherwise
+// clothing in the same selection would be ambiguous in the prompt.
 const multiPersonSubjects = new Set(['couples', 'family'])
 
 // Couples are singular, while a family is described generically so the prompt never claims
-// that the family contains exactly one man and one woman.
+// that the family contains exactly one man, one woman, or one child.
 const garmentPersonNouns = {
   couples: { men: 'the man', women: 'the woman' },
-  family: { men: 'the men', women: 'the women' },
+  family: { men: 'the men', women: 'the women', boysClothing: 'the boys', girlsClothing: 'the girls' },
+}
+
+// Aliases for legacy selections kept resolvable in state/prompts.
+const legacyGarmentPerson = {
+  kids: 'boysClothing',
 }
 
 // Resolves a garment color only against the palette(s) that belong to that garment.
@@ -353,7 +387,40 @@ const garmentPromptLabels = {
   't-shirt': 'T-shirt',
   panjabi: 'Panjabi',
   trousers: 'trousers',
+  'men-trousers': 'trousers',
+  'men-pants': 'pants',
+  'men-chinos': 'chinos',
+  'women-t-shirt': 'T-shirt',
   'women-trousers': 'trousers',
+  'women-palazzo-pants': 'palazzo pants',
+  'women-leggings': 'leggings',
+  'women-crop-top': 'crop top',
+  'women-tank-top': 'tank top',
+  'women-maxi-dress': 'maxi dress',
+  'women-salwar-kameez': 'salwar kameez',
+  'women-polo-shirt': 'polo shirt',
+  'women-long-coat': 'long coat',
+  'women-ring': 'ring',
+  'women-hairband': 'hairband',
+  'men-sunglasses': 'sunglasses',
+  'men-polo-shirt': 'polo shirt',
+  'men-cargo-pants': 'cargo pants',
+  'men-school-shoes': 'school shoes',
+  'men-tank-top': 'tank top',
+  'boys-clothing-t-shirt': 'T-shirt',
+  'boys-clothing-polo-shirt': 'polo shirt',
+  'boys-clothing-panjabi': 'Panjabi',
+  'boys-clothing-trousers': 'trousers',
+  'boys-clothing-school-shoes': 'school shoes',
+  'girls-clothing-t-shirt': 'T-shirt',
+  'girls-clothing-trousers': 'trousers',
+  'girls-clothing-school-shoes': 'school shoes',
+  'girls-clothing-salwar-kameez': 'salwar kameez',
+  'kids-t-shirt': 'T-shirt',
+  'kids-polo-shirt': 'polo shirt',
+  'kids-panjabi': 'Panjabi',
+  'kids-trousers': 'trousers',
+  'kids-school-shoes': 'school shoes',
 }
 
 // Grammatically plural garments: they read naturally without an "a"/"an" article.
@@ -366,11 +433,44 @@ const pluralGarments = new Set([
   'sandals',
   'women-trousers',
   'women-jeans',
+  'women-palazzo-pants',
+  'women-leggings',
   'women-heels',
   'women-flats',
   'women-sneakers',
   'women-sandals',
+  'women-loafers',
+  'women-wedges',
+  'women-boots',
   'women-earrings',
+  'women-sunglasses',
+  'men-shorts',
+  'men-trousers',
+  'men-pants',
+  'men-chinos',
+  'men-cargo-pants',
+  'men-loafers',
+  'men-boots',
+  'men-sunglasses',
+  'boys-clothing-jeans',
+  'boys-clothing-trousers',
+  'boys-clothing-shorts',
+  'boys-clothing-sneakers',
+  'boys-clothing-sandals',
+  'boys-clothing-school-shoes',
+  'girls-clothing-jeans',
+  'girls-clothing-trousers',
+  'girls-clothing-flats',
+  'girls-clothing-sneakers',
+  'girls-clothing-sandals',
+  'girls-clothing-school-shoes',
+  'girls-clothing-sunglasses',
+  'kids-jeans',
+  'kids-trousers',
+  'kids-shorts',
+  'kids-sneakers',
+  'kids-sandals',
+  'kids-school-shoes',
 ])
 
 const describeGarment = (garmentValue, outfitColors = {}) => {
@@ -406,7 +506,7 @@ const describeOutfitGarments = (subject, garmentValues, outfitColors = {}) => {
   const gendered = multiPersonSubjects.has(subject)
 
   const flatPhrases = []
-  const personPhrases = { men: [], women: [] }
+  const personPhrases = { men: [], women: [], kids: [], boysClothing: [], girlsClothing: [] }
 
   garmentValues
     .filter((value) => value && value !== 'none')
@@ -419,7 +519,17 @@ const describeOutfitGarments = (subject, garmentValues, outfitColors = {}) => {
         return
       }
 
-      personPhrases[garmentPersonByValue[value] || 'men'].push(phrase)
+      const personBucket = garmentPersonByValue[value]
+      const resolvedBucket = personBucket
+        ? legacyGarmentPerson[personBucket]
+          ? legacyGarmentPerson[personBucket]
+          : personBucket
+        : 'men'
+      if (resolvedBucket && personPhrases[resolvedBucket]) {
+        personPhrases[resolvedBucket].push(phrase)
+      } else {
+        personPhrases.men.push(phrase)
+      }
     })
 
   if (!gendered) {
@@ -427,8 +537,8 @@ const describeOutfitGarments = (subject, garmentValues, outfitColors = {}) => {
   }
 
   const nouns = garmentPersonNouns[subject] || {}
-  const phrases = ['men', 'women']
-    .filter((person) => personPhrases[person].length)
+  const phrases = ['men', 'women', 'kids', 'boysClothing', 'girlsClothing']
+    .filter((person) => personPhrases[person].length && nouns[person])
     .map((person) => `${nouns[person]} wearing ${joinPhraseList(personPhrases[person])}`)
 
   return phrases.length ? joinPhraseList(phrases) : ''
@@ -715,6 +825,16 @@ export function buildPrompt(selections = {}) {
     outfit: cleanCustomText(safe.customOutfit),
     garments: cleanCustomText(safe.customGarments),
     garmentColor: cleanCustomText(safe.customGarmentColor),
+    garmentsMen: cleanCustomText(safe.customGarmentsMen),
+    garmentColorMen: cleanCustomText(safe.customGarmentColorMen),
+    garmentsWomen: cleanCustomText(safe.customGarmentsWomen),
+    garmentColorWomen: cleanCustomText(safe.customGarmentColorWomen),
+    garmentsKids: cleanCustomText(safe.customGarmentsKids),
+    garmentColorKids: cleanCustomText(safe.customGarmentColorKids),
+    garmentsBoys: cleanCustomText(safe.customGarmentsBoysClothing),
+    garmentColorBoys: cleanCustomText(safe.customGarmentColorBoysClothing),
+    garmentsGirls: cleanCustomText(safe.customGarmentsGirlsClothing),
+    garmentColorGirls: cleanCustomText(safe.customGarmentColorGirlsClothing),
     pose: cleanCustomText(safe.customPose),
     expression: cleanCustomText(safe.customExpression),
     mood: cleanCustomText(safe.customMood),
@@ -760,12 +880,62 @@ export function buildPrompt(selections = {}) {
     promptParts.push(`${outfitDescribed ? 'Specifically include' : 'Include'} ${garmentText}.`)
   }
 
+  if (custom.garmentsMen) {
+    promptParts.push(
+      `Dress the man in this custom clothing: ${custom.garmentsMen}${custom.garmentColorMen ? ` in ${custom.garmentColorMen}` : ''}.`
+    )
+  }
+
+  if (custom.garmentsWomen) {
+    promptParts.push(
+      `Dress the woman in this custom clothing: ${custom.garmentsWomen}${custom.garmentColorWomen ? ` in ${custom.garmentColorWomen}` : ''}.`
+    )
+  }
+
+  if (custom.garmentsKids) {
+    promptParts.push(
+      `Dress the kids in this custom clothing: ${custom.garmentsKids}${custom.garmentColorKids ? ` in ${custom.garmentColorKids}` : ''}.`
+    )
+  }
+
+  if (custom.garmentsBoys) {
+    promptParts.push(
+      `Dress the boys in this custom clothing: ${custom.garmentsBoys}${custom.garmentColorBoys ? ` in ${custom.garmentColorBoys}` : ''}.`
+    )
+  }
+
+  if (custom.garmentsGirls) {
+    promptParts.push(
+      `Dress the girls in this custom clothing: ${custom.garmentsGirls}${custom.garmentColorGirls ? ` in ${custom.garmentColorGirls}` : ''}.`
+    )
+  }
+
   if (custom.garments) {
     promptParts.push(`${garmentText ? 'Also include' : 'Include'} these clothing details: ${custom.garments}.`)
   }
 
   if (custom.garmentColor) {
     promptParts.push(`Use this clothing colour: ${custom.garmentColor}.`)
+  }
+
+  if (!custom.garmentsMen && custom.garmentColorMen) {
+    promptParts.push(`Use this clothing colour for the man: ${custom.garmentColorMen}.`)
+  }
+
+  if (!custom.garmentsWomen && custom.garmentColorWomen) {
+    promptParts.push(`Use this clothing colour for the woman: ${custom.garmentColorWomen}.`)
+  }
+
+  if (!custom.garmentsKids && custom.garmentColorKids) {
+    promptParts.push(`Use this clothing colour for the kids: ${custom.garmentColorKids}.`)
+  }
+
+  if (!custom.garmentsBoys && custom.garmentColorBoys) {
+    promptParts.push(`Use this clothing colour for the boys: ${custom.garmentColorBoys}.`)
+  }
+
+  if (!custom.garmentsGirls && custom.garmentColorGirls) {
+    promptParts.push(`Use this clothing colour for the girls: ${custom.garmentColorGirls}.`)
   }
 
   if (custom.pose) {
