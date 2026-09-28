@@ -17,6 +17,7 @@ function Header() {
     { label: 'Explore', to: '/explore' },
     { label: 'Styles', to: stylesNavTarget },
     { label: 'Create', to: '/create' },
+    { label: 'Voice Prompt', to: '/voice-prompt' },
   ]
 
   const closeMenu = () => setIsMenuOpen(false)
