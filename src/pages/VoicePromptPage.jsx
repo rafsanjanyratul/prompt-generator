@@ -71,6 +71,49 @@ async function writeToClipboard(text) {
   }
 }
 
+function normalizeForComparison(text) {
+  // Comparison-only normalization: case/punctuation/whitespace drift between
+  // redelivered results must not defeat duplicate detection. Unicode marks
+  // (e.g. Bengali vowel signs) are preserved so words are never corrupted.
+  return text
+    .toLowerCase()
+    .replace(/[^\p{L}\p{M}\p{N}\s]/gu, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+function wordsOf(normalizedText) {
+  return normalizedText.split(' ').filter(Boolean)
+}
+
+function stripLeadingEcho(echoTail, candidateKey, candidateText) {
+  // One-shot guard for the automatic-restart echo: the first final of the new
+  // run often repeats the already committed tail. Strip that leading overlap
+  // (word-aligned) so the echo is not appended a second time.
+  const tailWords = wordsOf(echoTail)
+  const candidateWords = wordsOf(candidateKey)
+  const rawWords = candidateText.split(/\s+/).filter(Boolean)
+  if (!tailWords.length || !candidateWords.length) {
+    return { key: candidateKey, text: candidateText }
+  }
+
+  let overlap = 0
+  const maxOverlap = Math.min(tailWords.length, candidateWords.length)
+  for (let size = maxOverlap; size > 0; size -= 1) {
+    const tailSlice = tailWords.slice(tailWords.length - size).join(' ')
+    const candidateSlice = candidateWords.slice(0, size).join(' ')
+    if (tailSlice === candidateSlice) {
+      overlap = size
+      break
+    }
+  }
+
+  if (overlap === 0) return { key: candidateKey, text: candidateText }
+  const remainingRaw = rawWords.slice(overlap).join(' ')
+  const remainingKey = candidateWords.slice(overlap).join(' ')
+  return { key: remainingKey, text: remainingRaw }
+}
+
 function VoicePromptPage() {
   const prefersReducedMotion = useReducedMotion()
   const speechRecognitionSupported = useMemo(() => Boolean(getSpeechRecognition()), [])
@@ -83,14 +126,79 @@ function VoicePromptPage() {
 
   const recognitionRef = useRef(null)
   const keepListeningRef = useRef(false)
+  const sessionIdRef = useRef(0)
   const committedTextRef = useRef('')
-  const finalTranscriptRef = useRef('')
+  const sessionFinalRef = useRef('')
+  const lastInterimRef = useRef('')
+  const runFinalsRef = useRef([])
+  const runMaxIndexRef = useRef(-1)
+  const overlapTailRef = useRef('')
+  const restartTimerRef = useRef(0)
+
+  const renderTranscript = () => {
+    // Single render path: committed text + finalized words for this session.
+    // Interim text is intentionally not stored in state; it is rendered only
+    // from the latest onresult event so repeated interim callbacks replace,
+    // never append.
+    setPromptText(`${committedTextRef.current}${sessionFinalRef.current}${lastInterimRef.current}`)
+  }
+
+  const detachRecognition = (recognition) => {
+    if (!recognition) return
+    recognition.onstart = null
+    recognition.onresult = null
+    recognition.onerror = null
+    recognition.onend = null
+  }
+
+  const clearRestartTimer = () => {
+    if (restartTimerRef.current) {
+      window.clearTimeout(restartTimerRef.current)
+      restartTimerRef.current = 0
+    }
+  }
+
+  const rebuildRunDisplay = () => {
+    // Authoritative per-run rebuild: committed words plus the accepted finals
+    // of the current recognition run. Replaying the same event is idempotent
+    // because display derives from the accepted list, never from appends.
+    const sessionText = runFinalsRef.current
+      .map((entry) => entry.display)
+      .join(' ')
+    const combined = [committedTextRef.current.trim(), sessionText.trim()]
+      .filter(Boolean)
+      .join(' ')
+    sessionFinalRef.current = sessionText ? `${sessionText} ` : ''
+    return combined ? `${combined} ` : ''
+  }
+
+  const resetSessionBuffers = (baseText) => {
+    committedTextRef.current = baseText
+    sessionFinalRef.current = ''
+    lastInterimRef.current = ''
+    runFinalsRef.current = []
+    runMaxIndexRef.current = -1
+    overlapTailRef.current = ''
+  }
+
+  const commitSessionFinal = () => {
+    committedTextRef.current = rebuildRunDisplay()
+    sessionFinalRef.current = ''
+    lastInterimRef.current = ''
+    runFinalsRef.current = []
+    runMaxIndexRef.current = -1
+    overlapTailRef.current = ''
+  }
 
   useEffect(() => {
     return () => {
       const recognition = recognitionRef.current
+      sessionIdRef.current += 1
       keepListeningRef.current = false
       recognitionRef.current = null
+      lastInterimRef.current = ''
+      clearRestartTimer()
+      detachRecognition(recognition)
 
       if (!recognition) return
 
@@ -115,16 +223,30 @@ function VoicePromptPage() {
       return
     }
 
-    // Changing language restarts the session, so the previous instance is dropped first.
-    if (recognitionRef.current) {
-      keepListeningRef.current = false
+    // Handoff: preserve the currently committed text as the new base, then
+    // invalidate stale events from the previous instance via session id +
+    // detached handlers. In-flight interim/final buffers are intentionally
+    // NOT carried across: on mobile the previous instance can redeliver them
+    // after a restart, which appended the same phrase 5-6 times.
+    const preserved = committedTextRef.current
+    const previous = recognitionRef.current
+    sessionIdRef.current += 1
+    keepListeningRef.current = false
+    clearRestartTimer()
+    detachRecognition(previous)
+    if (previous) {
       try {
-        recognitionRef.current.abort()
+        previous.abort()
       } catch {
         // Ignore abort failures and continue with the new session.
       }
-      recognitionRef.current = null
+      if (recognitionRef.current === previous) {
+        recognitionRef.current = null
+      }
     }
+
+    const sessionId = sessionIdRef.current + 1
+    sessionIdRef.current = sessionId
 
     const recognition = new SpeechRecognitionCtor()
     recognition.lang = nextLanguage
@@ -132,55 +254,141 @@ function VoicePromptPage() {
     recognition.interimResults = true
     recognition.maxAlternatives = 1
 
-    committedTextRef.current = promptText.trim() ? `${promptText.trim()} ` : ''
-    finalTranscriptRef.current = ''
+    committedTextRef.current = preserved
+    resetSessionBuffers(preserved)
 
     recognition.onstart = () => {
+      if (sessionIdRef.current !== sessionId) return
       setIsListening(true)
       setStatusMessage('')
     }
 
     recognition.onresult = (event) => {
+      // Drop late events from an aborted instance (common on low-end mobile).
+      if (sessionIdRef.current !== sessionId) return
+      if (recognitionRef.current !== recognition) return
+
       let interimTranscript = ''
 
       for (let index = event.resultIndex; index < event.results.length; index += 1) {
         const result = event.results[index]
-        const transcript = result[0]?.transcript ?? ''
+        const display = (result?.[0]?.transcript ?? '').trim()
+        if (!display) continue
+        const comparisonKey = normalizeForComparison(display)
 
-        if (result.isFinal) {
-          finalTranscriptRef.current += `${transcript} `
-        } else {
-          interimTranscript += transcript
+        if (!result.isFinal) {
+          // Interim is temporary: rebuild from this event only (replace).
+          // Never compare interim against committed text: while the user
+          // keeps talking, interim legitimately extends the accepted words.
+          interimTranscript += result[0].transcript
+          continue
         }
+
+        // New recognition run after an automatic restart: resultIndex resets
+        // toward zero and mobile replays the previous utterance. Fold the run
+        // into committed text ONCE, keep it as the one-shot overlap tail, and
+        // start a fresh run list — without clearing the tail, the same replay
+        // would be compared against an empty run and appended again.
+        if (index <= runMaxIndexRef.current) {
+          committedTextRef.current = rebuildRunDisplay()
+          overlapTailRef.current = normalizeForComparison(
+            `${committedTextRef.current} ${sessionFinalRef.current}`,
+          )
+          runFinalsRef.current = []
+          runMaxIndexRef.current = -1
+          lastInterimRef.current = ''
+        }
+
+        const existing = runFinalsRef.current.find((entry) => entry.index === index)
+        if (existing) {
+          if (existing.key === comparisonKey) continue
+          // Same slot corrected (e.g. "photo" -> "photos"): replace wording.
+          existing.key = comparisonKey
+          existing.display = display
+        } else {
+          let nextDisplay = display
+          let nextKey = comparisonKey
+          if (overlapTailRef.current) {
+            const stripped = stripLeadingEcho(overlapTailRef.current, comparisonKey, display)
+            nextDisplay = stripped.text
+            nextKey = stripped.key
+            // One-shot: an intentional repeat spoken after the echo must be
+            // accepted, so disarm after the first final of the new run.
+            overlapTailRef.current = ''
+          }
+          if (!nextDisplay.trim()) continue
+          runFinalsRef.current.push({ index, key: nextKey, display: nextDisplay })
+        }
+
+        runMaxIndexRef.current = Math.max(runMaxIndexRef.current, index)
+        lastInterimRef.current = ''
+        setPromptText(`${rebuildRunDisplay()}${lastInterimRef.current}`)
       }
 
-      setPromptText(`${committedTextRef.current}${finalTranscriptRef.current}${interimTranscript}`)
+      lastInterimRef.current = interimTranscript
+      renderTranscript()
       setSpeechCopyState('idle')
       setPromptCopyState('idle')
     }
 
     recognition.onerror = (event) => {
+      if (sessionIdRef.current !== sessionId) return
       if (event.error === 'no-speech' || event.error === 'aborted') {
         // Benign: the session simply continues or restarts on the next result.
         return
       }
 
       keepListeningRef.current = false
+      clearRestartTimer()
       setIsListening(false)
       setStatusMessage(describeSpeechError(event.error))
     }
 
     recognition.onend = () => {
-      // Browsers end long continuous sessions on their own; keep the mic alive until the user stops.
+      if (sessionIdRef.current !== sessionId) return
+      // Browsers end long continuous sessions on their own; keep the mic
+      // alive until the user stops.
       if (keepListeningRef.current) {
-        try {
-          recognition.start()
-          return
-        } catch {
-          keepListeningRef.current = false
-        }
+        // Session ended on its own: fold the accepted run into committed text
+        // ONCE and keep it as the one-shot overlap tail. The restarted run
+        // often replays the tail as its first final; the echo guard strips
+        // that replay instead of appending it again.
+        committedTextRef.current = rebuildRunDisplay()
+        overlapTailRef.current = normalizeForComparison(committedTextRef.current)
+        runFinalsRef.current = []
+        runMaxIndexRef.current = -1
+        lastInterimRef.current = ''
+        setPromptText(committedTextRef.current)
+        clearRestartTimer()
+        // Short, responsive delay only: avoids sync start() inside onend
+        // (rejected on some mobile browsers) without a long pause.
+        restartTimerRef.current = window.setTimeout(() => {
+          restartTimerRef.current = 0
+          if (!keepListeningRef.current) return
+          if (sessionIdRef.current !== sessionId) return
+          if (recognitionRef.current !== recognition) return
+          try {
+            recognition.start()
+          } catch {
+            keepListeningRef.current = false
+            if (recognitionRef.current === recognition) {
+              recognitionRef.current = null
+            }
+            setIsListening(false)
+            setStatusMessage('The microphone could not start. Please try again.')
+          }
+        }, 120)
+        return
       }
 
+      // User stopped: drop unfinalized interim, keep finals, detach handler.
+      lastInterimRef.current = ''
+      commitSessionFinal()
+      setPromptText(committedTextRef.current)
+      detachRecognition(recognition)
+      if (recognitionRef.current === recognition) {
+        recognitionRef.current = null
+      }
       setIsListening(false)
     }
 
@@ -191,6 +399,10 @@ function VoicePromptPage() {
       recognition.start()
     } catch {
       keepListeningRef.current = false
+      if (recognitionRef.current === recognition) {
+        recognitionRef.current = null
+      }
+      sessionIdRef.current += 1
       setIsListening(false)
       setStatusMessage('The microphone could not start. Please try again.')
     }
@@ -198,7 +410,14 @@ function VoicePromptPage() {
 
   const stopListening = () => {
     keepListeningRef.current = false
+    clearRestartTimer()
     const recognition = recognitionRef.current
+
+    // Keep the session id valid so trailing finals delivered after stop()
+    // are still accepted; onend finalizes and detaches the handler.
+    // Strip unfinalized interim text immediately for responsiveness.
+    lastInterimRef.current = ''
+    renderTranscript()
 
     if (recognition) {
       try {
@@ -249,13 +468,37 @@ function VoicePromptPage() {
     setPromptCopyState('idle')
     // Manual edits become the new base so ongoing speech keeps appending after them.
     committedTextRef.current = value.trim() ? `${value.trim()} ` : ''
-    finalTranscriptRef.current = ''
+    sessionFinalRef.current = ''
+    lastInterimRef.current = ''
+    runFinalsRef.current = []
+    runMaxIndexRef.current = -1
+    overlapTailRef.current = ''
   }
 
   const handleClear = () => {
-    stopListening()
+    // Invalidate the session so no late event from the stopped instance can
+    // repopulate the cleared transcript; stopListening's render pass would
+    // otherwise race against this clear on mobile.
+    sessionIdRef.current += 1
+    keepListeningRef.current = false
+    clearRestartTimer()
+    const recognition = recognitionRef.current
+    detachRecognition(recognition)
+    if (recognition) {
+      try {
+        recognition.abort()
+      } catch {
+        // Clearing must succeed even if the mic teardown fails.
+      }
+    }
+    recognitionRef.current = null
     committedTextRef.current = ''
-    finalTranscriptRef.current = ''
+    sessionFinalRef.current = ''
+    lastInterimRef.current = ''
+    runFinalsRef.current = []
+    runMaxIndexRef.current = -1
+    overlapTailRef.current = ''
+    setIsListening(false)
     setPromptText('')
     setStatusMessage('')
     setSpeechCopyState('idle')
