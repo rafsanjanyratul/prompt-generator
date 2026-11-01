@@ -2,27 +2,80 @@ import { useEffect, useMemo, useState } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
 import { ArrowLeft, ArrowUpRight, Check, Copy, ImageOff } from 'lucide-react'
 import { Link, useParams } from 'react-router-dom'
-import promptStyles from '../data/prompts.js'
 import StyleCard from '../components/discover/StyleCard'
 import Button from '../components/ui/Button'
 import EmptyState from '../components/ui/EmptyState'
 import useDocumentMeta from '../hooks/useDocumentMeta'
 import { trackEvent } from '../lib/analytics.js'
+import { getAllPrompts, getPromptBySlug } from '../lib/promptsApi.js'
 
 function StyleDetailPage() {
   const { slug } = useParams()
   const prefersReducedMotion = useReducedMotion()
   const [imageFailed, setImageFailed] = useState(false)
   const [copyState, setCopyState] = useState('idle')
-
-  const style = useMemo(
-    () => promptStyles.find((item) => item.slug === slug),
-    [slug]
-  )
+  const [style, setStyle] = useState(null)
+  const [allPrompts, setAllPrompts] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState('')
 
   useEffect(() => {
-    setImageFailed(false)
-    setCopyState('idle')
+    let isMounted = true
+
+    async function loadPrompt() {
+      if (!slug) {
+        if (isMounted) {
+          setStyle(null)
+          setError('Style not found.')
+          setIsLoading(false)
+        }
+        return
+      }
+
+      const currentSlug = slug
+
+      try {
+        setIsLoading(true)
+        setError('')
+        setImageFailed(false)
+        setCopyState('idle')
+
+        const prompt = await getPromptBySlug(currentSlug)
+
+        if (!isMounted || currentSlug !== slug) {
+          return
+        }
+
+        setStyle(prompt)
+
+        try {
+          const prompts = await getAllPrompts()
+          if (isMounted && currentSlug === slug) {
+            setAllPrompts(Array.isArray(prompts) ? prompts : [])
+          }
+        } catch {
+          if (isMounted && currentSlug === slug) {
+            setAllPrompts([])
+          }
+        }
+      } catch (loadError) {
+        if (isMounted && currentSlug === slug) {
+          setStyle(null)
+          setError(loadError.message || 'Unable to load style.')
+          setAllPrompts([])
+        }
+      } finally {
+        if (isMounted && currentSlug === slug) {
+          setIsLoading(false)
+        }
+      }
+    }
+
+    loadPrompt()
+
+    return () => {
+      isMounted = false
+    }
   }, [slug])
 
   useEffect(() => {
@@ -40,12 +93,12 @@ function StyleDetailPage() {
   const relatedStyles = useMemo(() => {
     if (!style) return []
 
-    return promptStyles
+    return allPrompts
       .filter(
         (item) => item.id !== style.id && (item.category === style.category || item.style === style.style)
       )
       .slice(0, 3)
-  }, [style])
+  }, [allPrompts, style])
 
   const handleCopyPrompt = async () => {
     if (!style) return
@@ -94,12 +147,24 @@ function StyleDetailPage() {
     robots: style ? 'index,follow' : 'noindex,follow',
   })
 
-  if (!style) {
+  if (isLoading) {
+    return (
+      <div className="mx-auto w-[min(var(--container-width),calc(100%-2rem))] py-16">
+        <div className="mt-8 text-center text-sm text-[var(--text-muted)]">Loading style...</div>
+      </div>
+    )
+  }
+
+  if (!style || error) {
     return (
       <div className="mx-auto w-[min(var(--container-width),calc(100%-2rem))] py-16">
         <EmptyState
-          title="Style not found"
-          description="This style isn’t in the current collection. Head back to browse other visual directions."
+          title={error ? 'Style unavailable' : 'Style not found'}
+          description={
+            error
+              ? 'This style could not be loaded right now. Please try again.'
+              : 'This style isn’t in the current collection. Head back to browse other visual directions.'
+          }
           action={
             <Link to="/explore">
               <Button variant="secondary" className="inline-flex items-center gap-2">

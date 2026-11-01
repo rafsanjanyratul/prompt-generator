@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
 import { ChevronDown, RotateCcw, SlidersHorizontal, Sparkles, X } from 'lucide-react'
 import { useSearchParams } from 'react-router-dom'
-import promptStyles from '../data/prompts.js'
 import StyleCard from '../components/discover/StyleCard'
 import Button from '../components/ui/Button'
 import EmptyState from '../components/ui/EmptyState'
@@ -10,6 +9,7 @@ import SearchInput from '../components/ui/SearchInput'
 import SectionHeader from '../components/ui/SectionHeader'
 import useDocumentMeta from '../hooks/useDocumentMeta'
 import { trackEvent } from '../lib/analytics.js'
+import { getAllPrompts } from '../lib/promptsApi.js'
 
 const defaultFilters = {
   category: 'All',
@@ -64,6 +64,41 @@ function ExplorePage() {
   const normalizedCategory = queryCategory && categoryValues.includes(queryCategory) ? queryCategory : 'All'
   const [searchTerm, setSearchTerm] = useState('')
   const [filters, setFilters] = useState({ ...defaultFilters, category: normalizedCategory })
+  const [promptStyles, setPromptStyles] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    let isMounted = true
+
+    async function loadPrompts() {
+      try {
+        setIsLoading(true)
+        setError('')
+
+        const prompts = await getAllPrompts()
+
+        if (isMounted) {
+          setPromptStyles(Array.isArray(prompts) ? prompts : [])
+        }
+      } catch (loadError) {
+        if (isMounted) {
+          setError(loadError.message || 'Unable to load prompts.')
+          setPromptStyles([])
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false)
+        }
+      }
+    }
+
+    loadPrompts()
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
 
   useEffect(() => {
     setFilters((current) => ({
@@ -85,19 +120,19 @@ function ExplorePage() {
     () => [{ label: 'All', value: 'All' }, ...new Set(promptStyles.map((item) => item.category))].map((category) =>
       typeof category === 'string' ? { label: getDisplayCategoryLabel(category), value: category } : category
     ),
-    []
+    [promptStyles]
   )
   const genderOptions = useMemo(
     () => [{ label: 'All', value: 'All' }, ...new Set(promptStyles.map((item) => item.gender))].map((gender) =>
       typeof gender === 'string' ? { label: gender, value: gender } : gender
     ),
-    []
+    [promptStyles]
   )
   const styleOptions = useMemo(
     () => [{ label: 'All', value: 'All' }, ...new Set(promptStyles.map((item) => item.style))].map((style) =>
       typeof style === 'string' ? { label: style, value: style } : style
     ),
-    []
+    [promptStyles]
   )
   const trendingOptions = [
     { label: 'Any', value: 'all' },
@@ -140,7 +175,7 @@ function ExplorePage() {
 
       return matchesSearch && matchesCategory && matchesGender && matchesStyle && matchesTrending
     })
-  }, [filters, searchTerm])
+  }, [filters, promptStyles, searchTerm])
 
   const activeFilters = [
     filters.category !== 'All' ? `Category: ${getDisplayCategoryLabel(filters.category)}` : null,
@@ -199,6 +234,22 @@ function ExplorePage() {
     setSearchTerm('')
     setFilters(defaultFilters)
     setSearchParams({}, { replace: true })
+  }
+
+  if (isLoading) {
+    return (
+      <div className="mx-auto w-[min(var(--container-width),calc(100%-2rem))] py-8 pb-16">
+        <div className="mt-8 text-center text-sm text-[var(--text-muted)]">Loading styles...</div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="mx-auto w-[min(var(--container-width),calc(100%-2rem))] py-8 pb-16">
+        <div className="mt-8 text-center text-sm text-red-600">{error}</div>
+      </div>
+    )
   }
 
   return (
