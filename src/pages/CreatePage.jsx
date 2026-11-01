@@ -10,6 +10,7 @@ import {
   RotateCcw,
   Shuffle,
 } from 'lucide-react'
+import { toast } from 'react-toastify'
 import {
   accessories,
   appearanceBackgroundsBySubject,
@@ -33,6 +34,8 @@ import {
   weather,
   outfits,
 } from '../data/createBuilderOptions.js'
+import { useAuth } from '../contexts/AuthContext.jsx'
+import { createUserPrompt } from '../lib/authApi.js'
 import { trackEvent } from '../lib/analytics.js'
 import Button from '../components/ui/Button.jsx'
 import {
@@ -280,9 +283,12 @@ function CreateIntro() {
 
 function CreatePage() {
   const prefersReducedMotion = useReducedMotion()
+  const { user } = useAuth()
   const [showAdvanced, setShowAdvanced] = useState(false)
   const [builder, setBuilder] = useState(initialBuilderState)
   const [copyState, setCopyState] = useState('idle')
+  const [isSaving, setIsSaving] = useState(false)
+  const [saveState, setSaveState] = useState({ status: 'idle', message: '' })
   const previousPromptRef = useRef(buildPrompt(initialBuilderState).prompt)
 
   const generatedPrompt = useMemo(() => buildPrompt(builder), [builder])
@@ -450,6 +456,95 @@ function CreatePage() {
     setBuilder((current) => ({ ...current, [field]: value }))
   }
 
+  const buildUserPromptPayload = () => {
+    const subjectLabel = subjectLabelMap[builder.subject] ?? builder.subject ?? 'Portrait'
+    const styleLabel = styles.find((option) => option.value === builder.style)?.label || builder.style || 'Custom'
+    const purposeLabel = purposes.find((option) => option.value === builder.purpose)?.label || builder.purpose || 'Portrait'
+    const normalizedTag = (value) => {
+      if (value === null || value === undefined || value === false || value === true) {
+        return ''
+      }
+
+      return String(value)
+        .replace(/[_-]+/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+    }
+
+    const tags = Array.from(
+      new Set(
+        [
+          subjectLabel,
+          styleLabel,
+          purposeLabel,
+          builder.background,
+          builder.mood,
+          builder.lighting,
+          builder.outfit,
+          builder.customStyle,
+          builder.customMood,
+          builder.customLighting,
+          builder.customInstruction,
+        ]
+          .map((value) => normalizedTag(value))
+          .filter((value) => value && value.length > 1)
+      )
+    ).slice(0, 8)
+
+    const title = `${subjectLabel} ${styleLabel} Prompt`
+    const description = `Generated ${subjectLabel.toLowerCase()} prompt using a ${styleLabel.toLowerCase()} style and ${purposeLabel.toLowerCase()} composition.`
+
+    return {
+      title,
+      prompt: generatedPrompt.prompt,
+      category: subjectLabel,
+      style: styleLabel,
+      tags,
+      description,
+    }
+  }
+
+  const handleSavePrompt = async () => {
+    if (!user) {
+      setSaveState({
+        status: 'error',
+        message: 'Sign in to save this prompt to My Prompts.',
+      })
+      toast.error('Sign in to save this prompt to My Prompts.')
+      return
+    }
+
+    if (isSaving) {
+      return
+    }
+
+    setIsSaving(true)
+    setSaveState({ status: 'idle', message: '' })
+
+    try {
+      await createUserPrompt(buildUserPromptPayload())
+      setSaveState({
+        status: 'success',
+        message: 'Prompt saved to My Prompts.',
+      })
+      toast.success('Prompt saved to My Prompts.')
+      trackEvent('builder_save_prompt', {
+        subject: builder.subject,
+        style: builder.style,
+        purpose: builder.purpose,
+      })
+    } catch (error) {
+      const errorMessage = error?.message || 'Unable to save this prompt right now.'
+      setSaveState({
+        status: 'error',
+        message: errorMessage,
+      })
+      toast.error(errorMessage)
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
   const handleCopyPrompt = async () => {
     try {
       if (navigator.clipboard && window.isSecureContext) {
@@ -471,6 +566,7 @@ function CreatePage() {
       }
 
       setCopyState('success')
+      toast.success('Prompt copied to clipboard.')
       trackEvent('builder_prompt_copy', {
         subject: builder.subject,
         style: builder.style,
@@ -479,6 +575,7 @@ function CreatePage() {
       window.setTimeout(() => setCopyState('idle'), 1500)
     } catch {
       setCopyState('error')
+      toast.error('Unable to copy this prompt right now.')
       window.setTimeout(() => setCopyState('idle'), 1800)
     }
   }
@@ -1371,6 +1468,18 @@ function CreatePage() {
                   <Button
                     type="button"
                     size="sm"
+                    variant="primary"
+                    onClick={handleSavePrompt}
+                    disabled={isSaving || !user}
+                    aria-live="polite"
+                    aria-label={user ? 'Save this prompt to My Prompts' : 'Sign in to save this prompt'}
+                  >
+                    {isSaving ? 'Saving...' : user ? 'Save to My Prompts' : 'Sign in to save'}
+                  </Button>
+
+                  <Button
+                    type="button"
+                    size="sm"
                     variant="secondary"
                     onClick={handleCopyPrompt}
                     className={`inline-flex items-center gap-2 ${
@@ -1388,6 +1497,15 @@ function CreatePage() {
                   </Button>
                 </div>
               </div>
+
+              {saveState.message ? (
+                <p
+                  className={`mt-3 text-sm ${saveState.status === 'success' ? 'text-[var(--success)]' : 'text-[var(--error)]'}`}
+                  aria-live="polite"
+                >
+                  {saveState.message}
+                </p>
+              ) : null}
 
               <div className="mt-4 rounded-[20px] border border-dashed border-[var(--border)] bg-[var(--surface-muted)] p-4 text-sm leading-7 text-[var(--text-muted)] sm:text-base">
                 <div className="mb-3 flex flex-wrap gap-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--text-muted)]">

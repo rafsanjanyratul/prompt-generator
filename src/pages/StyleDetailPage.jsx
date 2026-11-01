@@ -1,21 +1,29 @@
 import { useEffect, useMemo, useState } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
-import { ArrowLeft, ArrowUpRight, Check, Copy, ImageOff } from 'lucide-react'
-import { Link, useParams } from 'react-router-dom'
+import { ArrowLeft, ArrowUpRight, Check, Copy, Heart, ImageOff, LoaderCircle } from 'lucide-react'
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import StyleCard from '../components/discover/StyleCard'
 import Button from '../components/ui/Button'
 import EmptyState from '../components/ui/EmptyState'
+import LoadingSpinner from '../components/ui/LoadingSpinner.jsx'
+import { useAuth } from '../contexts/AuthContext.jsx'
 import useDocumentMeta from '../hooks/useDocumentMeta'
 import { trackEvent } from '../lib/analytics.js'
+import { addFavoritePrompt, getFavoritePrompts, removeFavoritePrompt } from '../lib/authApi.js'
 import { getAllPrompts, getPromptBySlug } from '../lib/promptsApi.js'
 
 function StyleDetailPage() {
   const { slug } = useParams()
+  const navigate = useNavigate()
+  const { user } = useAuth()
   const prefersReducedMotion = useReducedMotion()
   const [imageFailed, setImageFailed] = useState(false)
   const [copyState, setCopyState] = useState('idle')
   const [style, setStyle] = useState(null)
   const [allPrompts, setAllPrompts] = useState([])
+  const [favoriteSlugs, setFavoriteSlugs] = useState(new Set())
+  const [favoriteLoading, setFavoriteLoading] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
 
@@ -79,6 +87,39 @@ function StyleDetailPage() {
   }, [slug])
 
   useEffect(() => {
+    let isMounted = true
+
+    async function loadFavorites() {
+      if (!user || !style?.slug) {
+        if (isMounted) {
+          setFavoriteSlugs(new Set())
+        }
+        return
+      }
+
+      try {
+        const favorites = await getFavoritePrompts()
+
+        if (isMounted) {
+          setFavoriteSlugs(
+            new Set((favorites || []).map((favorite) => favorite?.prompt?.slug || favorite?.slug).filter(Boolean))
+          )
+        }
+      } catch {
+        if (isMounted) {
+          setFavoriteSlugs(new Set())
+        }
+      }
+    }
+
+    loadFavorites()
+
+    return () => {
+      isMounted = false
+    }
+  }, [style?.slug, user])
+
+  useEffect(() => {
     if (!style) return
 
     trackEvent('style_view', {
@@ -99,6 +140,48 @@ function StyleDetailPage() {
       )
       .slice(0, 3)
   }, [allPrompts, style])
+
+  const isFavorite = Boolean(style && favoriteSlugs.has(style.slug))
+
+  const handleToggleFavorite = async () => {
+    if (!style) return
+
+    if (!user) {
+      toast.info('Please log in to save favorites.')
+      navigate('/login')
+      return
+    }
+
+    if (favoriteLoading) {
+      return
+    }
+
+    setFavoriteLoading(true)
+
+    try {
+      if (isFavorite) {
+        await removeFavoritePrompt(style.slug)
+        setFavoriteSlugs((current) => {
+          const next = new Set(current)
+          next.delete(style.slug)
+          return next
+        })
+        toast.success('Removed from favorites.')
+      } else {
+        await addFavoritePrompt(style.slug)
+        setFavoriteSlugs((current) => {
+          const next = new Set(current)
+          next.add(style.slug)
+          return next
+        })
+        toast.success('Added to favorites.')
+      }
+    } catch (toggleError) {
+      toast.error(toggleError.message || 'Unable to update favorites right now.')
+    } finally {
+      setFavoriteLoading(false)
+    }
+  }
 
   const handleCopyPrompt = async () => {
     if (!style) return
@@ -123,6 +206,7 @@ function StyleDetailPage() {
       }
 
       setCopyState('success')
+      toast.success('Prompt copied to clipboard.')
       trackEvent('prompt_copy', {
         style_id: style.id,
         style_slug: style.slug,
@@ -132,6 +216,7 @@ function StyleDetailPage() {
       setTimeout(() => setCopyState('idle'), 1600)
     } catch {
       setCopyState('error')
+      toast.error('Unable to copy this prompt right now.')
       setTimeout(() => setCopyState('idle'), 1800)
     }
   }
@@ -150,7 +235,9 @@ function StyleDetailPage() {
   if (isLoading) {
     return (
       <div className="mx-auto w-[min(var(--container-width),calc(100%-2rem))] py-16">
-        <div className="mt-8 text-center text-sm text-[var(--text-muted)]">Loading style...</div>
+        <div className="mt-8 flex justify-center rounded-[28px] border border-[var(--border)] bg-[var(--surface)] p-8 shadow-[0_12px_32px_rgba(15,23,42,0.04)]">
+          <LoadingSpinner label="Loading style" />
+        </div>
       </div>
     )
   }
@@ -297,7 +384,7 @@ function StyleDetailPage() {
                   <div className="pointer-events-none absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-[var(--surface-muted)] to-transparent" />
                 </div>
 
-                <div className="mt-4">
+                <div className="mt-4 flex flex-col gap-3 sm:flex-row">
                   <Button
                     type="button"
                     size="sm"
@@ -315,6 +402,23 @@ function StyleDetailPage() {
                   >
                     {copyState === 'success' ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
                     {copyLabel}
+                  </Button>
+
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="secondary"
+                    className="inline-flex w-full items-center justify-center gap-2 sm:w-auto"
+                    onClick={handleToggleFavorite}
+                    disabled={favoriteLoading}
+                    aria-label={isFavorite ? 'Remove prompt from favorites' : 'Add prompt to favorites'}
+                  >
+                    {favoriteLoading ? (
+                      <LoaderCircle className="size-3.5 animate-spin" />
+                    ) : (
+                      <Heart className={`size-3.5 ${isFavorite ? 'fill-current' : ''}`} />
+                    )}
+                    {favoriteLoading ? 'Saving...' : isFavorite ? 'Saved' : 'Save to Favorites'}
                   </Button>
                 </div>
               </div>

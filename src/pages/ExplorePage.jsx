@@ -1,14 +1,22 @@
 import { useEffect, useMemo, useState } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
 import { ChevronDown, RotateCcw, SlidersHorizontal, Sparkles, X } from 'lucide-react'
-import { useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import StyleCard from '../components/discover/StyleCard'
 import Button from '../components/ui/Button'
 import EmptyState from '../components/ui/EmptyState'
+import LoadingSpinner from '../components/ui/LoadingSpinner.jsx'
 import SearchInput from '../components/ui/SearchInput'
 import SectionHeader from '../components/ui/SectionHeader'
+import { useAuth } from '../contexts/AuthContext.jsx'
 import useDocumentMeta from '../hooks/useDocumentMeta'
 import { trackEvent } from '../lib/analytics.js'
+import {
+  addFavoritePrompt,
+  getFavoritePrompts,
+  removeFavoritePrompt,
+} from '../lib/authApi.js'
 import { getAllPrompts } from '../lib/promptsApi.js'
 
 const defaultFilters = {
@@ -62,9 +70,13 @@ function ExplorePage() {
   const [searchParams, setSearchParams] = useSearchParams()
   const queryCategory = searchParams.get('category')
   const normalizedCategory = queryCategory && categoryValues.includes(queryCategory) ? queryCategory : 'All'
+  const navigate = useNavigate()
+  const { user } = useAuth()
   const [searchTerm, setSearchTerm] = useState('')
   const [filters, setFilters] = useState({ ...defaultFilters, category: normalizedCategory })
   const [promptStyles, setPromptStyles] = useState([])
+  const [favoriteSlugs, setFavoriteSlugs] = useState(new Set())
+  const [favoriteLoadingSlug, setFavoriteLoadingSlug] = useState('')
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
 
@@ -99,6 +111,37 @@ function ExplorePage() {
       isMounted = false
     }
   }, [])
+
+  useEffect(() => {
+    let isMounted = true
+
+    async function loadFavorites() {
+      if (!user) {
+        if (isMounted) {
+          setFavoriteSlugs(new Set())
+        }
+        return
+      }
+
+      try {
+        const favorites = await getFavoritePrompts()
+
+        if (isMounted) {
+          setFavoriteSlugs(new Set((favorites || []).map((favorite) => favorite?.prompt?.slug || favorite?.slug).filter(Boolean)))
+        }
+      } catch {
+        if (isMounted) {
+          setFavoriteSlugs(new Set())
+        }
+      }
+    }
+
+    loadFavorites()
+
+    return () => {
+      isMounted = false
+    }
+  }, [user])
 
   useEffect(() => {
     setFilters((current) => ({
@@ -184,6 +227,44 @@ function ExplorePage() {
     filters.trending !== 'all' ? `Trending: ${filters.trending === 'true' ? 'On' : 'Off'}` : null,
   ].filter(Boolean)
 
+  const handleToggleFavorite = async (slug, isFavorite) => {
+    if (!user) {
+      toast.info('Please log in to save favorites.')
+      navigate('/login')
+      return
+    }
+
+    if (!slug || favoriteLoadingSlug === slug) {
+      return
+    }
+
+    setFavoriteLoadingSlug(slug)
+
+    try {
+      if (isFavorite) {
+        await removeFavoritePrompt(slug)
+        setFavoriteSlugs((current) => {
+          const next = new Set(current)
+          next.delete(slug)
+          return next
+        })
+        toast.success('Removed from favorites.')
+      } else {
+        await addFavoritePrompt(slug)
+        setFavoriteSlugs((current) => {
+          const next = new Set(current)
+          next.add(slug)
+          return next
+        })
+        toast.success('Added to favorites.')
+      }
+    } catch (toggleError) {
+      toast.error(toggleError.message || 'Unable to update favorites right now.')
+    } finally {
+      setFavoriteLoadingSlug('')
+    }
+  }
+
   const handleFilterChange = (key, value) => {
     if (key === 'category') {
       const nextParams = new URLSearchParams(searchParams)
@@ -239,7 +320,9 @@ function ExplorePage() {
   if (isLoading) {
     return (
       <div className="mx-auto w-[min(var(--container-width),calc(100%-2rem))] py-8 pb-16">
-        <div className="mt-8 text-center text-sm text-[var(--text-muted)]">Loading styles...</div>
+        <div className="mt-8 flex justify-center rounded-[28px] border border-[var(--border)] bg-[var(--surface)] p-8 shadow-[0_12px_32px_rgba(15,23,42,0.04)]">
+          <LoadingSpinner label="Loading styles" />
+        </div>
       </div>
     )
   }
@@ -400,7 +483,13 @@ function ExplorePage() {
                 transition={{ duration: 0.25, delay: index * 0.03, ease: 'easeOut' }}
                 className="max-md:transform-none!"
               >
-                <StyleCard item={item} />
+                <StyleCard
+                  item={item}
+                  favorite={favoriteSlugs.has(item.slug)}
+                  showFavoriteButton
+                  onToggleFavorite={handleToggleFavorite}
+                  isFavoriteLoading={favoriteLoadingSlug === item.slug}
+                />
               </motion.div>
             ))}
           </motion.div>

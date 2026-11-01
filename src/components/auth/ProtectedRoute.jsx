@@ -1,5 +1,6 @@
 import { Navigate, useLocation } from 'react-router-dom'
 
+import LoadingSpinner from '../ui/LoadingSpinner.jsx'
 import { useAuth } from '../../contexts/AuthContext.jsx'
 
 function ProtectedRoute({ children }) {
@@ -8,8 +9,8 @@ function ProtectedRoute({ children }) {
 
   if (loading) {
     return (
-      <div className="flex min-h-[50vh] items-center justify-center px-4 text-[var(--text-muted)]">
-        Checking session...
+      <div className="flex min-h-[50vh] items-center justify-center px-4">
+        <LoadingSpinner label="Checking session" />
       </div>
     )
   }

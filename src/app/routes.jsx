@@ -4,6 +4,7 @@ import ProtectedRoute from '../components/auth/ProtectedRoute.jsx'
 import HomePage from '../pages/HomePage'
 import ExplorePage from '../pages/ExplorePage'
 import MyPromptsPage from '../pages/MyPromptsPage.jsx'
+import FavoritesPage from '../pages/FavoritesPage.jsx'
 import StyleDetailPage from '../pages/StyleDetailPage'
 import CreatePage from '../pages/CreatePage'
 import VoicePromptPage from '../pages/VoicePromptPage'
@@ -15,6 +16,7 @@ const routePageType = (path) => {
   if (path.startsWith('/styles/')) return 'style_detail'
   if (path === '/explore') return 'explore'
   if (path === '/create') return 'create'
+  if (path === '/favorites') return 'favorites'
   if (path === '/voice-prompt') return 'voice_prompt'
   if (path === '/') return 'home'
   return 'not_found'
@@ -50,6 +52,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <MyPromptsPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: 'favorites',
+        element: (
+          <ProtectedRoute>
+            <FavoritesPage />
           </ProtectedRoute>
         ),
       },

@@ -1,9 +1,8 @@
 import bcrypt from 'bcrypt'
 import { z } from 'zod'
 
-import { env } from '../../config/env.js'
-import { User } from '../users/user.model.js'
 import { signToken } from '../../utils/jwt.js'
+import { User } from '../users/user.model.js'
 
 export const registerSchema = z.object({
   name: z.string().trim().min(1, 'Name is required'),
@@ -71,3 +70,4 @@ export async function loginUser(input: z.infer<typeof loginSchema>) {
     token,
   }
 }
+

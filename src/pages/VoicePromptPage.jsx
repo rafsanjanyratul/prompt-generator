@@ -11,9 +11,13 @@ import {
   Trash2,
   TriangleAlert,
 } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import Badge from '../components/ui/Badge.jsx'
 import Button from '../components/ui/Button.jsx'
+import { useAuth } from '../contexts/AuthContext.jsx'
 import useDocumentMeta from '../hooks/useDocumentMeta'
+import { createUserPrompt } from '../lib/authApi.js'
 import { trackEvent } from '../lib/analytics.js'
 
 const LANGUAGE_OPTIONS = [
@@ -116,6 +120,7 @@ function stripLeadingEcho(echoTail, candidateKey, candidateText) {
 
 function VoicePromptPage() {
   const prefersReducedMotion = useReducedMotion()
+  const { user } = useAuth()
   const speechRecognitionSupported = useMemo(() => Boolean(getSpeechRecognition()), [])
   const [language, setLanguage] = useState(LANGUAGE_OPTIONS[0].value)
   const [promptText, setPromptText] = useState('')
@@ -123,6 +128,10 @@ function VoicePromptPage() {
   const [statusMessage, setStatusMessage] = useState('')
   const [speechCopyState, setSpeechCopyState] = useState('idle')
   const [promptCopyState, setPromptCopyState] = useState('idle')
+  const [isSavingPrompt, setIsSavingPrompt] = useState(false)
+  const [saveState, setSaveState] = useState({ status: 'idle', message: '' })
+  const [savedPromptId, setSavedPromptId] = useState(null)
+  const lastSavedSignatureRef = useRef('')
 
   const recognitionRef = useRef(null)
   const keepListeningRef = useRef(false)
@@ -512,10 +521,12 @@ function VoicePromptPage() {
     try {
       await writeToClipboard(promptText)
       setSpeechCopyState('success')
+      toast.success('Transcript copied to clipboard.')
       trackEvent('voice_prompt_copy_transcript', { language })
       window.setTimeout(() => setSpeechCopyState('idle'), 1600)
     } catch {
       setSpeechCopyState('error')
+      toast.error('Unable to copy the transcript right now.')
       window.setTimeout(() => setSpeechCopyState('idle'), 1800)
     }
   }
@@ -525,10 +536,12 @@ function VoicePromptPage() {
     writeToClipboard(promptText)
       .then(() => {
         setPromptCopyState('success')
+        toast.success('Prompt copied to clipboard.')
         window.setTimeout(() => setPromptCopyState('idle'), 2600)
       })
       .catch(() => {
         setPromptCopyState('error')
+        toast.error('Unable to copy this prompt right now.')
         window.setTimeout(() => setPromptCopyState('idle'), 2800)
       })
   }
@@ -542,6 +555,82 @@ function VoicePromptPage() {
     copyPromptForAiTool()
     trackEvent('voice_prompt_copy_prompt', { language, destination: tool })
     trackEvent(tool === 'chatgpt' ? 'voice_prompt_create_chatgpt' : 'voice_prompt_create_gemini', { language })
+  }
+
+  const buildVoicePromptPayload = () => {
+    const trimmedPrompt = promptText.trim()
+    const normalizedText = trimmedPrompt || 'Voice prompt is empty.'
+    const languageLabel = LANGUAGE_OPTIONS.find((option) => option.value === language)?.label || 'English'
+    const titleSource = trimmedPrompt ? trimmedPrompt.replace(/\s+/g, ' ').trim() : 'Voice Prompt'
+    const title = titleSource.length > 72 ? `${titleSource.slice(0, 69).trim()}...` : titleSource
+    const cleanWords = Array.from(
+      new Set(
+        normalizedText
+          .toLowerCase()
+          .replace(/[^\p{L}\p{M}\p{N}\s-]/gu, ' ')
+          .split(/\s+/)
+          .map((word) => word.trim())
+          .filter((word) => word.length > 2)
+      )
+    ).slice(0, 8)
+
+    return {
+      title: title || 'Voice Prompt',
+      prompt: normalizedText,
+      category: 'Voice Prompt',
+      style: `${languageLabel} voice`,
+      tags: ['voice', 'prompt', languageLabel.toLowerCase(), ...cleanWords],
+      description: `Generated voice prompt in ${languageLabel.toLowerCase()} language for image creation.`,
+    }
+  }
+
+  const handleSavePrompt = async () => {
+    if (!user) {
+      setSaveState({ status: 'error', message: 'Sign in to save this prompt to My Prompts.' })
+      toast.error('Sign in to save this prompt to My Prompts.')
+      return
+    }
+
+    const trimmedPrompt = promptText.trim()
+    if (!trimmedPrompt) {
+      setSaveState({ status: 'error', message: 'Add some prompt text before saving.' })
+      toast.error('Add some prompt text before saving.')
+      return
+    }
+
+    if (isSavingPrompt) {
+      return
+    }
+
+    const payload = buildVoicePromptPayload()
+    const signature = `${payload.title}|${payload.prompt}|${payload.category}|${payload.style}`
+
+    if (lastSavedSignatureRef.current && lastSavedSignatureRef.current === signature) {
+      setSaveState({ status: 'error', message: 'This prompt is already saved to My Prompts.' })
+      toast.info('This prompt is already saved to My Prompts.')
+      return
+    }
+
+    setIsSavingPrompt(true)
+    setSaveState({ status: 'idle', message: '' })
+
+    try {
+      const result = await createUserPrompt(payload)
+      lastSavedSignatureRef.current = signature
+      setSavedPromptId(result?._id || null)
+      setSaveState({ status: 'success', message: 'Prompt saved to My Prompts.' })
+      toast.success('Prompt saved to My Prompts.')
+      trackEvent('voice_prompt_save_prompt', {
+        language,
+        word_count: trimmedPrompt.split(/\s+/).length,
+      })
+    } catch (error) {
+      const errorMessage = error?.message || 'Unable to save this prompt right now.'
+      setSaveState({ status: 'error', message: errorMessage })
+      toast.error(errorMessage)
+    } finally {
+      setIsSavingPrompt(false)
+    }
   }
 
   const speechCopyLabel =
@@ -744,7 +833,7 @@ function VoicePromptPage() {
                 Recognized speech
               </label>
 
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <span className="text-[11px] font-medium text-[var(--text-muted)]">
                   {hasPrompt ? `${wordCount} ${wordCount === 1 ? 'word' : 'words'}` : 'No text yet'}
                 </span>
@@ -772,6 +861,18 @@ function VoicePromptPage() {
                   )}
                   {speechCopyLabel}
                 </Button>
+
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="primary"
+                  onClick={handleSavePrompt}
+                  disabled={!hasPrompt || isSavingPrompt || !user}
+                  className="inline-flex items-center gap-2"
+                  aria-label={user ? 'Save this voice prompt to My Prompts' : 'Sign in to save this voice prompt'}
+                >
+                  {isSavingPrompt ? 'Saving...' : 'Save to My Prompts'}
+                </Button>
               </div>
             </div>
 
@@ -783,6 +884,23 @@ function VoicePromptPage() {
               placeholder="Your spoken words will appear here. You can also type and edit them manually."
               className="w-full resize-y rounded-[20px] border border-[var(--border)] bg-[var(--surface-muted)] px-4 py-3 text-sm leading-7 text-[var(--text)] outline-none transition-colors placeholder:text-[var(--text-muted)] focus:border-[var(--focus)] focus-visible:ring-2 focus-visible:ring-[var(--focus)] sm:text-base"
             />
+
+            {saveState.message ? (
+              <div className="flex flex-wrap items-center justify-between gap-3 rounded-[18px] border border-[var(--border)] bg-[var(--surface-muted)] px-3 py-2">
+                <p
+                  className={`text-sm ${saveState.status === 'success' ? 'text-[var(--success)]' : 'text-[var(--error)]'}`}
+                  aria-live="polite"
+                >
+                  {saveState.message}
+                </p>
+
+                {saveState.status === 'success' && savedPromptId ? (
+                  <Link to="/my-prompts" className="text-sm font-semibold text-[var(--brand)]">
+                    View My Prompts
+                  </Link>
+                ) : null}
+              </div>
+            ) : null}
           </div>
         </div>
       </motion.section>

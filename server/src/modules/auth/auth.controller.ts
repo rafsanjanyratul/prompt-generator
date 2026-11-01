@@ -60,3 +60,4 @@ export const loginController = async (req: Request, res: Response, next: NextFun
     next(error)
   }
 }
+

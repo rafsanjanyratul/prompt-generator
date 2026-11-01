@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import HeroSection from '../components/discover/HeroSection'
 import DiscoverySection from '../components/discover/DiscoverySection'
 import CategorySection from '../components/discover/CategorySection'
+import LoadingSpinner from '../components/ui/LoadingSpinner.jsx'
 import useDocumentMeta from '../hooks/useDocumentMeta'
 import { getAllPrompts } from '../lib/promptsApi.js'
 
@@ -62,7 +63,9 @@ function HomePage() {
       <CategorySection />
 
       {isLoading ? (
-        <div className="mt-8 text-center text-sm text-[var(--text-muted)]">Loading styles...</div>
+        <div className="mt-8 flex justify-center rounded-[28px] border border-[var(--border)] bg-[var(--surface)] p-8 shadow-[0_12px_32px_rgba(15,23,42,0.04)]">
+          <LoadingSpinner label="Loading styles" />
+        </div>
       ) : error ? (
         <div className="mt-8 text-center text-sm text-red-600">{error}</div>
       ) : (
