@@ -13,6 +13,11 @@ const envSchema = z.object({
     .refine((value) => /^mongodb(?:\+srv)?:\/\//i.test(value), {
       message: 'MONGODB_URI must use mongodb:// or mongodb+srv:// protocol',
     }),
+  JWT_SECRET: z
+    .string()
+    .trim()
+    .min(32, 'JWT_SECRET must be at least 32 characters long'),
+  JWT_EXPIRES_IN: z.string().trim().default('7d'),
 })
 
 const parsedEnv = envSchema.safeParse(process.env)
