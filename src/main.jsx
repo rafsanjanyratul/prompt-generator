@@ -2,6 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { RouterProvider } from 'react-router-dom'
 import router from './app/routes.jsx'
+import { AuthProvider } from './contexts/AuthContext.jsx'
 import { initializeAnalytics, trackPageView } from './lib/analytics.js'
 import './styles/tokens.css'
 import './styles/globals.css'
@@ -17,6 +18,8 @@ trackPageView({
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   </StrictMode>,
 )

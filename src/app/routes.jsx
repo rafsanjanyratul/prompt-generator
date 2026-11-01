@@ -1,10 +1,14 @@
 import { createBrowserRouter } from 'react-router-dom'
 import AppShell from './AppShell'
+import ProtectedRoute from '../components/auth/ProtectedRoute.jsx'
 import HomePage from '../pages/HomePage'
 import ExplorePage from '../pages/ExplorePage'
+import MyPromptsPage from '../pages/MyPromptsPage.jsx'
 import StyleDetailPage from '../pages/StyleDetailPage'
 import CreatePage from '../pages/CreatePage'
 import VoicePromptPage from '../pages/VoicePromptPage'
+import LoginPage from '../pages/auth/LoginPage'
+import SignupPage from '../pages/auth/SignupPage'
 import { trackPageView } from '../lib/analytics.js'
 
 const routePageType = (path) => {
@@ -35,11 +39,35 @@ const router = createBrowserRouter([
       },
       {
         path: 'create',
-        element: <CreatePage />,
+        element: (
+          <ProtectedRoute>
+            <CreatePage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: 'my-prompts',
+        element: (
+          <ProtectedRoute>
+            <MyPromptsPage />
+          </ProtectedRoute>
+        ),
       },
       {
         path: 'voice-prompt',
-        element: <VoicePromptPage />,
+        element: (
+          <ProtectedRoute>
+            <VoicePromptPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: 'login',
+        element: <LoginPage />,
+      },
+      {
+        path: 'signup',
+        element: <SignupPage />,
       },
     ],
   },

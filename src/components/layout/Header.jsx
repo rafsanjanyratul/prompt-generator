@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import { Menu, X } from 'lucide-react'
 import { NavLink, useLocation } from 'react-router-dom'
+import { useAuth } from '../../contexts/AuthContext.jsx'
 import ThemeToggle from '../ui/ThemeToggle'
 
 const DEFAULT_STYLES_PATH = '/styles/1980s-vintage-portrait'
@@ -9,6 +10,7 @@ const DEFAULT_STYLES_PATH = '/styles/1980s-vintage-portrait'
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const location = useLocation()
+  const { user, logout } = useAuth()
   const isStylesRoute = location.pathname.startsWith('/styles/')
   const stylesNavTarget = isStylesRoute ? location.pathname : DEFAULT_STYLES_PATH
 
@@ -17,6 +19,7 @@ function Header() {
     { label: 'Explore', to: '/explore' },
     { label: 'Styles', to: stylesNavTarget },
     { label: 'Create', to: '/create' },
+    ...(user ? [{ label: 'My Prompts', to: '/my-prompts' }] : []),
     { label: 'Voice Prompt', to: '/voice-prompt' },
   ]
 
@@ -63,8 +66,43 @@ function Header() {
           })}
         </nav>
 
-        <div className="flex items-center justify-end gap-2">
+        <div className="flex items-center justify-end gap-2 md:gap-3">
           <ThemeToggle />
+
+          {user ? (
+            <div className="hidden items-center gap-2 md:flex">
+              <NavLink
+                to="/my-prompts"
+                className="inline-flex items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm font-medium text-[var(--text)] transition-all duration-200 hover:border-[var(--focus)] hover:bg-[var(--surface-elevated)]"
+              >
+                My Prompts
+              </NavLink>
+              <span className="text-sm font-medium text-[var(--text-muted)]">{user.name}</span>
+              <button
+                type="button"
+                onClick={logout}
+                className="inline-flex items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm font-medium text-[var(--text)] transition-all duration-200 hover:border-[var(--focus)] hover:bg-[var(--surface-elevated)]"
+              >
+                Logout
+              </button>
+            </div>
+          ) : (
+            <div className="hidden items-center gap-2 md:flex">
+              <NavLink
+                to="/login"
+                className="inline-flex items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface)] px-3.5 py-2 text-sm font-medium text-[var(--text)] transition-all duration-200 hover:border-[var(--focus)] hover:bg-[var(--surface-elevated)]"
+              >
+                Login
+              </NavLink>
+              <NavLink
+                to="/signup"
+                className="inline-flex items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface)] px-3.5 py-2 text-sm font-medium text-[var(--text)] transition-all duration-200 hover:border-[var(--focus)] hover:bg-[var(--surface-elevated)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
+              >
+                Sign up
+              </NavLink>
+            </div>
+          )}
+
           <button
             type="button"
             aria-label={isMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
@@ -122,6 +160,70 @@ function Header() {
                   </motion.div>
                 )
               })}
+
+              {user ? (
+                <>
+                  <motion.div
+                    initial={{ opacity: 0, x: -12 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: navItems.length * 0.04, duration: 0.18, ease: 'easeOut' }}
+                  >
+                    <NavLink
+                      to="/my-prompts"
+                      onClick={closeMenu}
+                      className="mt-2 flex items-center justify-between rounded-full border border-[var(--border)] bg-[var(--surface)] px-3 py-2.5 text-base font-medium text-[var(--text)] transition-colors hover:border-[var(--focus)] hover:bg-[var(--surface-elevated)]"
+                    >
+                      <span>My Prompts</span>
+                      <span aria-hidden="true">•</span>
+                    </NavLink>
+                  </motion.div>
+                  <motion.button
+                    type="button"
+                    initial={{ opacity: 0, x: -12 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: (navItems.length + 1) * 0.04, duration: 0.18, ease: 'easeOut' }}
+                    onClick={() => {
+                      logout()
+                      closeMenu()
+                    }}
+                    className="mt-2 flex items-center justify-between rounded-full border border-[var(--border)] bg-[var(--surface)] px-3 py-2.5 text-base font-medium text-[var(--text)] transition-colors hover:border-[var(--focus)] hover:bg-[var(--surface-elevated)]"
+                  >
+                    <span>Logout</span>
+                    <span aria-hidden="true">•</span>
+                  </motion.button>
+                </>
+              ) : (
+                <>
+                  <motion.div
+                    initial={{ opacity: 0, x: -12 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: navItems.length * 0.04, duration: 0.18, ease: 'easeOut' }}
+                  >
+                    <NavLink
+                      to="/login"
+                      onClick={closeMenu}
+                      className="flex items-center justify-between rounded-full border border-[var(--border)] bg-[var(--surface)] px-3 py-2.5 text-base font-medium text-[var(--text)] transition-colors hover:border-[var(--focus)] hover:bg-[var(--surface-elevated)]"
+                    >
+                      <span>Login</span>
+                      <span aria-hidden="true">•</span>
+                    </NavLink>
+                  </motion.div>
+                  <motion.div
+                    initial={{ opacity: 0, x: -12 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: (navItems.length + 1) * 0.04, duration: 0.18, ease: 'easeOut' }}
+                  >
+                    <NavLink
+                      to="/signup"
+                      onClick={closeMenu}
+                      className="flex items-center justify-between rounded-full border border-[var(--border)] bg-[var(--surface)] px-3 py-2.5 text-base font-medium text-[var(--text)] transition-colors hover:border-[var(--focus)] hover:bg-[var(--surface-elevated)]"
+                    >
+                      <span>Sign up</span>
+                      <span aria-hidden="true">•</span>
+                    </NavLink>
+                  </motion.div>
+                </>
+              )}
             </motion.nav>
           </motion.div>
         ) : null}
