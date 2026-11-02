@@ -5,7 +5,11 @@ async function parseAuthResponse(response, endpoint) {
 
   if (!response.ok) {
     const message = payload && payload.message ? payload.message : `Request failed for ${endpoint}`
-    throw new Error(message)
+    const error = new Error(message)
+    if (payload && payload.code) {
+      error.code = payload.code
+    }
+    throw error
   }
 
   if (!payload || payload.success === false) {
@@ -37,6 +41,42 @@ export async function loginUser(formData) {
   })
 
   return parseAuthResponse(response, '/auth/login')
+}
+
+export async function googleLoginUser({ credential }) {
+  const response = await fetch(`${API_BASE_URL}/auth/google`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ credential }),
+  })
+
+  return parseAuthResponse(response, '/auth/google')
+}
+
+export async function verifyEmail(token) {
+  const response = await fetch(`${API_BASE_URL}/auth/verify-email`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ token }),
+  })
+
+  return parseAuthResponse(response, '/auth/verify-email')
+}
+
+export async function resendVerificationEmail(email) {
+  const response = await fetch(`${API_BASE_URL}/auth/resend-verification`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ email }),
+  })
+
+  return parseAuthResponse(response, '/auth/resend-verification')
 }
 
 export async function getCurrentUser(token) {

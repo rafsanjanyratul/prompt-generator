@@ -19,6 +19,25 @@ const userSchema = new Schema(
       required: true,
       select: false,
     },
+    emailVerified: {
+      type: Boolean,
+      default: false,
+    },
+    emailVerificationTokenHash: {
+      type: String,
+      select: false,
+      default: null,
+    },
+    emailVerificationTokenExpiresAt: {
+      type: Date,
+      default: null,
+    },
+    googleId: {
+      type: String,
+      unique: true,
+      sparse: true,
+      trim: true,
+    },
   },
   {
     timestamps: true,

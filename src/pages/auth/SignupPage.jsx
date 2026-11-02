@@ -1,17 +1,21 @@
+import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google'
 import { useState } from 'react'
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
+import { resendVerificationEmail } from '../../lib/authApi.js'
 import LoadingSpinner from '../../components/ui/LoadingSpinner.jsx'
 import { useAuth } from '../../contexts/AuthContext.jsx'
 
 function SignupPage() {
   const navigate = useNavigate()
   const location = useLocation()
-  const { user, loading, signup } = useAuth()
+  const { user, loading, signup, googleLogin } = useAuth()
   const [formData, setFormData] = useState({ name: '', email: '', password: '' })
   const [status, setStatus] = useState({ type: 'idle', message: '' })
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isResending, setIsResending] = useState(false)
+  const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID
 
   if (loading) {
     return (
@@ -37,12 +41,11 @@ function SignupPage() {
 
     try {
       await signup(formData)
-      toast.success('Signup successful.')
-      const redirectFrom = location.state?.from
-      const redirectDestination = redirectFrom
-        ? `${redirectFrom.pathname}${redirectFrom.search}${redirectFrom.hash}`
-        : '/'
-      navigate(redirectDestination, { replace: true })
+      setStatus({
+        type: 'success',
+        message: 'Account created. Please check your email to verify your account before signing in.',
+      })
+      toast.success('Check your email to verify your account.')
     } catch (error) {
       const errorMessage = error.message || 'Unable to create your account. Please try again.'
       setStatus({
@@ -52,6 +55,61 @@ function SignupPage() {
       toast.error(errorMessage)
     } finally {
       setIsSubmitting(false)
+    }
+  }
+
+  const handleResendVerification = async () => {
+    if (!formData.email) {
+      setStatus({ type: 'error', message: 'Please enter your email to resend the verification link.' })
+      toast.error('Please enter your email to resend the verification link.')
+      return
+    }
+
+    setIsResending(true)
+
+    try {
+      await resendVerificationEmail(formData.email)
+      setStatus({
+        type: 'success',
+        message: 'If your account exists and is not verified yet, a new verification email has been sent.',
+      })
+      toast.success('Verification email sent.')
+    } catch (error) {
+      const errorMessage = error.message || 'Unable to resend the verification email.'
+      setStatus({ type: 'error', message: errorMessage })
+      toast.error(errorMessage)
+    } finally {
+      setIsResending(false)
+    }
+  }
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    const credential = credentialResponse?.credential
+
+    if (!credential) {
+      const errorMessage = 'Google sign-in failed. Please try again.'
+      setStatus({ type: 'error', message: errorMessage })
+      toast.error(errorMessage)
+      return
+    }
+
+    setStatus({ type: 'idle', message: '' })
+
+    try {
+      await googleLogin(credential)
+      toast.success('Signup successful.')
+      const redirectFrom = location.state?.from
+      const redirectDestination = redirectFrom
+        ? `${redirectFrom.pathname}${redirectFrom.search}${redirectFrom.hash}`
+        : '/'
+      navigate(redirectDestination, { replace: true })
+    } catch (error) {
+      const errorMessage = error.message || 'Google sign-in failed. Please try again.'
+      setStatus({
+        type: 'error',
+        message: errorMessage,
+      })
+      toast.error(errorMessage)
     }
   }
 
@@ -134,6 +192,17 @@ function SignupPage() {
               </div>
             ) : null}
 
+            {status.type === 'success' ? (
+              <button
+                type="button"
+                onClick={handleResendVerification}
+                disabled={isResending}
+                className="w-full rounded-xl border border-[var(--brand)] px-4 py-2.5 font-medium text-[var(--brand)] transition hover:bg-[var(--brand)]/5 disabled:cursor-not-allowed disabled:opacity-70"
+              >
+                {isResending ? 'Sending...' : 'Resend verification email'}
+              </button>
+            ) : null}
+
             <button
               type="submit"
               disabled={isSubmitting}
@@ -142,6 +211,25 @@ function SignupPage() {
               {isSubmitting ? 'Creating account...' : 'Sign up'}
             </button>
           </form>
+
+          {googleClientId ? (
+            <div className="pt-2">
+              <GoogleOAuthProvider clientId={googleClientId}>
+                <GoogleLogin
+                  onSuccess={handleGoogleSuccess}
+                  onError={() => {
+                    const errorMessage = 'Google sign-in failed. Please try again.'
+                    setStatus({ type: 'error', message: errorMessage })
+                    toast.error(errorMessage)
+                  }}
+                  text="signup_with"
+                  theme="outline"
+                  shape="pill"
+                  width="100%"
+                />
+              </GoogleOAuthProvider>
+            </div>
+          ) : null}
         </div>
 
         <p className="mt-5 text-center text-sm text-[var(--text-muted)]">

@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 
-import { getCurrentUser, loginUser, registerUser } from '../lib/authApi.js'
+import { getCurrentUser, googleLoginUser, loginUser, registerUser } from '../lib/authApi.js'
 
 const TOKEN_STORAGE_KEY = 'promptmuse-auth-token'
 const AuthContext = createContext(null)
@@ -45,15 +45,23 @@ export function AuthProvider({ children }) {
   const signup = useCallback(
     async (formData) => {
       const data = await registerUser(formData)
+      return data.user ?? data
+    },
+    [],
+  )
+
+  const login = useCallback(
+    async (formData) => {
+      const data = await loginUser(formData)
       saveSession(data.token, data.user)
       return data.user
     },
     [saveSession],
   )
 
-  const login = useCallback(
-    async (formData) => {
-      const data = await loginUser(formData)
+  const googleLogin = useCallback(
+    async (credential) => {
+      const data = await googleLoginUser({ credential })
       saveSession(data.token, data.user)
       return data.user
     },
@@ -70,10 +78,11 @@ export function AuthProvider({ children }) {
       loading,
       signup,
       login,
+      googleLogin,
       logout,
       refreshSession,
     }),
-    [user, loading, signup, login, logout, refreshSession],
+    [user, loading, signup, login, googleLogin, logout, refreshSession],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

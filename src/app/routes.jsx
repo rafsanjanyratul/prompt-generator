@@ -10,6 +10,7 @@ import CreatePage from '../pages/CreatePage'
 import VoicePromptPage from '../pages/VoicePromptPage'
 import LoginPage from '../pages/auth/LoginPage'
 import SignupPage from '../pages/auth/SignupPage'
+import VerifyEmailPage from '../pages/auth/VerifyEmailPage.jsx'
 import { trackPageView } from '../lib/analytics.js'
 
 const routePageType = (path) => {
@@ -78,6 +79,10 @@ const router = createBrowserRouter([
       {
         path: 'signup',
         element: <SignupPage />,
+      },
+      {
+        path: 'verify-email',
+        element: <VerifyEmailPage />,
       },
     ],
   },

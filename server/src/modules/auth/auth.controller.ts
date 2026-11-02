@@ -1,7 +1,18 @@
 import type { NextFunction, Request, Response } from 'express'
 import { z } from 'zod'
 
-import { loginUser, loginSchema, registerSchema, registerUser } from './auth.service.js'
+import {
+  googleLoginUser,
+  googleSchema,
+  loginUser,
+  loginSchema,
+  registerSchema,
+  registerUser,
+  resendVerificationSchema,
+  resendVerificationUser,
+  verifyEmailSchema,
+  verifyEmailUser,
+} from './auth.service.js'
 
 const createHttpError = (statusCode: number, message: string) => {
   const error = new Error(message) as Error & { statusCode?: number }
@@ -20,13 +31,12 @@ const formatValidationError = (error: z.ZodError) =>
 export const registerController = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const payload = registerSchema.parse(req.body)
-    const { user, token } = await registerUser(payload)
+    const { user } = await registerUser(payload)
 
     res.status(201).json({
       success: true,
       data: {
         user,
-        token,
       },
     })
   } catch (error) {
@@ -50,6 +60,66 @@ export const loginController = async (req: Request, res: Response, next: NextFun
         user,
         token,
       },
+    })
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      next(createHttpError(400, formatValidationError(error)))
+      return
+    }
+
+    next(error)
+  }
+}
+
+export const googleController = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const payload = googleSchema.parse(req.body)
+    const { user, token } = await googleLoginUser(payload)
+
+    res.status(200).json({
+      success: true,
+      data: {
+        user,
+        token,
+      },
+    })
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      next(createHttpError(400, formatValidationError(error)))
+      return
+    }
+
+    next(error)
+  }
+}
+
+export const verifyEmailController = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const payload = verifyEmailSchema.parse(req.body)
+    const result = await verifyEmailUser(payload)
+
+    res.status(200).json({
+      success: true,
+      data: result,
+    })
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      next(createHttpError(400, formatValidationError(error)))
+      return
+    }
+
+    next(error)
+  }
+}
+
+export const resendVerificationController = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const payload = resendVerificationSchema.parse(req.body)
+    const result = await resendVerificationUser(payload)
+
+    res.status(200).json({
+      success: true,
+      data: result,
     })
   } catch (error) {
     if (error instanceof z.ZodError) {

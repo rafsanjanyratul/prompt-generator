@@ -1,17 +1,21 @@
+import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google'
 import { useState } from 'react'
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
+import { resendVerificationEmail } from '../../lib/authApi.js'
 import LoadingSpinner from '../../components/ui/LoadingSpinner.jsx'
 import { useAuth } from '../../contexts/AuthContext.jsx'
 
 function LoginPage() {
   const navigate = useNavigate()
   const location = useLocation()
-  const { user, loading, login } = useAuth()
+  const { user, loading, login, googleLogin } = useAuth()
   const [formData, setFormData] = useState({ email: '', password: '' })
-  const [status, setStatus] = useState({ type: 'idle', message: '' })
+  const [status, setStatus] = useState({ type: 'idle', message: '', code: null })
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isResending, setIsResending] = useState(false)
+  const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID
 
   if (loading) {
     return (
@@ -28,11 +32,12 @@ function LoginPage() {
   const handleChange = (event) => {
     const { name, value } = event.target
     setFormData((current) => ({ ...current, [name]: value }))
+    setStatus((current) => ({ ...current, type: 'idle', message: '', code: null }))
   }
 
   const handleSubmit = async (event) => {
     event.preventDefault()
-    setStatus({ type: 'idle', message: '' })
+    setStatus({ type: 'idle', message: '', code: null })
     setIsSubmitting(true)
 
     try {
@@ -44,14 +49,76 @@ function LoginPage() {
         : '/'
       navigate(redirectDestination, { replace: true })
     } catch (error) {
-      const errorMessage = error.message || 'Unable to sign in. Please try again.'
+      const isVerificationError = error.code === 'EMAIL_NOT_VERIFIED'
+      const errorMessage = isVerificationError
+        ? 'Please verify your email before signing in. We can resend the verification email.'
+        : 'Invalid email or password'
+
       setStatus({
         type: 'error',
         message: errorMessage,
+        code: isVerificationError ? 'EMAIL_NOT_VERIFIED' : null,
       })
-      toast.error(errorMessage)
+      toast.error(isVerificationError ? 'Please verify your email before signing in.' : errorMessage)
     } finally {
       setIsSubmitting(false)
+    }
+  }
+
+  const handleResendVerification = async () => {
+    if (!formData.email) {
+      setStatus({ type: 'error', message: 'Please enter your email to resend the verification link.', code: null })
+      toast.error('Please enter your email to resend the verification link.')
+      return
+    }
+
+    setIsResending(true)
+
+    try {
+      await resendVerificationEmail(formData.email)
+      setStatus({
+        type: 'success',
+        message: 'If your account exists and is not verified yet, a new verification email has been sent.',
+        code: null,
+      })
+      toast.success('Verification email sent.')
+    } catch (error) {
+      const errorMessage = error.message || 'Unable to resend the verification email.'
+      setStatus({ type: 'error', message: errorMessage, code: null })
+      toast.error(errorMessage)
+    } finally {
+      setIsResending(false)
+    }
+  }
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    const credential = credentialResponse?.credential
+
+    if (!credential) {
+      const errorMessage = 'Google sign-in failed. Please try again.'
+      setStatus({ type: 'error', message: errorMessage, code: null })
+      toast.error(errorMessage)
+      return
+    }
+
+    setStatus({ type: 'idle', message: '', code: null })
+
+    try {
+      await googleLogin(credential)
+      toast.success('Login successful.')
+      const redirectFrom = location.state?.from
+      const redirectDestination = redirectFrom
+        ? `${redirectFrom.pathname}${redirectFrom.search}${redirectFrom.hash}`
+        : '/'
+      navigate(redirectDestination, { replace: true })
+    } catch (error) {
+      const errorMessage = error.message || 'Google sign-in failed. Please try again.'
+      setStatus({
+        type: 'error',
+        message: errorMessage,
+        code: null,
+      })
+      toast.error(errorMessage)
     }
   }
 
@@ -118,6 +185,17 @@ function LoginPage() {
               </div>
             ) : null}
 
+            {status.type === 'error' && status.code === 'EMAIL_NOT_VERIFIED' ? (
+              <button
+                type="button"
+                onClick={handleResendVerification}
+                disabled={isResending}
+                className="w-full rounded-xl border border-[var(--brand)] px-4 py-2.5 font-medium text-[var(--brand)] transition hover:bg-[var(--brand)]/5 disabled:cursor-not-allowed disabled:opacity-70"
+              >
+                {isResending ? 'Sending...' : 'Resend verification email'}
+              </button>
+            ) : null}
+
             <button
               type="submit"
               disabled={isSubmitting}
@@ -126,6 +204,25 @@ function LoginPage() {
               {isSubmitting ? 'Signing in...' : 'Login'}
             </button>
           </form>
+
+          {googleClientId ? (
+            <div className="pt-2">
+              <GoogleOAuthProvider clientId={googleClientId}>
+                <GoogleLogin
+                  onSuccess={handleGoogleSuccess}
+                  onError={() => {
+                    const errorMessage = 'Google sign-in failed. Please try again.'
+                    setStatus({ type: 'error', message: errorMessage })
+                    toast.error(errorMessage)
+                  }}
+                  text="signin_with"
+                  theme="outline"
+                  shape="pill"
+                  width="100%"
+                />
+              </GoogleOAuthProvider>
+            </div>
+          ) : null}
         </div>
 
         <p className="mt-5 text-center text-sm text-[var(--text-muted)]">
