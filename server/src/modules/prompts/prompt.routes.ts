@@ -1,5 +1,6 @@
 import { Router } from 'express'
 
+import { adminMiddleware, authMiddleware } from '../../middlewares/auth.middleware.js'
 import {
   createPromptController,
   deletePromptBySlugController,
@@ -10,10 +11,10 @@ import {
 
 const router = Router()
 
-router.post('/', createPromptController)
 router.get('/', listPromptsController)
 router.get('/:slug', getPromptBySlugController)
-router.patch('/:slug', updatePromptBySlugController)
-router.delete('/:slug', deletePromptBySlugController)
+router.post('/', authMiddleware, adminMiddleware, createPromptController)
+router.patch('/:slug', authMiddleware, adminMiddleware, updatePromptBySlugController)
+router.delete('/:slug', authMiddleware, adminMiddleware, deletePromptBySlugController)
 
 export default router

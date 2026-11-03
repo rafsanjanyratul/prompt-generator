@@ -15,12 +15,41 @@ const isDuplicateKeyError = (error: unknown) => {
   return candidate.code === 11000
 }
 
+const getDuplicateKeyMessage = (error: unknown) => {
+  if (typeof error !== 'object' || error === null) {
+    return 'A prompt with this unique field already exists'
+  }
+
+  const candidate = error as {
+    keyPattern?: Record<string, unknown>
+    keyValue?: Record<string, unknown>
+  }
+
+  if (candidate.keyPattern && 'slug' in candidate.keyPattern) {
+    return 'A prompt with this slug already exists'
+  }
+
+  if (candidate.keyPattern && 'id' in candidate.keyPattern) {
+    return 'A prompt with this id already exists'
+  }
+
+  if (candidate.keyValue && typeof candidate.keyValue.slug === 'string') {
+    return 'A prompt with this slug already exists'
+  }
+
+  if (candidate.keyValue && typeof candidate.keyValue.id !== 'undefined') {
+    return 'A prompt with this id already exists'
+  }
+
+  return 'A prompt with this unique field already exists'
+}
+
 export async function createPromptService(input: Record<string, unknown>) {
   try {
     return await Prompt.create(input)
   } catch (error) {
     if (isDuplicateKeyError(error)) {
-      throw createHttpError(409, 'A prompt with this slug already exists')
+      throw createHttpError(409, getDuplicateKeyMessage(error))
     }
 
     throw error

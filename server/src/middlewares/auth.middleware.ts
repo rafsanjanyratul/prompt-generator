@@ -8,6 +8,7 @@ export type AuthUser = {
   id: string
   name: string
   email: string
+  role: 'user' | 'admin'
 }
 
 declare global {
@@ -45,16 +46,19 @@ export const authMiddleware = async (req: Request, _res: Response, next: NextFun
       throw createHttpError(401, 'Invalid authentication token')
     }
 
-    const user = await User.findById(userId).select('name email')
+    const user = await User.findById(userId).select('name email role')
 
     if (!user) {
       throw createHttpError(401, 'User no longer exists')
     }
 
+    const normalizedRole = user.role === 'admin' ? 'admin' : 'user'
+
     req.user = {
       id: user._id.toString(),
       name: user.name,
       email: user.email,
+      role: normalizedRole,
     }
 
     next()
@@ -66,6 +70,43 @@ export const authMiddleware = async (req: Request, _res: Response, next: NextFun
 
     if (error instanceof jwt.JsonWebTokenError) {
       next(createHttpError(401, 'Invalid authentication token'))
+      return
+    }
+
+    next(error)
+  }
+}
+
+export const adminMiddleware = async (req: Request, _res: Response, next: NextFunction) => {
+  try {
+    if (!req.user) {
+      throw createHttpError(401, 'Authentication token is required')
+    }
+
+    const user = await User.findById(req.user.id).select('role')
+
+    if (!user) {
+      throw createHttpError(401, 'User no longer exists')
+    }
+
+    if (user.role !== 'admin') {
+      throw createHttpError(403, 'Admin access required')
+    }
+
+    next()
+  } catch (error) {
+    if (error instanceof jwt.TokenExpiredError) {
+      next(createHttpError(401, 'Authentication token has expired'))
+      return
+    }
+
+    if (error instanceof jwt.JsonWebTokenError) {
+      next(createHttpError(401, 'Invalid authentication token'))
+      return
+    }
+
+    if (error instanceof Error && 'statusCode' in error && typeof error.statusCode === 'number') {
+      next(error)
       return
     }
 

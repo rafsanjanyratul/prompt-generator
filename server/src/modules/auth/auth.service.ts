@@ -89,6 +89,7 @@ export async function registerUser(input: z.infer<typeof registerSchema>) {
     email: normalizedEmail,
     password: hashedPassword,
     emailVerified: false,
+    role: 'user',
     emailVerificationTokenHash: hashedVerificationToken,
     emailVerificationTokenExpiresAt: expiresAt,
   })
@@ -175,6 +176,7 @@ export async function googleLoginUser(input: z.infer<typeof googleSchema>) {
         email: normalizedEmail,
         password: hashedPassword,
         emailVerified: true,
+        role: 'user',
         googleId,
       })
     }
