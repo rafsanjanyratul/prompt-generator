@@ -6,7 +6,7 @@ import { z } from 'zod'
 
 import { env } from '../../config/env.js'
 import { sendTransactionalEmail } from '../../utils/email.js'
-import { buildVerificationEmailTemplate } from '../../utils/email-templates.js'
+import { buildPasswordResetEmailTemplate, buildVerificationEmailTemplate } from '../../utils/email-templates.js'
 import { signToken } from '../../utils/jwt.js'
 import { User } from '../users/user.model.js'
 
@@ -33,8 +33,18 @@ export const resendVerificationSchema = z.object({
   email: z.string().trim().email('A valid email is required'),
 })
 
+export const forgotPasswordSchema = z.object({
+  email: z.string().trim().email('A valid email is required'),
+})
+
+export const resetPasswordSchema = z.object({
+  token: z.string().trim().min(1, 'Reset token is required'),
+  password: z.string().min(8, 'Password must be at least 8 characters long'),
+})
+
 const googleClient = new OAuth2Client(env.GOOGLE_CLIENT_ID)
 const VERIFICATION_TOKEN_TTL_MS = 24 * 60 * 60 * 1000
+const PASSWORD_RESET_TOKEN_TTL_MS = 60 * 60 * 1000
 
 const hashToken = (token: string) => crypto.createHash('sha256').update(token).digest('hex')
 
@@ -52,11 +62,14 @@ const sanitizeUser = (user: Record<string, unknown>) => {
   delete safeUser.password
   delete safeUser.emailVerificationTokenHash
   delete safeUser.emailVerificationTokenExpiresAt
+  delete safeUser.passwordResetTokenHash
+  delete safeUser.passwordResetExpiresAt
   delete safeUser.googleId
   return safeUser
 }
 
 const buildVerificationLink = (token: string) => `${env.APP_BASE_URL.replace(/\/$/, '')}/verify-email?token=${encodeURIComponent(token)}`
+const buildPasswordResetLink = (token: string) => `${env.APP_BASE_URL.replace(/\/$/, '')}/reset-password?token=${encodeURIComponent(token)}`
 
 export async function registerUser(input: z.infer<typeof registerSchema>) {
   const normalizedEmail = input.email.toLowerCase()
@@ -236,6 +249,75 @@ export async function resendVerificationUser(input: z.infer<typeof resendVerific
 
   return {
     message: 'If an account exists for this email and has not been verified yet, a verification email has been sent.',
+  }
+}
+
+export async function forgotPasswordUser(input: z.infer<typeof forgotPasswordSchema>) {
+  const normalizedEmail = input.email.toLowerCase()
+  const user = await User.findOne({ email: normalizedEmail }).select('+password +googleId +passwordResetTokenHash +passwordResetExpiresAt')
+
+  const genericResponse = {
+    message: 'If an account exists for this email, a password reset link has been sent.',
+  }
+
+  if (!user) {
+    return genericResponse
+  }
+
+  const hasUsablePassword = typeof user.password === 'string' && user.password.trim().length > 0
+  if (user.googleId && !hasUsablePassword) {
+    return genericResponse
+  }
+
+  const resetToken = crypto.randomBytes(32).toString('hex')
+  const hashedResetToken = hashToken(resetToken)
+  const expiresAt = new Date(Date.now() + PASSWORD_RESET_TOKEN_TTL_MS)
+
+  user.passwordResetTokenHash = hashedResetToken
+  user.passwordResetExpiresAt = expiresAt
+  await user.save()
+
+  await sendTransactionalEmail({
+    to: user.email,
+    subject: 'Reset your PromptMuse password',
+    html: buildPasswordResetEmailTemplate({
+      recipientName: user.name,
+      actionUrl: buildPasswordResetLink(resetToken),
+      expiresIn: '1 hour',
+    }).html,
+    text: buildPasswordResetEmailTemplate({
+      recipientName: user.name,
+      actionUrl: buildPasswordResetLink(resetToken),
+      expiresIn: '1 hour',
+    }).text,
+  })
+
+  return genericResponse
+}
+
+export async function resetPasswordUser(input: z.infer<typeof resetPasswordSchema>) {
+  const submittedToken = input.token.trim()
+  const tokenHash = hashToken(submittedToken)
+  const now = new Date()
+
+  const user = await User.findOne({
+    passwordResetTokenHash: tokenHash,
+    passwordResetExpiresAt: { $gt: now },
+  }).select('+password +passwordResetTokenHash +passwordResetExpiresAt')
+
+  if (!user) {
+    throw createHttpError(400, 'Invalid, expired, or already used password reset token')
+  }
+
+  const hashedPassword = await bcrypt.hash(input.password, 10)
+
+  user.password = hashedPassword
+  user.passwordResetTokenHash = undefined
+  user.passwordResetExpiresAt = undefined
+  await user.save()
+
+  return {
+    message: 'Password reset successfully.',
   }
 }
 

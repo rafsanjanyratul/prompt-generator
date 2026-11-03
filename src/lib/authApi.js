@@ -79,6 +79,30 @@ export async function resendVerificationEmail(email) {
   return parseAuthResponse(response, '/auth/resend-verification')
 }
 
+export async function forgotPassword(email) {
+  const response = await fetch(`${API_BASE_URL}/auth/forgot-password`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ email }),
+  })
+
+  return parseAuthResponse(response, '/auth/forgot-password')
+}
+
+export async function resetPassword(token, password) {
+  const response = await fetch(`${API_BASE_URL}/auth/reset-password`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ token, password }),
+  })
+
+  return parseAuthResponse(response, '/auth/reset-password')
+}
+
 export async function getCurrentUser(token) {
   const response = await fetch(`${API_BASE_URL}/auth/me`, {
     method: 'GET',

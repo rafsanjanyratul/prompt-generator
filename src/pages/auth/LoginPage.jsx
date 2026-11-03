@@ -225,20 +225,27 @@ function LoginPage() {
           ) : null}
         </div>
 
-        <p className="mt-5 text-center text-sm text-[var(--text-muted)]">
-          Need an account?{' '}
-          <Link
-            to="/signup"
-            state={
-              location.state?.from
-                ? { from: location.state.from, message: location.state.message }
-                : undefined
-            }
-            className="font-semibold text-[var(--brand)]"
-          >
-            Sign up
-          </Link>
-        </p>
+        <div className="mt-5 text-center text-sm text-[var(--text-muted)]">
+          <div className="mb-2">
+            <Link to="/forgot-password" className="font-semibold text-[var(--brand)]">
+              Forgot password?
+            </Link>
+          </div>
+          <p>
+            Need an account?{' '}
+            <Link
+              to="/signup"
+              state={
+                location.state?.from
+                  ? { from: location.state.from, message: location.state.message }
+                  : undefined
+              }
+              className="font-semibold text-[var(--brand)]"
+            >
+              Sign up
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   )

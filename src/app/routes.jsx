@@ -11,6 +11,8 @@ import VoicePromptPage from '../pages/VoicePromptPage'
 import LoginPage from '../pages/auth/LoginPage'
 import SignupPage from '../pages/auth/SignupPage'
 import VerifyEmailPage from '../pages/auth/VerifyEmailPage.jsx'
+import ForgotPasswordPage from '../pages/auth/ForgotPasswordPage.jsx'
+import ResetPasswordPage from '../pages/auth/ResetPasswordPage.jsx'
 import { trackPageView } from '../lib/analytics.js'
 
 const routePageType = (path) => {
@@ -83,6 +85,14 @@ const router = createBrowserRouter([
       {
         path: 'verify-email',
         element: <VerifyEmailPage />,
+      },
+      {
+        path: 'forgot-password',
+        element: <ForgotPasswordPage />,
+      },
+      {
+        path: 'reset-password',
+        element: <ResetPasswordPage />,
       },
     ],
   },

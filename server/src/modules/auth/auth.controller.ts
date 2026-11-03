@@ -2,6 +2,8 @@ import type { NextFunction, Request, Response } from 'express'
 import { z } from 'zod'
 
 import {
+  forgotPasswordSchema,
+  forgotPasswordUser,
   googleLoginUser,
   googleSchema,
   loginUser,
@@ -10,6 +12,8 @@ import {
   registerUser,
   resendVerificationSchema,
   resendVerificationUser,
+  resetPasswordSchema,
+  resetPasswordUser,
   verifyEmailSchema,
   verifyEmailUser,
 } from './auth.service.js'
@@ -116,6 +120,44 @@ export const resendVerificationController = async (req: Request, res: Response, 
   try {
     const payload = resendVerificationSchema.parse(req.body)
     const result = await resendVerificationUser(payload)
+
+    res.status(200).json({
+      success: true,
+      data: result,
+    })
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      next(createHttpError(400, formatValidationError(error)))
+      return
+    }
+
+    next(error)
+  }
+}
+
+export const forgotPasswordController = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const payload = forgotPasswordSchema.parse(req.body)
+    const result = await forgotPasswordUser(payload)
+
+    res.status(200).json({
+      success: true,
+      data: result,
+    })
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      next(createHttpError(400, formatValidationError(error)))
+      return
+    }
+
+    next(error)
+  }
+}
+
+export const resetPasswordController = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const payload = resetPasswordSchema.parse(req.body)
+    const result = await resetPasswordUser(payload)
 
     res.status(200).json({
       success: true,
