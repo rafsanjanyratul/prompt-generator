@@ -11,6 +11,7 @@ import { useAuth } from '../contexts/AuthContext.jsx'
 import useDocumentMeta from '../hooks/useDocumentMeta'
 import { trackEvent } from '../lib/analytics.js'
 import { addFavoritePrompt, getFavoritePrompts, removeFavoritePrompt } from '../lib/authApi.js'
+import { withCloudinaryDisplayTransform } from '../lib/cloudinary.js'
 import { getAllPrompts, getPromptBySlug } from '../lib/promptsApi.js'
 
 function StyleDetailPage() {
@@ -297,7 +298,7 @@ function StyleDetailPage() {
             <div className="relative aspect-[4/5] overflow-hidden rounded-[22px] bg-[var(--surface-muted)] shadow-[inset_0_1px_0_rgba(255,255,255,0.2)]">
               {!imageFailed ? (
                 <img
-                  src={style.image}
+                  src={withCloudinaryDisplayTransform(style.image)}
                   alt={style.title}
                   loading="eager"
                   decoding="async"

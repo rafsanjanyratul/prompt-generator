@@ -47,6 +47,11 @@ const promptSchema = new Schema(
       required: true,
       trim: true,
     },
+    imagePublicId: {
+      type: String,
+      trim: true,
+      default: null,
+    },
     prompt: {
       type: String,
       required: true,

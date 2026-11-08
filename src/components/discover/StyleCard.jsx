@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
 import { Heart, ImageOff, LoaderCircle } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { withCloudinaryDisplayTransform } from '../../lib/cloudinary.js'
 import Badge from '../ui/Badge'
 
 function StyleCard({
@@ -46,7 +47,7 @@ function StyleCard({
             <div className="relative aspect-[4/4.4] w-full overflow-hidden bg-[var(--surface-muted)] sm:aspect-[4/4.8] md:aspect-[4/5]">
               {!imageFailed ? (
                 <img
-                  src={item.image}
+                  src={withCloudinaryDisplayTransform(item.image)}
                   alt={item.title}
                   loading="lazy"
                   decoding="async"

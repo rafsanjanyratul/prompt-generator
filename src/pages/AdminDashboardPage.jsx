@@ -1,46 +1,44 @@
-import { ArrowRight, FileText, LayoutGrid, Plus, Sparkles, TrendingUp } from 'lucide-react'
+import { useEffect, useMemo, useState } from 'react'
+import { ArrowRight, FileText, Plus, Sparkles, TrendingUp } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
+import AdminSidebar from '../components/admin/AdminSidebar.jsx'
 import useDocumentMeta from '../hooks/useDocumentMeta'
-
-const navItems = [
-  { label: 'Overview', icon: LayoutGrid, to: '/admin', active: true },
-  { label: 'Manage Prompts', icon: FileText, to: '/admin/manage-prompts' },
-  { label: 'Featured', icon: Sparkles, to: '/admin' },
-  { label: 'Trending', icon: TrendingUp, to: '/admin' },
-]
-
-const summaryCards = [
-  {
-    label: 'Total Prompts',
-    value: '1,284',
-    change: '+12.4% this month',
-    icon: FileText,
-    tone: 'bg-[var(--brand-soft)] text-[var(--text)]',
-  },
-  {
-    label: 'Featured Prompts',
-    value: '64',
-    change: '+8 curated this week',
-    icon: Sparkles,
-    tone: 'bg-[rgba(122,92,69,0.08)] text-[var(--brand-accent)]',
-  },
-  {
-    label: 'Trending Prompts',
-    value: '27',
-    change: '+5 in trending list',
-    icon: TrendingUp,
-    tone: 'bg-[rgba(28,124,84,0.08)] text-[var(--success)]',
-  },
-]
-
-const spotlightItems = [
-  { name: 'Editorial Portrait', status: 'Published', accent: 'bg-[var(--success)]' },
-  { name: 'Luxury Wedding', status: 'Featured', accent: 'bg-[var(--brand-accent)]' },
-  { name: 'Cinematic Streetwear', status: 'Draft', accent: 'bg-[var(--text-muted)]' },
-]
+import { getAllPrompts } from '../lib/promptsApi.js'
 
 function AdminDashboardPage() {
+  const [prompts, setPrompts] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    let isMounted = true
+
+    async function loadPrompts() {
+      try {
+        const data = await getAllPrompts()
+
+        if (isMounted) {
+          setPrompts(Array.isArray(data) ? data : [])
+        }
+      } catch (loadError) {
+        if (isMounted) {
+          setError(loadError?.message || 'Unable to load prompt data right now.')
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false)
+        }
+      }
+    }
+
+    loadPrompts()
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
   useDocumentMeta({
     title: 'Admin Overview',
     description: 'Administrative overview for PromptMuse prompt management and content operations.',
@@ -48,46 +46,88 @@ function AdminDashboardPage() {
     ogDescription: 'Manage prompts, monitor featured and trending content, and review quick admin metrics.',
   })
 
+  const { featuredPrompts, trendingCount, topCategory } = useMemo(() => {
+    const categoryCounts = new Map()
+    const featured = []
+    let trending = 0
+
+    prompts.forEach((prompt) => {
+      if (prompt.featured === true) {
+        featured.push(prompt)
+      }
+      if (prompt.trending === true) {
+        trending += 1
+      }
+
+      const category = prompt.category?.trim()
+      if (category) {
+        categoryCounts.set(category, (categoryCounts.get(category) || 0) + 1)
+      }
+    })
+
+    const mostCommonCategory = Array.from(categoryCounts.entries()).sort((first, second) => second[1] - first[1])[0]
+
+    return {
+      featuredPrompts: featured,
+      trendingCount: trending,
+      topCategory: mostCommonCategory,
+    }
+  }, [prompts])
+
+  const summaryCards = [
+    {
+      label: 'Total Prompts',
+      value: loading || error ? '—' : prompts.length,
+      detail: loading ? 'Loading catalog data...' : error ? 'Data unavailable' : 'Public prompts in catalog',
+      icon: FileText,
+      tone: 'bg-[var(--brand-soft)] text-[var(--text)]',
+    },
+    {
+      label: 'Featured Prompts',
+      value: loading || error ? '—' : featuredPrompts.length,
+      detail: loading ? 'Loading catalog data...' : error ? 'Data unavailable' : 'Marked as featured',
+      icon: Sparkles,
+      tone: 'bg-[rgba(122,92,69,0.08)] text-[var(--brand-accent)]',
+    },
+    {
+      label: 'Trending Prompts',
+      value: loading || error ? '—' : trendingCount,
+      detail: loading ? 'Loading catalog data...' : error ? 'Data unavailable' : 'Marked as trending',
+      icon: TrendingUp,
+      tone: 'bg-[rgba(28,124,84,0.08)] text-[var(--success)]',
+    },
+  ]
+
+  const overviewNotes = [
+    {
+      label: 'Top category',
+      value: loading ? 'Loading...' : error ? 'Unavailable' : topCategory ? `${topCategory[0]} (${topCategory[1]})` : 'No category data',
+    },
+    {
+      label: 'Featured coverage',
+      value: loading ? 'Loading...' : error ? 'Unavailable' : prompts.length ? `${Math.round((featuredPrompts.length / prompts.length) * 100)}%` : 'No prompts yet',
+    },
+    {
+      label: 'Trending coverage',
+      value: loading ? 'Loading...' : error ? 'Unavailable' : prompts.length ? `${Math.round((trendingCount / prompts.length) * 100)}%` : 'No prompts yet',
+    },
+  ]
+
+  const catalogStatus = loading ? 'Loading prompt data' : error ? 'Catalog unavailable' : 'Catalog data loaded'
+
   return (
     <div className="mx-auto w-[min(var(--container-width),calc(100%-2rem))] py-8 pb-16">
       <div className="grid gap-6 lg:grid-cols-[240px_minmax(0,1fr)]">
-        <aside className="rounded-[28px] border border-[var(--border)] bg-[var(--surface)] p-4 shadow-[0_14px_32px_rgba(15,23,42,0.05)] lg:p-5">
-          <div className="flex items-center gap-3 border-b border-[var(--border)] pb-4">
-            <span className="inline-flex size-10 items-center justify-center rounded-[0.9rem] border border-[var(--border)] bg-[var(--brand-soft)] text-sm font-bold text-[var(--text)]">
-              P
-            </span>
-            <div>
-              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--text-muted)]">PromptMuse</p>
-              <p className="mt-1 text-sm font-semibold text-[var(--text)]">Admin console</p>
-            </div>
-          </div>
-
-          <nav className="mt-5 space-y-2" aria-label="Admin navigation">
-            {navItems.map(({ label, icon: Icon, to, active }) => (
-              <Link
-                key={label}
-                to={to}
-                className={`flex w-full items-center gap-3 rounded-[16px] px-3 py-2.5 text-left text-sm font-medium transition-colors ${
-                  active
-                    ? 'bg-[var(--surface-muted)] text-[var(--text)] shadow-[inset_0_0_0_1px_rgba(15,23,42,0.03)]'
-                    : 'text-[var(--text-muted)] hover:bg-[var(--surface-muted)] hover:text-[var(--text)]'
-                }`}
-              >
-                <Icon className="size-4" aria-hidden="true" />
-                <span>{label}</span>
-              </Link>
-            ))}
-          </nav>
-
+        <AdminSidebar>
           <div className="mt-6 rounded-[20px] border border-[var(--border)] bg-[var(--surface-muted)] p-4">
-            <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--text-muted)]">System status</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--text-muted)]">Catalog status</p>
             <div className="mt-3 flex items-center gap-2 text-sm text-[var(--text)]">
-              <span className="inline-block h-2.5 w-2.5 rounded-full bg-[var(--success)]" aria-hidden="true" />
-              All services online
+              <span className={`inline-block h-2.5 w-2.5 rounded-full ${error ? 'bg-[var(--error)]' : loading ? 'bg-[var(--text-muted)]' : 'bg-[var(--success)]'}`} aria-hidden="true" />
+              {catalogStatus}
             </div>
-            <p className="mt-2 text-xs leading-5 text-[var(--text-muted)]">Prompt catalog updates and moderation checks are running normally.</p>
+            <p className="mt-2 text-xs leading-5 text-[var(--text-muted)]">PromptMuse public prompt catalog</p>
           </div>
-        </aside>
+        </AdminSidebar>
 
         <div className="rounded-[28px] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[0_14px_32px_rgba(15,23,42,0.05)] sm:p-6 lg:p-8">
           <div className="flex flex-col gap-5 border-b border-[var(--border)] pb-6 md:flex-row md:items-end md:justify-between">
@@ -100,8 +140,8 @@ function AdminDashboardPage() {
             </div>
 
             <div className="inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--surface-muted)] px-3 py-2 text-xs font-medium text-[var(--text-muted)]">
-              <span className="inline-flex size-2 rounded-full bg-[var(--success)]" aria-hidden="true" />
-              Updated 2 min ago
+              <span className={`inline-flex size-2 rounded-full ${error ? 'bg-[var(--error)]' : loading ? 'bg-[var(--text-muted)]' : 'bg-[var(--success)]'}`} aria-hidden="true" />
+              {catalogStatus}
             </div>
           </div>
 
@@ -126,8 +166,14 @@ function AdminDashboardPage() {
             </Link>
           </div>
 
+          {error ? (
+            <div role="alert" className="mt-6 rounded-[18px] border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+              {error}
+            </div>
+          ) : null}
+
           <div className="mt-8 grid gap-4 md:grid-cols-3">
-            {summaryCards.map(({ label, value, change, icon: Icon, tone }) => (
+            {summaryCards.map(({ label, value, detail, icon: Icon, tone }) => (
               <div key={label} className="rounded-[22px] border border-[var(--border)] bg-[var(--surface-muted)] p-4">
                 <div className="flex items-start justify-between gap-3">
                   <div>
@@ -138,7 +184,7 @@ function AdminDashboardPage() {
                     <Icon className="size-5" aria-hidden="true" />
                   </span>
                 </div>
-                <p className="mt-4 text-sm text-[var(--text-muted)]">{change}</p>
+                <p className="mt-4 text-sm text-[var(--text-muted)]">{detail}</p>
               </div>
             ))}
           </div>
@@ -151,22 +197,30 @@ function AdminDashboardPage() {
                   <h2 className="mt-2 text-xl font-semibold tracking-[-0.04em] text-[var(--text)]">Featured picks</h2>
                 </div>
                 <span className="rounded-full border border-[var(--border)] bg-[var(--surface)] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--text-muted)]">
-                  Weekly
+                  {loading || error ? '—' : `${featuredPrompts.length} featured`}
                 </span>
               </div>
 
               <div className="mt-6 space-y-4">
-                {spotlightItems.map(({ name, status, accent }) => (
-                  <div key={name} className="flex items-center gap-3 rounded-[16px] border border-[var(--border)] bg-[var(--surface)] px-3 py-2.5">
-                    <span className={`inline-flex h-2.5 w-2.5 rounded-full ${accent}`} aria-hidden="true" />
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-medium text-[var(--text)]">{name}</p>
+                {loading ? (
+                  <p className="text-sm text-[var(--text-muted)]">Loading featured prompts...</p>
+                ) : error ? (
+                  <p className="text-sm text-[var(--text-muted)]">Featured prompts are unavailable.</p>
+                ) : featuredPrompts.length === 0 ? (
+                  <p className="text-sm text-[var(--text-muted)]">No featured prompts yet.</p>
+                ) : (
+                  featuredPrompts.slice(0, 3).map((prompt) => (
+                    <div key={prompt.slug} className="flex items-center gap-3 rounded-[16px] border border-[var(--border)] bg-[var(--surface)] px-3 py-2.5">
+                      <span className="inline-flex h-2.5 w-2.5 rounded-full bg-[var(--brand-accent)]" aria-hidden="true" />
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-sm font-medium text-[var(--text)]">{prompt.title}</p>
+                      </div>
+                      <span className="rounded-full bg-[var(--surface-muted)] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--text-muted)]">
+                        {prompt.category || 'Uncategorized'}
+                      </span>
                     </div>
-                    <span className="rounded-full bg-[var(--surface-muted)] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--text-muted)]">
-                      {status}
-                    </span>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
             </div>
 
@@ -175,18 +229,12 @@ function AdminDashboardPage() {
               <h2 className="mt-2 text-xl font-semibold tracking-[-0.04em] text-[var(--text)]">This week</h2>
 
               <div className="mt-6 space-y-4">
-                <div>
-                  <p className="text-sm text-[var(--text-muted)]">Top collection</p>
-                  <p className="mt-1 text-lg font-semibold text-[var(--text)]">Portrait styles</p>
-                </div>
-                <div>
-                  <p className="text-sm text-[var(--text-muted)]">Most saved</p>
-                  <p className="mt-1 text-lg font-semibold text-[var(--text)]">Old Money Elegance</p>
-                </div>
-                <div>
-                  <p className="text-sm text-[var(--text-muted)]">Review queue</p>
-                  <p className="mt-1 text-lg font-semibold text-[var(--text)]">12 prompts due</p>
-                </div>
+                {overviewNotes.map(({ label, value }) => (
+                  <div key={label}>
+                    <p className="text-sm text-[var(--text-muted)]">{label}</p>
+                    <p className="mt-1 text-lg font-semibold text-[var(--text)]">{value}</p>
+                  </div>
+                ))}
               </div>
             </div>
           </div>

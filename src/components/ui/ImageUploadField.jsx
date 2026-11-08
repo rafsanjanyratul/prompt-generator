@@ -1,6 +1,7 @@
 import { ImageUp, LoaderCircle, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 
+import { withCloudinaryDisplayTransform } from '../../lib/cloudinary.js'
 import { uploadPromptImage } from '../../lib/promptsApi.js'
 import Button from './Button.jsx'
 
@@ -32,7 +33,7 @@ function ImageUploadField({ value = '', onChange, label = 'Image', placeholder =
     setLocalUrl(nextValue)
     setPreviewUrl(nextValue)
     setError('')
-    onChange(nextValue)
+    onChange(nextValue, '')
   }
 
   const handleUpload = async (event) => {
@@ -66,6 +67,7 @@ function ImageUploadField({ value = '', onChange, label = 'Image', placeholder =
     try {
       const result = await uploadPromptImage(file)
       const secureUrl = result?.secureUrl || result?.data?.secureUrl || ''
+      const publicId = result?.publicId || result?.data?.publicId || ''
 
       if (!secureUrl) {
         throw new Error('Upload completed but no image URL was returned.')
@@ -73,7 +75,7 @@ function ImageUploadField({ value = '', onChange, label = 'Image', placeholder =
 
       setLocalUrl(secureUrl)
       setPreviewUrl(secureUrl)
-      onChange(secureUrl)
+      onChange(secureUrl, publicId)
     } catch (uploadError) {
       setPreviewUrl(value)
       setError(uploadError?.message || 'Image upload failed. Please try again.')
@@ -86,7 +88,7 @@ function ImageUploadField({ value = '', onChange, label = 'Image', placeholder =
   const clearValue = () => {
     setLocalUrl('')
     setPreviewUrl('')
-    onChange('')
+    onChange('', '')
     setError('')
   }
 
@@ -113,7 +115,11 @@ function ImageUploadField({ value = '', onChange, label = 'Image', placeholder =
 
       {previewUrl ? (
         <div className="mb-3 overflow-hidden rounded-[18px] border border-[var(--border)] bg-[var(--surface-muted)] p-2">
-          <img src={previewUrl} alt="Selected prompt preview" className="h-28 w-full rounded-[12px] object-cover" />
+          <img
+            src={withCloudinaryDisplayTransform(previewUrl)}
+            alt="Selected prompt preview"
+            className="h-28 w-full rounded-[12px] object-cover"
+          />
         </div>
       ) : null}
 

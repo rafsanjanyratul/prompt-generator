@@ -1,20 +1,13 @@
 import { useState } from 'react'
-import { ArrowLeft, CheckCircle2, FileText, LayoutGrid, PlusCircle, Sparkles, TrendingUp } from 'lucide-react'
+import { ArrowLeft, CheckCircle2, PlusCircle } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
+import AdminSidebar from '../components/admin/AdminSidebar.jsx'
 import ImageUploadField from '../components/ui/ImageUploadField.jsx'
 import { useAuth } from '../contexts/AuthContext.jsx'
 import useDocumentMeta from '../hooks/useDocumentMeta'
 import { createPrompt } from '../lib/promptsApi.js'
-
-const navItems = [
-  { label: 'Overview', icon: LayoutGrid, to: '/admin' },
-  { label: 'Manage Prompts', icon: FileText, to: '/admin/manage-prompts' },
-  { label: 'New Prompt', icon: PlusCircle, to: '/admin/prompts/new', active: true },
-  { label: 'Featured', icon: Sparkles, to: '/admin' },
-  { label: 'Trending', icon: TrendingUp, to: '/admin' },
-]
 
 const initialForm = {
   id: '',
@@ -26,6 +19,7 @@ const initialForm = {
   style: '',
   tags: '',
   image: '',
+  imagePublicId: '',
   prompt: '',
   featured: false,
   trending: false,
@@ -94,6 +88,7 @@ function AdminCreatePromptPage() {
         .map((tag) => tag.trim())
         .filter(Boolean),
       image: form.image.trim(),
+      imagePublicId: form.imagePublicId?.trim() || undefined,
       prompt: form.prompt.trim(),
       featured: Boolean(form.featured),
       trending: Boolean(form.trending),
@@ -124,34 +119,7 @@ function AdminCreatePromptPage() {
   return (
     <div className="mx-auto w-[min(var(--container-width),calc(100%-2rem))] py-8 pb-16">
       <div className="grid gap-6 lg:grid-cols-[240px_minmax(0,1fr)]">
-        <aside className="rounded-[28px] border border-[var(--border)] bg-[var(--surface)] p-4 shadow-[0_14px_32px_rgba(15,23,42,0.05)] lg:p-5">
-          <div className="flex items-center gap-3 border-b border-[var(--border)] pb-4">
-            <span className="inline-flex size-10 items-center justify-center rounded-[0.9rem] border border-[var(--border)] bg-[var(--brand-soft)] text-sm font-bold text-[var(--text)]">
-              P
-            </span>
-            <div>
-              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--text-muted)]">PromptMuse</p>
-              <p className="mt-1 text-sm font-semibold text-[var(--text)]">Admin console</p>
-            </div>
-          </div>
-
-          <nav className="mt-5 space-y-2" aria-label="Admin navigation">
-            {navItems.map(({ label, icon: Icon, to, active }) => (
-              <Link
-                key={label}
-                to={to}
-                className={`flex w-full items-center gap-3 rounded-[16px] px-3 py-2.5 text-left text-sm font-medium transition-colors ${
-                  active
-                    ? 'bg-[var(--surface-muted)] text-[var(--text)] shadow-[inset_0_0_0_1px_rgba(15,23,42,0.03)]'
-                    : 'text-[var(--text-muted)] hover:bg-[var(--surface-muted)] hover:text-[var(--text)]'
-                }`}
-              >
-                <Icon className="size-4" aria-hidden="true" />
-                <span>{label}</span>
-              </Link>
-            ))}
-          </nav>
-        </aside>
+        <AdminSidebar />
 
         <div className="rounded-[28px] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[0_14px_32px_rgba(15,23,42,0.05)] sm:p-6 lg:p-8">
           <div className="flex flex-col gap-4 border-b border-[var(--border)] pb-6 md:flex-row md:items-center md:justify-between">
@@ -285,7 +253,13 @@ function AdminCreatePromptPage() {
                 <ImageUploadField
                   label="Image"
                   value={form.image}
-                  onChange={(nextValue) => setForm((current) => ({ ...current, image: nextValue }))}
+                  onChange={(nextValue, nextPublicId) =>
+                    setForm((current) => ({
+                      ...current,
+                      image: nextValue,
+                      imagePublicId: nextPublicId || '',
+                    }))
+                  }
                   placeholder="/images/styles/boys/luxury-portrait.webp"
                   required
                 />

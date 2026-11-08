@@ -1,25 +1,20 @@
 import { useEffect, useMemo, useState } from 'react'
-import { ArrowLeft, FileText, LayoutGrid, Pencil, Search, Sparkles, Trash2, TrendingUp } from 'lucide-react'
-import { Link, useLocation } from 'react-router-dom'
+import { ArrowLeft, Pencil, Search, Trash2 } from 'lucide-react'
+import { Link, useSearchParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
+import AdminSidebar from '../components/admin/AdminSidebar.jsx'
 import EmptyState from '../components/ui/EmptyState.jsx'
 import ImageUploadField from '../components/ui/ImageUploadField.jsx'
 import LoadingSpinner from '../components/ui/LoadingSpinner.jsx'
 import { useAuth } from '../contexts/AuthContext.jsx'
 import useDocumentMeta from '../hooks/useDocumentMeta'
+import { withCloudinaryDisplayTransform } from '../lib/cloudinary.js'
 import { deletePromptBySlug, getAllPrompts, updatePromptBySlug } from '../lib/promptsApi.js'
-
-const navItems = [
-  { label: 'Overview', icon: LayoutGrid, to: '/admin' },
-  { label: 'Manage Prompts', icon: FileText, to: '/admin/manage-prompts' },
-  { label: 'Featured', icon: Sparkles, to: '/admin' },
-  { label: 'Trending', icon: TrendingUp, to: '/admin' },
-]
 
 function AdminManagePromptsPage() {
   const { user, logout } = useAuth()
-  const location = useLocation()
+  const [searchParams] = useSearchParams()
   const [prompts, setPrompts] = useState([])
   const [search, setSearch] = useState('')
   const [loading, setLoading] = useState(true)
@@ -76,13 +71,18 @@ function AdminManagePromptsPage() {
   }, [logout, user])
 
   const filteredPrompts = useMemo(() => {
+    const filter = searchParams.get('filter')
+    const categoryFilteredPrompts =
+      filter === 'featured' || filter === 'trending'
+        ? prompts.filter((prompt) => prompt[filter] === true)
+        : prompts
     const query = search.trim().toLowerCase()
 
     if (!query) {
-      return prompts
+      return categoryFilteredPrompts
     }
 
-    return prompts.filter((prompt) => {
+    return categoryFilteredPrompts.filter((prompt) => {
       const searchable = [
         prompt.title,
         prompt.shortDescription,
@@ -97,7 +97,7 @@ function AdminManagePromptsPage() {
 
       return searchable.includes(query)
     })
-  }, [prompts, search])
+  }, [prompts, search, searchParams])
 
   useDocumentMeta({
     title: 'Manage Prompts',
@@ -116,6 +116,7 @@ function AdminManagePromptsPage() {
       style: prompt.style || '',
       tags: Array.isArray(prompt.tags) ? prompt.tags.join(', ') : '',
       image: prompt.image || '',
+      imagePublicId: prompt.imagePublicId || '',
       prompt: prompt.prompt || '',
       featured: Boolean(prompt.featured),
       trending: Boolean(prompt.trending),
@@ -153,6 +154,7 @@ function AdminManagePromptsPage() {
         ),
       ),
       image: draft.image?.trim() || '',
+      imagePublicId: draft.imagePublicId?.trim() || undefined,
       prompt: draft.prompt?.trim() || '',
       featured: Boolean(draft.featured),
       trending: Boolean(draft.trending),
@@ -218,38 +220,7 @@ function AdminManagePromptsPage() {
   return (
     <div className="mx-auto w-[min(var(--container-width),calc(100%-2rem))] py-8 pb-16">
       <div className="grid gap-6 lg:grid-cols-[240px_minmax(0,1fr)]">
-        <aside className="rounded-[28px] border border-[var(--border)] bg-[var(--surface)] p-4 shadow-[0_14px_32px_rgba(15,23,42,0.05)] lg:p-5">
-          <div className="flex items-center gap-3 border-b border-[var(--border)] pb-4">
-            <span className="inline-flex size-10 items-center justify-center rounded-[0.9rem] border border-[var(--border)] bg-[var(--brand-soft)] text-sm font-bold text-[var(--text)]">
-              P
-            </span>
-            <div>
-              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--text-muted)]">PromptMuse</p>
-              <p className="mt-1 text-sm font-semibold text-[var(--text)]">Admin console</p>
-            </div>
-          </div>
-
-          <nav className="mt-5 space-y-2" aria-label="Admin navigation">
-            {navItems.map(({ label, icon: Icon, to }) => {
-              const isActive = location.pathname === to
-
-              return (
-                <Link
-                  key={label}
-                  to={to}
-                  className={`flex w-full items-center gap-3 rounded-[16px] px-3 py-2.5 text-left text-sm font-medium transition-colors ${
-                    isActive
-                      ? 'bg-[var(--surface-muted)] text-[var(--text)] shadow-[inset_0_0_0_1px_rgba(15,23,42,0.03)]'
-                      : 'text-[var(--text-muted)] hover:bg-[var(--surface-muted)] hover:text-[var(--text)]'
-                  }`}
-                >
-                  <Icon className="size-4" aria-hidden="true" />
-                  <span>{label}</span>
-                </Link>
-              )
-            })}
-          </nav>
-        </aside>
+        <AdminSidebar />
 
         <div className="rounded-[28px] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[0_14px_32px_rgba(15,23,42,0.05)] sm:p-6 lg:p-8">
           <div className="flex flex-col gap-4 border-b border-[var(--border)] pb-6 md:flex-row md:items-center md:justify-between">
@@ -430,7 +401,7 @@ function AdminManagePromptsPage() {
                                   {draft.image ? (
                                     <div className="mb-3 overflow-hidden rounded-[18px] border border-[var(--border)] bg-[var(--surface-muted)] p-2">
                                       <img
-                                        src={draft.image}
+                                        src={withCloudinaryDisplayTransform(draft.image)}
                                         alt={draft.title || 'Prompt image preview'}
                                         className="h-28 w-full rounded-[12px] object-cover"
                                       />
@@ -441,7 +412,13 @@ function AdminManagePromptsPage() {
                                     <ImageUploadField
                                       label="Image"
                                       value={draft.image || ''}
-                                      onChange={(nextValue) => setDraft((current) => ({ ...current, image: nextValue }))}
+                                      onChange={(nextValue, nextPublicId) =>
+                                        setDraft((current) => ({
+                                          ...current,
+                                          image: nextValue,
+                                          imagePublicId: nextPublicId || '',
+                                        }))
+                                      }
                                       placeholder="https://example.com/image.webp"
                                       required
                                     />

@@ -1,3 +1,4 @@
+import { cloudinary } from '../../config/cloudinary.js'
 import { Prompt } from './prompt.model.js'
 
 const createHttpError = (statusCode: number, message: string) => {
@@ -44,6 +45,42 @@ const getDuplicateKeyMessage = (error: unknown) => {
   return 'A prompt with this unique field already exists'
 }
 
+const isSafeCloudinaryPublicId = (value: string | null | undefined) => {
+  if (typeof value !== 'string') {
+    return false
+  }
+
+  const trimmed = value.trim()
+  return trimmed.length > 0 && !trimmed.startsWith('/') && /^[A-Za-z0-9._/-]+$/.test(trimmed)
+}
+
+const isLocalImagePath = (imageUrl: string | null | undefined) => {
+  if (typeof imageUrl !== 'string') {
+    return true
+  }
+
+  const trimmed = imageUrl.trim()
+  return trimmed.length === 0 || trimmed.startsWith('/') || trimmed.startsWith('blob:') || trimmed.startsWith('data:')
+}
+
+const deleteCloudinaryAsset = async (publicId: string | null | undefined, imageUrl?: string | null) => {
+  const normalizedPublicId = typeof publicId === 'string' ? publicId.trim() : ''
+
+  if (!isSafeCloudinaryPublicId(normalizedPublicId) || isLocalImagePath(imageUrl)) {
+    return false
+  }
+
+  try {
+    const result = await cloudinary.uploader.destroy(normalizedPublicId, {
+      resource_type: 'image',
+    })
+
+    return result?.result === 'ok' || result?.result === 'not found'
+  } catch {
+    return false
+  }
+}
+
 export async function createPromptService(input: Record<string, unknown>) {
   try {
     return await Prompt.create(input)
@@ -77,10 +114,30 @@ export async function updatePromptBySlugService(slug: string, input: Record<stri
     throw createHttpError(400, 'At least one field must be provided for update')
   }
 
+  const existingPrompt = await Prompt.findOne({ slug })
+
+  if (!existingPrompt) {
+    throw createHttpError(404, `Prompt with slug "${slug}" was not found`)
+  }
+
+  const previousImageUrl = typeof existingPrompt.image === 'string' ? existingPrompt.image : null
+  const previousImagePublicId =
+    typeof existingPrompt.imagePublicId === 'string' ? existingPrompt.imagePublicId.trim() : null
+  const nextImageValue = typeof safeInput.image === 'string' ? safeInput.image.trim() : undefined
+  const newImagePublicId =
+    typeof safeInput.imagePublicId === 'string' ? safeInput.imagePublicId.trim() : undefined
+  const isImageReplacement = typeof nextImageValue === 'string' && nextImageValue !== existingPrompt.image
+
+  const nextPayload = { ...safeInput }
+
+  if (typeof safeInput.imagePublicId === 'string' && safeInput.imagePublicId.trim() === '') {
+    delete nextPayload.imagePublicId
+  }
+
   try {
     const prompt = await Prompt.findOneAndUpdate(
       { slug },
-      { $set: safeInput },
+      { $set: nextPayload },
       {
         new: true,
         runValidators: true,
@@ -91,8 +148,16 @@ export async function updatePromptBySlugService(slug: string, input: Record<stri
       throw createHttpError(404, `Prompt with slug "${slug}" was not found`)
     }
 
+    if (isImageReplacement && isSafeCloudinaryPublicId(previousImagePublicId) && !isLocalImagePath(previousImageUrl)) {
+      await deleteCloudinaryAsset(previousImagePublicId, previousImageUrl)
+    }
+
     return prompt
   } catch (error) {
+    if (isImageReplacement && isSafeCloudinaryPublicId(newImagePublicId) && !isLocalImagePath(nextImageValue)) {
+      await deleteCloudinaryAsset(newImagePublicId, nextImageValue)
+    }
+
     if (isDuplicateKeyError(error)) {
       throw createHttpError(409, 'A prompt with this slug already exists')
     }
