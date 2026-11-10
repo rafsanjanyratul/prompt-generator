@@ -30,7 +30,14 @@ function useIsSmallScreen() {
   return isSmallScreen
 }
 
-function DiscoverySection({ eyebrow, title, description, items, emptyText = 'No styles available yet.' }) {
+function DiscoverySection({
+  eyebrow,
+  title,
+  description,
+  items,
+  emptyText = 'No styles available yet.',
+  revealOnScroll = true,
+}) {
   const prefersReducedMotion = useReducedMotion()
   const isSmallScreen = useIsSmallScreen()
   const slideDirection = eyebrow === 'Featured' ? 1 : -1
@@ -38,8 +45,12 @@ function DiscoverySection({ eyebrow, title, description, items, emptyText = 'No 
   if (!items || items.length === 0) {
     return (
       <motion.section
-        initial={prefersReducedMotion ? false : isSmallScreen ? false : { opacity: 0, x: slideDirection * 24, y: 12 }}
-        whileInView={prefersReducedMotion ? undefined : { opacity: 1, x: 0, y: 0 }}
+        initial={
+          !revealOnScroll || prefersReducedMotion || isSmallScreen
+            ? false
+            : { opacity: 0, x: slideDirection * 24, y: 12 }
+        }
+        whileInView={!revealOnScroll || prefersReducedMotion ? undefined : { opacity: 1, x: 0, y: 0 }}
         viewport={{ once: true, amount: 0.2 }}
         transition={{ duration: isSmallScreen ? 0.24 : 0.42, ease: 'easeOut' }}
         className="py-8 md:py-10"
@@ -54,8 +65,12 @@ function DiscoverySection({ eyebrow, title, description, items, emptyText = 'No 
 
   return (
     <motion.section
-      initial={prefersReducedMotion ? false : isSmallScreen ? false : { opacity: 0, x: slideDirection * 24, y: 12 }}
-      whileInView={prefersReducedMotion ? undefined : { opacity: 1, x: 0, y: 0 }}
+      initial={
+        !revealOnScroll || prefersReducedMotion || isSmallScreen
+          ? false
+          : { opacity: 0, x: slideDirection * 24, y: 12 }
+      }
+      whileInView={!revealOnScroll || prefersReducedMotion ? undefined : { opacity: 1, x: 0, y: 0 }}
       viewport={{ once: true, amount: 0.15 }}
       transition={{ duration: isSmallScreen ? 0.24 : 0.42, ease: 'easeOut' }}
       className="py-8 md:py-10"
@@ -65,12 +80,16 @@ function DiscoverySection({ eyebrow, title, description, items, emptyText = 'No 
         {items.map((item, index) => (
           <motion.div
             key={item.id}
-            initial={prefersReducedMotion ? false : isSmallScreen ? false : { opacity: 0, x: slideDirection * 18, y: 10 }}
-            whileInView={prefersReducedMotion ? undefined : { opacity: 1, x: 0, y: 0 }}
+            initial={
+              !revealOnScroll || prefersReducedMotion || isSmallScreen
+                ? false
+                : { opacity: 0, x: slideDirection * 18, y: 10 }
+            }
+            whileInView={!revealOnScroll || prefersReducedMotion ? undefined : { opacity: 1, x: 0, y: 0 }}
             viewport={{ once: true, amount: 0.25 }}
             transition={{ delay: index * 0.04, duration: isSmallScreen ? 0.2 : 0.3, ease: 'easeOut' }}
           >
-            <StyleCard item={item} />
+            <StyleCard item={item} revealOnScroll={revealOnScroll} />
           </motion.div>
         ))}
       </div>

@@ -11,6 +11,7 @@ function StyleCard({
   showFavoriteButton = false,
   onToggleFavorite,
   isFavoriteLoading = false,
+  revealOnScroll = true,
 }) {
   const [imageFailed, setImageFailed] = useState(false)
   const prefersReducedMotion = useReducedMotion()
@@ -31,8 +32,8 @@ function StyleCard({
 
   return (
     <motion.div
-      initial={prefersReducedMotion ? false : { opacity: 0, y: 18 }}
-      whileInView={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
+      initial={!revealOnScroll || prefersReducedMotion ? false : { opacity: 0, y: 18 }}
+      whileInView={!revealOnScroll || prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.35, ease: 'easeOut' }}
       whileHover={prefersReducedMotion ? undefined : { y: -4, scale: 1.01 }}

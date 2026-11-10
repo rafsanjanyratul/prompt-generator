@@ -29,6 +29,31 @@ export async function getPromptBySlug(slug) {
   return parsePromptResponse(response, `/prompts/${slug}`)
 }
 
+export async function enhancePromptWithAI(idea) {
+  const token = localStorage.getItem('promptmuse-auth-token')
+
+  if (!token) {
+    throw new Error('Authentication required')
+  }
+
+  const response = await fetch(`${API_BASE_URL}/ai/enhance-prompt`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ idea }),
+  })
+
+  const data = await parsePromptResponse(response, '/ai/enhance-prompt')
+
+  if (!data?.prompt) {
+    throw new Error('AI prompt enhancement returned an empty response.')
+  }
+
+  return data.prompt
+}
+
 export async function createPrompt(payload) {
   const token = localStorage.getItem('promptmuse-auth-token')
 

@@ -19,6 +19,7 @@ import { useAuth } from '../contexts/AuthContext.jsx'
 import useDocumentMeta from '../hooks/useDocumentMeta'
 import { createUserPrompt } from '../lib/authApi.js'
 import { trackEvent } from '../lib/analytics.js'
+import { enhancePromptWithAI } from '../lib/promptsApi.js'
 
 const LANGUAGE_OPTIONS = [
   { value: 'en-US', label: 'English' },
@@ -124,6 +125,10 @@ function VoicePromptPage() {
   const speechRecognitionSupported = useMemo(() => Boolean(getSpeechRecognition()), [])
   const [language, setLanguage] = useState(LANGUAGE_OPTIONS[0].value)
   const [promptText, setPromptText] = useState('')
+  const [enhancedPrompt, setEnhancedPrompt] = useState('')
+  const [isEnhancing, setIsEnhancing] = useState(false)
+  const [enhancementError, setEnhancementError] = useState('')
+  const [enhancedCopyState, setEnhancedCopyState] = useState('idle')
   const [isListening, setIsListening] = useState(false)
   const [statusMessage, setStatusMessage] = useState('')
   const [speechCopyState, setSpeechCopyState] = useState('idle')
@@ -131,7 +136,11 @@ function VoicePromptPage() {
   const [isSavingPrompt, setIsSavingPrompt] = useState(false)
   const [saveState, setSaveState] = useState({ status: 'idle', message: '' })
   const [savedPromptId, setSavedPromptId] = useState(null)
+  const [isSavingEnhancedPrompt, setIsSavingEnhancedPrompt] = useState(false)
+  const [enhancedSaveState, setEnhancedSaveState] = useState({ status: 'idle', message: '' })
+  const [savedEnhancedPromptId, setSavedEnhancedPromptId] = useState(null)
   const lastSavedSignatureRef = useRef('')
+  const lastSavedEnhancedSignatureRef = useRef('')
 
   const recognitionRef = useRef(null)
   const keepListeningRef = useRef(false)
@@ -531,6 +540,107 @@ function VoicePromptPage() {
     }
   }
 
+  const handleEnhancePrompt = async () => {
+    const idea = promptText.trim()
+
+    if (!idea) {
+      setEnhancementError('Enter or speak an idea before enhancing it.')
+      return
+    }
+
+    if (!user) {
+      setEnhancementError('Sign in to enhance your prompt with AI.')
+      return
+    }
+
+    if (isEnhancing) return
+
+    setIsEnhancing(true)
+    setEnhancementError('')
+
+    try {
+      const result = await enhancePromptWithAI(idea)
+      setEnhancedPrompt(result)
+      setEnhancedCopyState('idle')
+    } catch (error) {
+      const message = error?.message || 'Unable to enhance this prompt right now.'
+      setEnhancementError(message)
+      toast.error(message)
+    } finally {
+      setIsEnhancing(false)
+    }
+  }
+
+  const handleCopyEnhancedPrompt = async () => {
+    if (!enhancedPrompt.trim()) return
+
+    try {
+      await writeToClipboard(enhancedPrompt)
+      setEnhancedCopyState('success')
+      toast.success('Enhanced prompt copied to clipboard.')
+      window.setTimeout(() => setEnhancedCopyState('idle'), 1600)
+    } catch {
+      setEnhancedCopyState('error')
+      toast.error('Unable to copy the enhanced prompt right now.')
+      window.setTimeout(() => setEnhancedCopyState('idle'), 1800)
+    }
+  }
+
+  const handleSaveEnhancedPrompt = async () => {
+    if (!user) {
+      setEnhancedSaveState({ status: 'error', message: 'Sign in to save this enhanced prompt to My Prompts.' })
+      toast.error('Sign in to save this enhanced prompt to My Prompts.')
+      return
+    }
+
+    if (!enhancedPrompt.trim()) {
+      setEnhancedSaveState({ status: 'error', message: 'Enhance a prompt before saving it.' })
+      toast.error('Enhance a prompt before saving it.')
+      return
+    }
+
+    if (isEnhancing || isSavingEnhancedPrompt) {
+      return
+    }
+
+    const basePayload = buildVoicePromptPayload()
+    const payload = {
+      ...basePayload,
+      prompt: enhancedPrompt,
+      category: 'AI Enhanced Voice Prompt',
+      tags: [...basePayload.tags, 'ai-enhanced'],
+      description: `AI-enhanced from original voice prompt: ${promptText.trim()}`,
+    }
+    const signature = `${payload.title}|${payload.prompt}|${payload.category}|${payload.style}`
+
+    if (lastSavedEnhancedSignatureRef.current === signature) {
+      setEnhancedSaveState({ status: 'error', message: 'This enhanced prompt is already saved to My Prompts.' })
+      toast.info('This enhanced prompt is already saved to My Prompts.')
+      return
+    }
+
+    setIsSavingEnhancedPrompt(true)
+    setEnhancedSaveState({ status: 'idle', message: '' })
+
+    try {
+      const result = await createUserPrompt(payload)
+      lastSavedEnhancedSignatureRef.current = signature
+      setSavedEnhancedPromptId(result?._id || null)
+      setEnhancedSaveState({ status: 'success', message: 'Enhanced prompt saved to My Prompts.' })
+      toast.success('Enhanced prompt saved to My Prompts.')
+      trackEvent('voice_prompt_save_enhanced_prompt', {
+        language,
+        word_count: enhancedPrompt.trim().split(/\s+/).length,
+      })
+    } catch (error) {
+      const errorMessage = error?.message || 'Unable to save the enhanced prompt right now.'
+      setEnhancedSaveState({ status: 'error', message: errorMessage })
+      toast.error(errorMessage)
+    } finally {
+      setIsSavingEnhancedPrompt(false)
+    }
+  }
+
   const copyPromptForAiTool = () => {
     // Copy first, then the card's own href opens the AI tool in a new tab.
     writeToClipboard(promptText)
@@ -873,6 +983,19 @@ function VoicePromptPage() {
                 >
                   {isSavingPrompt ? 'Saving...' : 'Save to My Prompts'}
                 </Button>
+
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="primary"
+                  onClick={handleEnhancePrompt}
+                  disabled={isEnhancing}
+                  className="inline-flex items-center gap-2"
+                  aria-busy={isEnhancing}
+                >
+                  <Sparkles className="size-3.5" aria-hidden="true" />
+                  {isEnhancing ? 'Enhancing...' : 'Enhance with AI'}
+                </Button>
               </div>
             </div>
 
@@ -884,6 +1007,89 @@ function VoicePromptPage() {
               placeholder="Your spoken words will appear here. You can also type and edit them manually."
               className="w-full resize-y rounded-[20px] border border-[var(--border)] bg-[var(--surface-muted)] px-4 py-3 text-sm leading-7 text-[var(--text)] outline-none transition-colors placeholder:text-[var(--text-muted)] focus:border-[var(--focus)] focus-visible:ring-2 focus-visible:ring-[var(--focus)] sm:text-base"
             />
+
+            {enhancementError ? (
+              <p className="text-sm text-[var(--error)]" role="alert">
+                {enhancementError}
+              </p>
+            ) : null}
+
+            {!user ? (
+              <p className="text-sm text-[var(--text-muted)]" role="status">
+                Sign in to enhance your prompt with AI.
+              </p>
+            ) : null}
+
+            {enhancedPrompt ? (
+              <div className="space-y-2 rounded-[20px] border border-[var(--border)] bg-[var(--surface-muted)] p-3 sm:p-4">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <label
+                    htmlFor="voice-prompt-enhanced"
+                    className="text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--text-muted)]"
+                  >
+                    Enhanced prompt
+                  </label>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="secondary"
+                    onClick={handleCopyEnhancedPrompt}
+                    className="inline-flex items-center gap-2"
+                    aria-live="polite"
+                  >
+                    {enhancedCopyState === 'success' ? (
+                      <Check className="size-3.5" aria-hidden="true" />
+                    ) : (
+                      <Copy className="size-3.5" aria-hidden="true" />
+                    )}
+                    {enhancedCopyState === 'success'
+                      ? 'Copied!'
+                      : enhancedCopyState === 'error'
+                        ? 'Copy failed'
+                        : 'Copy'}
+                  </Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="primary"
+                    onClick={handleSaveEnhancedPrompt}
+                    disabled={!enhancedPrompt.trim() || isEnhancing || isSavingEnhancedPrompt || !user}
+                    className="inline-flex items-center gap-2"
+                    aria-busy={isSavingEnhancedPrompt}
+                    aria-label={user ? 'Save enhanced prompt to My Prompts' : 'Sign in to save this enhanced prompt'}
+                  >
+                    {isSavingEnhancedPrompt ? 'Saving...' : 'Save to My Prompts'}
+                  </Button>
+                </div>
+                <textarea
+                  id="voice-prompt-enhanced"
+                  value={enhancedPrompt}
+                  onChange={(event) => {
+                    setEnhancedPrompt(event.target.value)
+                    setEnhancedCopyState('idle')
+                  }}
+                  rows={7}
+                  className="w-full resize-y rounded-[18px] border border-[var(--border)] bg-[var(--surface)] px-4 py-3 text-sm leading-7 text-[var(--text)] outline-none transition-colors focus:border-[var(--focus)] focus-visible:ring-2 focus-visible:ring-[var(--focus)] sm:text-base"
+                />
+                {enhancedSaveState.message ? (
+                  <div className="flex flex-wrap items-center justify-between gap-3 rounded-[18px] border border-[var(--border)] bg-[var(--surface)] px-3 py-2">
+                    <p
+                      className={`text-sm ${
+                        enhancedSaveState.status === 'success' ? 'text-[var(--success)]' : 'text-[var(--error)]'
+                      }`}
+                      aria-live="polite"
+                    >
+                      {enhancedSaveState.message}
+                    </p>
+                    {enhancedSaveState.status === 'success' && savedEnhancedPromptId ? (
+                      <Link to="/my-prompts" className="text-sm font-semibold text-[var(--brand)]">
+                        View My Prompts
+                      </Link>
+                    ) : null}
+                  </div>
+                ) : null}
+              </div>
+            ) : null}
 
             {saveState.message ? (
               <div className="flex flex-wrap items-center justify-between gap-3 rounded-[18px] border border-[var(--border)] bg-[var(--surface-muted)] px-3 py-2">
@@ -1005,4 +1211,3 @@ function VoicePromptPage() {
 }
 
 export default VoicePromptPage
-

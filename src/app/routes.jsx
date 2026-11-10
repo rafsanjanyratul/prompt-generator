@@ -9,6 +9,7 @@ import FavoritesPage from '../pages/FavoritesPage.jsx'
 import StyleDetailPage from '../pages/StyleDetailPage'
 import CreatePage from '../pages/CreatePage'
 import VoicePromptPage from '../pages/VoicePromptPage'
+import AIEnhancerPage from '../pages/AIEnhancerPage.jsx'
 import AdminDashboardPage from '../pages/AdminDashboardPage.jsx'
 import AdminCreatePromptPage from '../pages/AdminCreatePromptPage.jsx'
 import AdminManagePromptsPage from '../pages/AdminManagePromptsPage.jsx'
@@ -26,6 +27,7 @@ const routePageType = (path) => {
   if (path === '/create') return 'create'
   if (path === '/favorites') return 'favorites'
   if (path === '/voice-prompt') return 'voice_prompt'
+  if (path === '/ai-enhancer') return 'ai_enhancer'
   if (path === '/') return 'home'
   return 'not_found'
 }
@@ -76,6 +78,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <VoicePromptPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: 'ai-enhancer',
+        element: (
+          <ProtectedRoute>
+            <AIEnhancerPage />
           </ProtectedRoute>
         ),
       },

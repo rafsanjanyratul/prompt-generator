@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
-import { Menu, X } from 'lucide-react'
+import { Menu, Sparkles, X } from 'lucide-react'
 import { NavLink, useLocation } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { useAuth } from '../../contexts/AuthContext.jsx'
@@ -22,6 +22,7 @@ function Header() {
     { label: 'Create', to: '/create' },
     ...(user ? [{ label: 'My Prompts', to: '/my-prompts' }, { label: 'Favorites', to: '/favorites' }] : []),
     { label: 'Voice Prompt', to: '/voice-prompt' },
+    { label: 'AI Enhancer', to: '/ai-enhancer', icon: Sparkles },
   ]
 
   const closeMenu = () => setIsMenuOpen(false)
@@ -61,7 +62,10 @@ function Header() {
                   }`
                 }
               >
-                {item.label}
+                <span className="inline-flex items-center gap-1.5">
+                  {item.icon ? <item.icon className="size-4" aria-hidden="true" /> : null}
+                  {item.label}
+                </span>
               </NavLink>
             )
           })}
@@ -152,7 +156,10 @@ function Header() {
                         }`
                       }
                     >
-                      <span>{item.label}</span>
+                      <span className="inline-flex items-center gap-2">
+                        {item.icon ? <item.icon className="size-4" aria-hidden="true" /> : null}
+                        {item.label}
+                      </span>
                       <span aria-hidden="true">•</span>
                     </NavLink>
                   </motion.div>
