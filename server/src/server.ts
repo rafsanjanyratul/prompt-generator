@@ -1,12 +1,15 @@
 import app from './app.js'
 import { connectToDatabase } from './config/database.js'
 import { env } from './config/env.js'
+import { seedDemoPlanIfNotExists } from './modules/billing/plan.seed.js'
 
 const port = env.PORT
 
 async function startServer() {
   try {
     await connectToDatabase()
+
+    await seedDemoPlanIfNotExists()
 
     app.listen(port, () => {
       console.log(`PromptMuse API running on http://localhost:${port}`)

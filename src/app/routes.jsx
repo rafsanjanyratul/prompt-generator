@@ -4,6 +4,10 @@ import AdminProtectedRoute from '../components/auth/AdminProtectedRoute.jsx'
 import ProtectedRoute from '../components/auth/ProtectedRoute.jsx'
 import HomePage from '../pages/HomePage'
 import ExplorePage from '../pages/ExplorePage'
+import PricingPage from '../pages/PricingPage.jsx'
+import BillingPage from '../pages/BillingPage.jsx'
+import CheckoutPage from '../pages/CheckoutPage.jsx'
+import HistoryPage from '../pages/HistoryPage.jsx'
 import MyPromptsPage from '../pages/MyPromptsPage.jsx'
 import FavoritesPage from '../pages/FavoritesPage.jsx'
 import StyleDetailPage from '../pages/StyleDetailPage'
@@ -23,6 +27,10 @@ import { trackPageView } from '../lib/analytics.js'
 const routePageType = (path) => {
   if (path === '/admin' || path.startsWith('/admin/')) return 'admin'
   if (path.startsWith('/styles/')) return 'style_detail'
+  if (path === '/pricing') return 'pricing'
+  if (path === '/checkout') return 'checkout'
+  if (path === '/billing') return 'billing'
+  if (path === '/history') return 'history'
   if (path === '/explore') return 'explore'
   if (path === '/create') return 'create'
   if (path === '/favorites') return 'favorites'
@@ -44,6 +52,34 @@ const router = createBrowserRouter([
       {
         path: 'explore',
         element: <ExplorePage />,
+      },
+      {
+        path: 'pricing',
+        element: <PricingPage />,
+      },
+      {
+        path: 'billing',
+        element: (
+          <ProtectedRoute>
+            <BillingPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: 'checkout',
+        element: (
+          <ProtectedRoute>
+            <CheckoutPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: 'history',
+        element: (
+          <ProtectedRoute>
+            <HistoryPage />
+          </ProtectedRoute>
+        ),
       },
       {
         path: 'styles/:slug',

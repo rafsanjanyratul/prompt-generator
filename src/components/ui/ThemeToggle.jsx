@@ -35,22 +35,9 @@ function ThemeToggle() {
       aria-label={`Switch to ${isDark ? 'light' : 'dark'} mode`}
       aria-pressed={isDark}
       title={`Switch to ${isDark ? 'light' : 'dark'} mode`}
-      className="group inline-flex min-h-[34px] items-center justify-center gap-1.5 rounded-full border border-[var(--border)] bg-[var(--surface)] px-1.5 py-1 text-[10px] font-semibold text-[var(--text)] shadow-[0_1px_0_rgba(15,23,42,0.02)] transition-all duration-200 hover:border-[var(--focus)] hover:bg-[var(--surface-elevated)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
+      className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface)] text-[var(--text)] transition-all duration-200 hover:border-[var(--focus)] hover:bg-[var(--surface-elevated)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
     >
-      <span className="relative inline-flex h-5 w-9 items-center rounded-full border border-[var(--border)] bg-[var(--surface-muted)] p-0.5">
-        <span
-          className={`inline-flex h-3.5 w-3.5 items-center justify-center rounded-full bg-[var(--brand)] text-[var(--background)] transition-transform duration-200 ${
-            isDark ? 'translate-x-4' : 'translate-x-0'
-          }`}
-          aria-hidden="true"
-        >
-          {isDark ? <MoonStar className="size-2" /> : <SunMedium className="size-2" />}
-        </span>
-      </span>
-      <span className="hidden items-center gap-1 sm:inline-flex">
-        {isDark ? <MoonStar className="size-2.5" /> : <SunMedium className="size-2.5" />}
-        <span>{isDark ? 'Dark' : 'Light'}</span>
-      </span>
+      {isDark ? <MoonStar className="size-5" /> : <SunMedium className="size-5" />}
     </button>
   )
 }

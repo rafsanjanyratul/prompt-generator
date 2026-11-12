@@ -11,6 +11,7 @@ import aiRoutes from './modules/ai/ai.routes.js'
 import promptRoutes from './modules/prompts/prompt.routes.js'
 import uploadRoutes from './modules/uploads/upload.routes.js'
 import userPromptRoutes from './modules/user-prompts/user-prompt.routes.js'
+import billingRoutes from './modules/billing/billing.routes.js'
 
 const app = express()
 
@@ -29,6 +30,7 @@ app.use('/api/user-prompts', userPromptRoutes)
 app.use('/api/favorites', favoriteRoutes)
 app.use('/api/prompts', promptRoutes)
 app.use('/api/uploads', uploadRoutes)
+app.use('/api/billing', billingRoutes)
 
 app.use(notFoundMiddleware)
 app.use(errorMiddleware)

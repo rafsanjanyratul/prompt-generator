@@ -5,6 +5,7 @@ dotenv.config()
 
 const envSchema = z.object({
   PORT: z.coerce.number().int().positive().default(5000),
+  AI_ENHANCEMENT_CREDIT_COST: z.coerce.number().int().positive().default(1),
   FRONTEND_URL: z.string().url().default('http://localhost:5173'),
   APP_BASE_URL: z.string().url().default('http://localhost:5173'),
   MONGODB_URI: z

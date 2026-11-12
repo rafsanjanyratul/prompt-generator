@@ -1,11 +1,25 @@
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api'
 
+const enhancementRequestIds = new Map()
+
+export function createEnhancementRequestId() {
+  const requestId = globalThis.crypto?.randomUUID?.()
+  if (!requestId) {
+    throw new Error('This browser cannot create a secure enhancement request ID.')
+  }
+  return requestId
+}
+
 async function parsePromptResponse(response, endpoint) {
   const payload = await response.json().catch(() => null)
 
   if (!response.ok) {
     const message = payload && payload.message ? payload.message : `Request failed for ${endpoint}`
-    throw new Error(message)
+    const error = new Error(message)
+    if (payload?.outcome === 'confirmed_failure' || payload?.outcome === 'unknown') {
+      error.outcome = payload.outcome
+    }
+    throw error
   }
 
   if (!payload || payload.success === false) {
@@ -29,12 +43,17 @@ export async function getPromptBySlug(slug) {
   return parsePromptResponse(response, `/prompts/${slug}`)
 }
 
-export async function enhancePromptWithAI(idea) {
+export async function enhancePromptWithAI(idea, requestId) {
   const token = localStorage.getItem('promptmuse-auth-token')
 
   if (!token) {
     throw new Error('Authentication required')
   }
+
+  const requestKey = idea.replace(/\s+/g, ' ').trim()
+  const stableRequestId =
+    requestId || enhancementRequestIds.get(requestKey) || createEnhancementRequestId()
+  enhancementRequestIds.set(requestKey, stableRequestId)
 
   const response = await fetch(`${API_BASE_URL}/ai/enhance-prompt`, {
     method: 'POST',
@@ -42,16 +61,30 @@ export async function enhancePromptWithAI(idea) {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ idea }),
+    body: JSON.stringify({ idea, requestId: stableRequestId }),
   })
 
-  const data = await parsePromptResponse(response, '/ai/enhance-prompt')
+  try {
+    const data = await parsePromptResponse(response, '/ai/enhance-prompt')
 
-  if (!data?.prompt) {
-    throw new Error('AI prompt enhancement returned an empty response.')
+    if (!data?.prompt) {
+      throw new Error('AI prompt enhancement returned an empty response.')
+    }
+
+    if (enhancementRequestIds.get(requestKey) === stableRequestId) {
+      enhancementRequestIds.delete(requestKey)
+    }
+    return data.prompt
+  } catch (error) {
+    if (
+      error instanceof Error &&
+      error.outcome === 'confirmed_failure' &&
+      enhancementRequestIds.get(requestKey) === stableRequestId
+    ) {
+      enhancementRequestIds.delete(requestKey)
+    }
+    throw error
   }
-
-  return data.prompt
 }
 
 export async function createPrompt(payload) {
