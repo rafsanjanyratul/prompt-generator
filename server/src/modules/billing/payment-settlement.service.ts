@@ -44,7 +44,7 @@ export async function settleVerifiedCreditPaymentWithSubscription(
         }).session(session)
         return { payment, subscription: existingSub }
       }
-      if (!['pending', 'processing'].includes(payment.status)) {
+      if (!['pending', 'processing', 'failed', 'canceled'].includes(payment.status)) {
         throw createHttpError(409, 'Payment transaction is not eligible for settlement')
       }
       if (payment.verificationStatus !== 'verified' || !payment.verificationMetadata?.verifiedAt) {
@@ -84,7 +84,7 @@ export async function settleVerifiedCreditPaymentWithSubscription(
       const settledPayment = await PaymentTransaction.findOneAndUpdate(
         {
           _id: payment._id,
-          status: { $in: ['pending', 'processing'] },
+          status: { $in: ['pending', 'processing', 'failed', 'canceled'] },
           verificationStatus: 'verified',
         },
         {
@@ -103,20 +103,42 @@ export async function settleVerifiedCreditPaymentWithSubscription(
       const planId = payment.planId
       const userId = payment.userId
 
-      // Check for existing active subscription
+      // Check the plan before changing subscription state.
+      const plan = await Plan.findById(planId).session(session)
+      if (!plan) {
+        throw createHttpError(404, 'Associated plan was deleted')
+      }
+
       const existingActive = await Subscription.findOne({
         userId,
         status: 'active',
       }).session(session)
 
       if (existingActive) {
-        throw createHttpError(409, 'User already has an active subscription')
-      }
+        if (existingActive.planSnapshot.planType !== 'free') {
+          return { payment: settledPayment, subscription: existingActive }
+        }
 
-      // Verify plan still exists
-      const plan = await Plan.findById(planId).session(session)
-      if (!plan) {
-        throw createHttpError(404, 'Associated plan was deleted')
+        const now = new Date()
+        const endedFreeSubscription = await Subscription.findOneAndUpdate(
+          {
+            _id: existingActive._id,
+            userId,
+            status: 'active',
+            'planSnapshot.planType': 'free',
+          },
+          {
+            $set: {
+              status: 'canceled',
+              currentPeriodEnd: now,
+              canceledAt: now,
+            },
+          },
+          { new: true, runValidators: true, session },
+        )
+        if (!endedFreeSubscription) {
+          throw createHttpError(409, 'Free subscription state changed during payment settlement')
+        }
       }
 
       const now = new Date()
@@ -164,7 +186,7 @@ export async function settleVerifiedCreditPayment(
       const payment = await PaymentTransaction.findById(paymentId).session(session)
       if (!payment) throw createHttpError(404, 'Payment transaction was not found')
       if (payment.status === 'succeeded') return payment
-      if (!['pending', 'processing'].includes(payment.status)) {
+      if (!['pending', 'processing', 'failed', 'canceled'].includes(payment.status)) {
         throw createHttpError(409, 'Payment transaction is not eligible for settlement')
       }
       if (payment.verificationStatus !== 'verified' || !payment.verificationMetadata?.verifiedAt) {
@@ -202,7 +224,7 @@ export async function settleVerifiedCreditPayment(
       const settledPayment = await PaymentTransaction.findOneAndUpdate(
         {
           _id: payment._id,
-          status: { $in: ['pending', 'processing'] },
+          status: { $in: ['pending', 'processing', 'failed', 'canceled'] },
           verificationStatus: 'verified',
         },
         {

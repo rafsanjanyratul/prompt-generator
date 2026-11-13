@@ -1,4 +1,4 @@
-import { Router } from 'express'
+import { Router, urlencoded } from 'express'
 
 import { authMiddleware } from '../../middlewares/auth.middleware.js'
 import {
@@ -6,7 +6,11 @@ import {
   activateFreeController,
   getCurrentSubscriptionController,
   initiatePaidCheckoutController,
-  verifyDemoPaymentController,
+  getPaymentStatusController,
+  sslCommerzSuccessCallbackController,
+  sslCommerzFailCallbackController,
+  sslCommerzCancelCallbackController,
+  sslCommerzIpnController,
   getPaymentHistoryController,
   getCreditBalanceController,
   getCreditHistoryController,
@@ -24,8 +28,15 @@ router.get('/subscription/current', authMiddleware, getCurrentSubscriptionContro
 
 // Payment endpoints (authenticated)
 router.post('/payments/checkout', authMiddleware, initiatePaidCheckoutController)
-router.post('/payments/verify', authMiddleware, verifyDemoPaymentController)
 router.get('/payments/history', authMiddleware, getPaymentHistoryController)
+router.get('/payments/status/:paymentId', authMiddleware, getPaymentStatusController)
+
+// SSLCommerz sends URL-encoded POST bodies to its browser callbacks and IPN endpoint.
+const parseProviderForm = urlencoded({ extended: false, limit: '10kb' })
+router.post('/payments/callback/success', parseProviderForm, sslCommerzSuccessCallbackController)
+router.post('/payments/callback/fail', parseProviderForm, sslCommerzFailCallbackController)
+router.post('/payments/callback/cancel', parseProviderForm, sslCommerzCancelCallbackController)
+router.post('/payments/ipn', parseProviderForm, sslCommerzIpnController)
 
 // Credit endpoints (authenticated)
 router.get('/credits/balance', authMiddleware, getCreditBalanceController)

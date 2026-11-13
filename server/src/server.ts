@@ -11,7 +11,7 @@ async function startServer() {
 
     await seedDemoPlanIfNotExists()
 
-    app.listen(port, () => {
+    app.listen(port, '0.0.0.0', () => {
       console.log(`PromptMuse API running on http://localhost:${port}`)
     })
   } catch (error) {

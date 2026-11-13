@@ -124,25 +124,19 @@ export async function getCurrentSubscription() {
 // ============================================================================
 
 /**
- * Initiate a demo payment checkout for a paid plan.
- * Server-controlled 90% success rate demo payment.
+ * Initialize an SSLCommerz hosted checkout for a paid plan.
  * @param {string} planId - MongoDB ID of the paid plan
- * @returns {Promise<Object>} Payment transaction details with ID and status
+ * @param {Object} customer - Billing contact and address details
+ * @returns {Promise<Object>} Payment transaction details and hosted checkout URL
  */
-export async function initiateDemoPayment(planId) {
-  const token = localStorage.getItem('promptmuse-auth-token')
-
-  if (!token) {
-    throw new Error('Authentication required')
-  }
-
+export async function initiatePaymentCheckout(planId, customer) {
   const response = await fetch(`${API_BASE_URL}/billing/payments/checkout`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
+      ...getAuthHeader(),
     },
-    body: JSON.stringify({ planId }),
+    body: JSON.stringify({ planId, customer }),
   })
 
   const payload = await parseBillingResponse(response, '/billing/payments/checkout')
@@ -150,29 +144,23 @@ export async function initiateDemoPayment(planId) {
 }
 
 /**
- * Verify a demo payment transaction.
- * Server-controlled outcome: 90% success, 10% failure.
- * On success, automatically settles payment and activates subscription.
+ * Retrieve the authenticated user's authoritative payment status after provider return.
  * @param {string} paymentId - MongoDB ID of the payment transaction
- * @returns {Promise<Object>} Updated payment details with status and optional subscription
+ * @returns {Promise<Object>} Payment and optional subscription details
  */
-export async function verifyDemoPayment(paymentId) {
-  const token = localStorage.getItem('promptmuse-auth-token')
-
-  if (!token) {
-    throw new Error('Authentication required')
-  }
-
-  const response = await fetch(`${API_BASE_URL}/billing/payments/verify`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
+export async function getPaymentStatus(paymentId) {
+  const response = await fetch(
+    `${API_BASE_URL}/billing/payments/status/${encodeURIComponent(paymentId)}`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        ...getAuthHeader(),
+      },
     },
-    body: JSON.stringify({ paymentId }),
-  })
+  )
 
-  const payload = await parseBillingResponse(response, '/billing/payments/verify')
+  const payload = await parseBillingResponse(response, '/billing/payments/status')
   return {
     payment: payload.payment,
     subscription: payload.subscription || null,

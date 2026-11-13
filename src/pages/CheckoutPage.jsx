@@ -1,14 +1,13 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useSearchParams, useNavigate, Link } from 'react-router-dom'
-import { AlertCircle, CheckCircle, Clock, ArrowRight, Home } from 'lucide-react'
+import { AlertCircle, CheckCircle, Clock, ArrowRight } from 'lucide-react'
 import { toast } from 'react-toastify'
 
 import Button from '../components/ui/Button.jsx'
 import LoadingSpinner from '../components/ui/LoadingSpinner.jsx'
 import EmptyState from '../components/ui/EmptyState.jsx'
-import { useAuth } from '../contexts/AuthContext.jsx'
 import useDocumentMeta from '../hooks/useDocumentMeta'
-import { getPlans, initiateDemoPayment, verifyDemoPayment, getCurrentSubscription } from '../lib/billingApi.js'
+import { getPaymentStatus, getPlans, initiatePaymentCheckout } from '../lib/billingApi.js'
 import { trackEvent } from '../lib/analytics.js'
 
 const PAYMENT_STATUS = {
@@ -17,12 +16,12 @@ const PAYMENT_STATUS = {
   CONFIRMING: 'confirming',
   PROCESSING: 'processing',
   SUCCESS: 'success',
+  PENDING: 'pending',
   FAILURE: 'failure',
   ERROR: 'error',
 }
 
 function CheckoutPage() {
-  const { user } = useAuth()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
@@ -31,13 +30,18 @@ function CheckoutPage() {
   const [plan, setPlan] = useState(null)
   const [status, setStatus] = useState(PAYMENT_STATUS.INIT)
   const [error, setError] = useState('')
-  const [paymentId, setPaymentId] = useState(null)
   const [paymentResult, setPaymentResult] = useState(null)
   const [isProcessing, setIsProcessing] = useState(false)
+  const [customerDetails, setCustomerDetails] = useState({
+    phone: '',
+    address: '',
+    city: '',
+    country: '',
+  })
 
   useDocumentMeta({
     title: 'Checkout — PromptMuse',
-    description: 'Complete your purchase with demo payment.',
+    description: 'Complete your purchase through secure hosted checkout.',
   })
 
   // Extract and validate plan ID from URL
@@ -59,6 +63,7 @@ function CheckoutPage() {
     if (!planId || status !== PAYMENT_STATUS.SELECTING) return
 
     let isMounted = true
+    const returnedPaymentId = searchParams.get('paymentId')
 
     async function loadPlan() {
       try {
@@ -76,7 +81,22 @@ function CheckoutPage() {
         }
 
         setPlan(selectedPlan)
-        setStatus(PAYMENT_STATUS.CONFIRMING)
+
+        if (returnedPaymentId) {
+          const result = await getPaymentStatus(returnedPaymentId)
+          if (!isMounted) return
+
+          setPaymentResult(result)
+          if (result.payment.status === 'succeeded') {
+            setStatus(PAYMENT_STATUS.SUCCESS)
+          } else if (['failed', 'canceled'].includes(result.payment.status)) {
+            setStatus(PAYMENT_STATUS.FAILURE)
+          } else {
+            setStatus(PAYMENT_STATUS.PENDING)
+          }
+        } else {
+          setStatus(PAYMENT_STATUS.CONFIRMING)
+        }
       } catch (err) {
         if (isMounted) {
           setStatus(PAYMENT_STATUS.ERROR)
@@ -90,7 +110,7 @@ function CheckoutPage() {
     return () => {
       isMounted = false
     }
-  }, [planId, status])
+  }, [planId, status, searchParams])
 
   // Handle checkout confirmation
   const handleConfirmCheckout = useCallback(async () => {
@@ -104,92 +124,37 @@ function CheckoutPage() {
     setError('')
 
     try {
-      // Step 1: Initiate demo payment
+      if (Object.values(customerDetails).some((value) => !value.trim())) {
+        throw new Error('Complete all billing contact fields to continue.')
+      }
+
       trackEvent('checkout_initiated', {
         plan_id: planId,
-        plan_name: plan.planName,
+        plan_name: plan.name,
       })
 
       setStatus(PAYMENT_STATUS.PROCESSING)
-      const initiateResponse = await initiateDemoPayment(planId)
+      const initiateResponse = await initiatePaymentCheckout(planId, customerDetails)
 
-      if (!initiateResponse || !initiateResponse.id) {
+      if (!initiateResponse || !initiateResponse.id || !initiateResponse.checkoutUrl) {
         throw new Error('Invalid payment response from server.')
       }
 
-      const payId = initiateResponse.id
-      setPaymentId(payId)
-
-      // Step 2: Verify demo payment (backend controls outcome)
-      // This is where backend determines success/failure
-      const verifyResponse = await verifyDemoPayment(payId)
-
-      if (!verifyResponse || !verifyResponse.payment) {
-        throw new Error('Invalid verification response from server.')
-      }
-
-      const payment = verifyResponse.payment
-      const subscription = verifyResponse.subscription || null
-
-      // Step 3: Process result based on backend response
-      if (payment.status === 'succeeded') {
-        setPaymentResult({
-          status: 'success',
-          payment,
-          subscription,
-        })
-        setStatus(PAYMENT_STATUS.SUCCESS)
-
-        trackEvent('payment_succeeded', {
-          payment_id: payId,
-          plan_id: planId,
-          plan_name: plan.planName,
-        })
-
-        toast.success('Payment successful! Subscription activated.')
-      } else if (payment.status === 'failed') {
-        setPaymentResult({
-          status: 'failed',
-          payment,
-          subscription: null,
-        })
-        setStatus(PAYMENT_STATUS.FAILURE)
-
-        trackEvent('payment_failed', {
-          payment_id: payId,
-          plan_id: planId,
-          reason: payment.failureReason || 'Payment verification failed',
-        })
-
-        setError(payment.failureReason || 'Payment failed. Please try again.')
-      } else if (payment.status === 'pending') {
-        setPaymentResult({
-          status: 'pending',
-          payment,
-          subscription: null,
-        })
-        setStatus(PAYMENT_STATUS.SUCCESS)
-
-        toast.info('Payment is being processed. Please check your billing dashboard.')
-      } else {
-        throw new Error(`Unknown payment status: ${payment.status}`)
-      }
+      window.location.assign(initiateResponse.checkoutUrl)
     } catch (err) {
-      if (setIsProcessing) {
-        setStatus(PAYMENT_STATUS.ERROR)
-        setError(err.message || 'An error occurred during checkout.')
+      setStatus(PAYMENT_STATUS.CONFIRMING)
+      setError(err.message || 'An error occurred during checkout.')
 
-        trackEvent('checkout_error', {
-          plan_id: planId,
-          error_message: err.message,
-        })
+      trackEvent('checkout_error', {
+        plan_id: planId,
+        error_message: err.message,
+      })
 
-        toast.error('Checkout failed. Please try again.')
-      }
+      toast.error('Checkout failed. Please try again.')
     } finally {
       setIsProcessing(false)
     }
-  }, [planId, plan])
+  }, [planId, plan, customerDetails])
 
   // Render: Loading plan details
   if (status === PAYMENT_STATUS.SELECTING) {
@@ -223,25 +188,30 @@ function CheckoutPage() {
     )
   }
 
-  // Render: Successful payment
-  if (status === PAYMENT_STATUS.SUCCESS && paymentResult) {
+  // Render: Successful or pending payment
+  if ([PAYMENT_STATUS.SUCCESS, PAYMENT_STATUS.PENDING].includes(status) && paymentResult) {
     const payment = paymentResult.payment
     const subscription = paymentResult.subscription
+    const isPending = status === PAYMENT_STATUS.PENDING
 
     return (
       <div className="mx-auto w-[min(var(--container-width),calc(100%-2rem))] py-12">
-        {/* Success Header */}
+        {/* Payment Header */}
         <div className="mb-12 text-center">
           <div className="mb-6 flex justify-center">
-            <div className="rounded-full bg-[var(--success)] bg-opacity-10 p-4">
-              <CheckCircle className="size-16 text-[var(--success)]" />
+            <div className={`rounded-full p-4 ${isPending ? 'bg-[var(--surface-muted)]' : 'bg-[var(--success)] bg-opacity-10'}`}>
+              {isPending
+                ? <Clock className="size-16 text-[var(--brand)]" />
+                : <CheckCircle className="size-16 text-[var(--success)]" />}
             </div>
           </div>
           <h1 className="m-0 text-4xl font-semibold tracking-[-0.04em] text-[var(--text)]">
-            Payment Successful!
+            {isPending ? 'Payment Processing' : 'Payment Successful!'}
           </h1>
           <p className="m-0 mt-3 text-lg text-[var(--text-muted)]">
-            Your subscription is now active. Start enhancing your prompts!
+            {isPending
+              ? 'We are waiting for the payment provider to confirm your payment.'
+              : 'Your purchase is complete. Start enhancing your prompts!'}
           </p>
         </div>
 
@@ -253,20 +223,20 @@ function CheckoutPage() {
             <div className="space-y-4">
               <div className="flex justify-between">
                 <span className="text-[var(--text-muted)]">Plan</span>
-                <span className="font-semibold text-[var(--text)]">{plan.planName}</span>
+                <span className="font-semibold text-[var(--text)]">{payment.planName}</span>
               </div>
 
               <div className="flex justify-between">
                 <span className="text-[var(--text-muted)]">Amount</span>
                 <span className="font-semibold text-[var(--text)]">
-                  ${parseFloat(payment.amount).toFixed(2)} {payment.currency}
+                  {payment.amount} {payment.currency}
                 </span>
               </div>
 
               <div className="flex justify-between">
                 <span className="text-[var(--text-muted)]">Credits</span>
                 <span className="font-semibold text-[var(--text)]">
-                  {plan.creditEntitlement} credits
+                  {payment.creditEntitlement} credits
                 </span>
               </div>
 
@@ -279,7 +249,7 @@ function CheckoutPage() {
 
               <div className="rounded-lg bg-[var(--surface-muted)] px-3 py-2 text-xs text-[var(--text-muted)]">
                 <p className="m-0">
-                  <strong>Demo Payment:</strong> This is a simulated transaction for testing purposes.
+                  <strong>Payment status:</strong> {payment.status}
                 </p>
               </div>
             </div>
@@ -366,7 +336,7 @@ function CheckoutPage() {
             Payment Failed
           </h1>
           <p className="m-0 mt-3 text-lg text-[var(--text-muted)]">
-            {error || 'Your demo payment could not be processed.'}
+            {error || 'Your payment could not be completed. Please try again.'}
           </p>
         </div>
 
@@ -375,8 +345,7 @@ function CheckoutPage() {
           <div className="space-y-4">
             <div className="rounded-lg bg-[rgba(245,85,85,0.1)] p-4">
               <p className="m-0 text-sm text-[var(--error)]">
-                <strong>Demo Payment Status:</strong> This is a simulated transaction. The 90% success rate
-                means sometimes payments intentionally fail for testing.
+                Payment status: {paymentResult.payment?.status || 'failed'}.
               </p>
             </div>
 
@@ -402,6 +371,7 @@ function CheckoutPage() {
               setStatus(PAYMENT_STATUS.CONFIRMING)
               setPaymentResult(null)
               setError('')
+              navigate(`/checkout?plan=${encodeURIComponent(planId)}`, { replace: true })
             }}
             className="flex-1 sm:flex-none"
           >
@@ -437,7 +407,7 @@ function CheckoutPage() {
             {/* Plan Details Section */}
             <div>
               <h2 className="m-0 mb-6 text-2xl font-semibold text-[var(--text)]">
-                {plan.planName} Plan
+                {plan.name} Plan
               </h2>
 
               <div className="space-y-4">
@@ -448,7 +418,7 @@ function CheckoutPage() {
                       <p className="m-0 text-sm text-[var(--text-muted)]">Price</p>
                       <div className="mt-2 flex items-baseline gap-2">
                         <span className="text-5xl font-bold text-[var(--text)]">
-                          ${parseFloat(plan.price).toFixed(2)}
+                          ${parseFloat(plan.priceAmount).toFixed(2)}
                         </span>
                         <span className="text-[var(--text-muted)]">{plan.currency}</span>
                       </div>
@@ -486,23 +456,44 @@ function CheckoutPage() {
               </div>
             </div>
 
-            {/* Demo Payment Warning */}
+            {/* Billing details required for hosted payment */}
             <div className="border-t border-[var(--border)] pt-8">
-              <div className="rounded-lg bg-[rgba(59,130,246,0.1)] p-4">
-                <div className="flex gap-3">
-                  <Clock className="mt-0.5 size-5 flex-shrink-0 text-[var(--brand)]" />
-                  <div>
-                    <p className="m-0 font-semibold text-[var(--brand)]">Demo Payment Mode</p>
-                    <p className="m-0 mt-1 text-sm text-[var(--text-muted)]">
-                      This is a simulated payment for testing. No real charges will be made.
-                      The payment has a 90% chance of success and 10% chance of failure to test
-                      error scenarios.
-                    </p>
-                  </div>
+              <div className="rounded-lg bg-[var(--surface-muted)] p-4">
+                <p className="m-0 mb-4 font-semibold text-[var(--text)]">Billing details</p>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  {[
+                    ['phone', 'Phone number', 'tel'],
+                    ['address', 'Billing address', 'text'],
+                    ['city', 'City', 'text'],
+                    ['country', 'Country', 'text'],
+                  ].map(([field, label, type]) => (
+                    <label key={field} className="block text-sm font-medium text-[var(--text)]">
+                      {label}
+                      <input
+                        type={type}
+                        name={field}
+                        value={customerDetails[field]}
+                        autoComplete={field === 'phone' ? 'tel' : field === 'address' ? 'street-address' : field}
+                        onChange={(event) =>
+                          setCustomerDetails((details) => ({
+                            ...details,
+                            [field]: event.target.value,
+                          }))
+                        }
+                        maxLength={field === 'phone' ? 25 : 50}
+                        required
+                        className="mt-1 w-full rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-[var(--text)]"
+                      />
+                    </label>
+                  ))}
                 </div>
+                <p className="m-0 mt-4 text-sm text-[var(--text-muted)]">
+                  You will continue to SSLCommerz hosted checkout to complete your payment.
+                </p>
               </div>
             </div>
           </div>
+        </div>
 
           {/* Separator */}
           <div className="my-8 border-t border-[var(--border)]" />
@@ -539,7 +530,6 @@ function CheckoutPage() {
               )}
             </button>
           </div>
-        </div>
 
         {/* Info Footer */}
         <div className="text-center text-sm text-[var(--text-muted)]">

@@ -1,11 +1,18 @@
 import type { NextFunction, Request, Response } from 'express'
 import { z } from 'zod'
 
-import { getActivePlans, getPlanById, validatePlanEligibility } from './plan.service.js'
+import { env } from '../../config/env.js'
+import { getActivePlans, validatePlanEligibility } from './plan.service.js'
 import { activateFreeSubscription, getCurrentSubscription } from './subscription.service.js'
-import { initiateDemoPayment, verifyDemoPayment, getPaymentById, getUserPayments } from './payment.service.js'
+import {
+  getUserPaymentStatus,
+  getUserPayments,
+  initiateSslCommerzPayment,
+  processSslCommerzNotification,
+  recordSslCommerzCancellation,
+  recordSslCommerzFailure,
+} from './payment.service.js'
 import { getCreditBalance, getCreditHistory, getAIUsageHistory } from './credit-info.service.js'
-import { settleVerifiedCreditPayment } from './payment-settlement.service.js'
 
 const createHttpError = (statusCode: number, message: string) => {
   const error = new Error(message) as Error & { statusCode?: number }
@@ -30,7 +37,13 @@ export const getPlansController = async (
 ) => {
   try {
     const plans = await getActivePlans()
-    res.json({ success: true, plans })
+    res.json({
+      success: true,
+      plans: plans.map((plan) => ({
+        ...plan.toJSON(),
+        priceAmount: plan.priceAmount.toString(),
+      })),
+    })
   } catch (error) {
     next(error)
   }
@@ -47,7 +60,7 @@ export const activateFreeController = async (
     }
 
     const bodySchema = z.object({
-      planId: z.string().trim().min(1, 'Plan ID is required'),
+      planId: z.string().trim().regex(/^[\da-f]{24}$/i, 'Plan ID must be a valid plan identifier'),
     })
 
     const parseResult = bodySchema.safeParse(req.body)
@@ -126,7 +139,15 @@ export const initiatePaidCheckoutController = async (
     }
 
     const bodySchema = z.object({
-      planId: z.string().trim().min(1, 'Plan ID is required'),
+      planId: z.string().trim().regex(/^[\da-f]{24}$/i, 'Plan ID must be a valid plan identifier'),
+      customer: z.object({
+        phone: z.string().trim().min(7).max(25)
+          .regex(/^[+\d][\d\s().-]*$/)
+          .refine((value) => value.replace(/\D/g, '').length >= 7, 'A valid phone number is required'),
+        address: z.string().trim().min(1).max(50),
+        city: z.string().trim().min(1).max(50),
+        country: z.string().trim().min(1).max(50),
+      }),
     })
 
     const parseResult = bodySchema.safeParse(req.body)
@@ -141,7 +162,29 @@ export const initiatePaidCheckoutController = async (
       throw createHttpError(400, 'Selected plan is not a paid plan')
     }
 
-    const payment = await initiateDemoPayment(req.user.id, planId, plan)
+    if (plan.purchaseType !== 'one_time') {
+      throw createHttpError(400, 'Only one-time plans are currently available for checkout')
+    }
+
+    const callbackUrl = (path: string) =>
+      new URL(`/api/billing/payments/${path}`, env.API_BASE_URL).toString()
+    const callbacks = {
+      successUrl: callbackUrl('callback/success'),
+      failUrl: callbackUrl('callback/fail'),
+      cancelUrl: callbackUrl('callback/cancel'),
+      ipnUrl: callbackUrl('ipn'),
+    }
+    const { payment, checkoutUrl } = await initiateSslCommerzPayment(
+      req.user.id,
+      planId,
+      plan,
+      {
+        name: req.user.name,
+        email: req.user.email,
+        ...parseResult.data.customer,
+      },
+      callbacks,
+    )
 
     res.json({
       success: true,
@@ -153,6 +196,7 @@ export const initiatePaidCheckoutController = async (
         currency: payment.currency,
         planName: payment.planSnapshot.name,
         creditEntitlement: payment.planSnapshot.creditEntitlement,
+        checkoutUrl,
       },
     })
   } catch (error) {
@@ -160,7 +204,7 @@ export const initiatePaidCheckoutController = async (
   }
 }
 
-export const verifyDemoPaymentController = async (
+export const getPaymentStatusController = async (
   req: Request,
   res: Response,
   next: NextFunction,
@@ -170,63 +214,162 @@ export const verifyDemoPaymentController = async (
       throw createHttpError(401, 'Authentication required')
     }
 
-    const bodySchema = z.object({
+    const parseResult = z.object({
       paymentId: z.string().trim().min(1, 'Payment ID is required'),
-    })
-
-    const parseResult = bodySchema.safeParse(req.body)
+    }).safeParse(req.params)
     if (!parseResult.success) {
       throw createHttpError(400, formatValidationError(parseResult.error))
     }
 
     const { paymentId } = parseResult.data
+    const { payment, subscription } = await getUserPaymentStatus(req.user.id, paymentId)
 
-    const payment = await getPaymentById(paymentId)
-    if (!payment || payment.userId.toString() !== req.user.id) {
-      throw createHttpError(404, 'Payment transaction not found')
+    res.json({
+      success: true,
+      payment: {
+        id: payment._id.toString(),
+        planId: payment.planId.toString(),
+        planName: payment.planSnapshot.name,
+        amount: payment.amount.toString(),
+        currency: payment.currency,
+        creditEntitlement: payment.planSnapshot.creditEntitlement,
+        status: payment.status,
+        verificationStatus: payment.verificationStatus,
+      },
+      subscription: subscription
+        ? {
+            id: subscription._id.toString(),
+            planName: subscription.planSnapshot.name,
+            creditEntitlement: subscription.planSnapshot.creditEntitlement,
+            status: subscription.status,
+            currentPeriodStart: subscription.currentPeriodStart,
+          }
+        : null,
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+const callbackSchema = z.object({
+  tran_id: z.string().trim().min(1).max(30),
+  val_id: z.string().trim().min(1).max(200).optional(),
+  status: z.string().trim().max(32).optional(),
+}).passthrough()
+
+const getCallbackData = (body: unknown) => {
+  const parsed = callbackSchema.safeParse(body)
+  if (!parsed.success) {
+    throw createHttpError(400, formatValidationError(parsed.error))
+  }
+  return parsed.data
+}
+
+const getPaymentReturnUrl = (paymentId: string, planId: string) => {
+  const url = new URL('/checkout', env.FRONTEND_URL)
+  url.searchParams.set('plan', planId)
+  url.searchParams.set('paymentId', paymentId)
+  return url.toString()
+}
+
+const handleVerifiedPaymentCallback = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const callback = getCallbackData(req.body)
+    if (!callback.val_id) {
+      throw createHttpError(400, 'Payment validation ID is required')
     }
 
-    // Server-controlled demo payment outcome (90% success for demo purposes)
-    const shouldSucceed = Math.random() < 0.9
-    const verified = await verifyDemoPayment(paymentId, shouldSucceed)
+    const result = await processSslCommerzNotification({
+      transactionId: callback.tran_id,
+      validationId: callback.val_id,
+    })
 
-    if (shouldSucceed && verified.verificationStatus === 'verified') {
-      // Settle the payment atomically with subscription activation and credit grant
-      const { settleVerifiedCreditPaymentWithSubscription } = await import(
-        './payment-settlement.service.js'
-      )
-      const { payment: settled, subscription } = await settleVerifiedCreditPaymentWithSubscription(
-        paymentId,
-      )
+    res.redirect(
+      303,
+      getPaymentReturnUrl(result.payment._id.toString(), result.payment.planId.toString()),
+    )
+  } catch (error) {
+    next(error)
+  }
+}
 
-      res.json({
-        success: true,
-        payment: {
-          id: settled._id.toString(),
-          status: settled.status,
-          verificationStatus: settled.verificationStatus,
-          provider: settled.provider,
-          mode: settled.mode,
-        },
-        subscription: subscription
-          ? {
-              id: subscription._id.toString(),
-              status: subscription.status,
-            }
-          : null,
-      })
-    } else {
-      res.json({
-        success: true,
-        payment: {
-          id: verified._id.toString(),
-          status: verified.status,
-          verificationStatus: verified.verificationStatus,
-          provider: verified.provider,
-          mode: verified.mode,
-        },
-      })
+export const sslCommerzSuccessCallbackController = handleVerifiedPaymentCallback
+
+export const sslCommerzFailCallbackController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const callback = getCallbackData(req.body)
+    if (callback.status?.toUpperCase() !== 'FAILED') {
+      throw createHttpError(400, 'Invalid payment failure callback')
     }
+
+    const payment = callback.val_id
+      ? (await processSslCommerzNotification({
+          transactionId: callback.tran_id,
+          validationId: callback.val_id,
+        })).payment
+      : await recordSslCommerzFailure(callback.tran_id)
+
+    res.redirect(
+      303,
+      getPaymentReturnUrl(payment._id.toString(), payment.planId.toString()),
+    )
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const sslCommerzCancelCallbackController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const callback = getCallbackData(req.body)
+    if (!['CANCEL', 'CANCELED', 'CANCELLED'].includes(callback.status?.toUpperCase() ?? '')) {
+      throw createHttpError(400, 'Invalid payment cancellation callback')
+    }
+
+    const payment = callback.val_id
+      ? (await processSslCommerzNotification({
+          transactionId: callback.tran_id,
+          validationId: callback.val_id,
+        })).payment
+      : await recordSslCommerzCancellation(callback.tran_id)
+
+    res.redirect(
+      303,
+      getPaymentReturnUrl(payment._id.toString(), payment.planId.toString()),
+    )
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const sslCommerzIpnController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const callback = getCallbackData(req.body)
+    if (!callback.val_id) {
+      throw createHttpError(400, 'Payment validation ID is required')
+    }
+
+    await processSslCommerzNotification({
+      transactionId: callback.tran_id,
+      validationId: callback.val_id,
+    })
+
+    res.status(200).send('OK')
   } catch (error) {
     next(error)
   }

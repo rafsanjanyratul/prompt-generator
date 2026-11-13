@@ -103,6 +103,12 @@ const paymentTransactionSchema = new Schema(
       maxlength: 200,
       default: null,
     },
+    providerSessionRef: {
+      type: String,
+      trim: true,
+      maxlength: 200,
+      default: null,
+    },
     status: {
       type: String,
       enum: ['pending', 'processing', 'succeeded', 'failed', 'canceled', 'refunded'],
