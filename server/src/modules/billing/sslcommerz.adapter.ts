@@ -166,6 +166,9 @@ export async function validateSslCommerzTransaction(input: {
   mode: SslCommerzMode
   validationId: string
 }): Promise<SslCommerzValidation> {
+  const timestamp = new Date().toISOString()
+  console.info(`[SSLCommerz Validation] ${timestamp} - Calling validation API`)
+
   const credentials = getCredentials()
   const url = new URL(`${getApiOrigin(input.mode)}/validator/api/validationserverAPI.php`)
   url.search = new URLSearchParams({
@@ -179,10 +182,11 @@ export async function validateSslCommerzTransaction(input: {
 
   // The documented validation response can omit store_id; verify it when present.
   if (Object.hasOwn(payload, 'store_id') && getString(payload.store_id) !== credentials.storeId) {
+    console.warn(`[SSLCommerz Validation] ${timestamp} - Store ID mismatch`)
     throw createHttpError(409, 'Payment validation did not match the pending transaction')
   }
 
-  return {
+  const result = {
     status: getString(payload.status).toUpperCase(),
     transactionId: getString(payload.tran_id),
     validationId: getString(payload.val_id),
@@ -193,4 +197,7 @@ export async function validateSslCommerzTransaction(input: {
     cardType: getString(payload.card_type),
     bankTransactionId: getString(payload.bank_tran_id),
   }
+
+  console.info(`[SSLCommerz Validation] ${timestamp} - Response: status=${result.status}`)
+  return result
 }

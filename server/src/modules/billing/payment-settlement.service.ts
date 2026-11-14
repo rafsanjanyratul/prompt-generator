@@ -30,7 +30,9 @@ export interface SettlementResult {
 export async function settleVerifiedCreditPaymentWithSubscription(
   paymentTransactionId: string,
 ): Promise<SettlementResult> {
+  const timestamp = new Date().toISOString()
   const paymentId = toObjectId(paymentTransactionId)
+  console.info(`[Payment Settlement] ${timestamp} - Starting settlement for ${paymentId}`)
 
   try {
     return await withBillingTransaction(async (session) => {
@@ -38,6 +40,7 @@ export async function settleVerifiedCreditPaymentWithSubscription(
       if (!payment) throw createHttpError(404, 'Payment transaction was not found')
       if (payment.status === 'succeeded') {
         // Idempotency: if already settled, find and return existing subscription
+        console.info(`[Payment Settlement] ${timestamp} - Already settled (idempotent)`)
         const existingSub = await Subscription.findOne({
           userId: payment.userId,
           relatedPaymentId: paymentId,
@@ -69,6 +72,7 @@ export async function settleVerifiedCreditPaymentWithSubscription(
       }
 
       // Grant credits atomically
+      console.info(`[Payment Settlement] ${timestamp} - Granting credits`)
       await grantCredits(
         payment.userId.toString(),
         payment.planSnapshot.creditEntitlement,
@@ -96,8 +100,11 @@ export async function settleVerifiedCreditPaymentWithSubscription(
         { new: true, runValidators: true, session },
       )
       if (!settledPayment) {
+        console.error(`[Payment Settlement] ${timestamp} - State changed during settlement`)
         throw createHttpError(409, 'Payment transaction state changed during settlement')
       }
+
+      console.info(`[Payment Settlement] ${timestamp} - Payment status updated`)
 
       // Activate subscription atomically in same transaction
       const planId = payment.planId
@@ -156,10 +163,12 @@ export async function settleVerifiedCreditPaymentWithSubscription(
 
       await subscription.save({ session })
 
+      console.info(`[Payment Settlement] ${timestamp} - Settlement complete`)
       return { payment: settledPayment, subscription }
     })
   } catch (error) {
     if (isDuplicateKeyError(error)) {
+      console.info(`[Payment Settlement] ${timestamp} - Duplicate detected (idempotent)`)
       const settledPayment = await PaymentTransaction.findOne({
         _id: paymentId,
         status: 'succeeded',
@@ -172,6 +181,7 @@ export async function settleVerifiedCreditPaymentWithSubscription(
         return { payment: settledPayment, subscription: existingSub }
       }
     }
+    console.error(`[Payment Settlement] ${timestamp} - Failed`)
     throw error
   }
 }

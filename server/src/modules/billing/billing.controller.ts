@@ -358,9 +358,17 @@ export const sslCommerzIpnController = async (
   res: Response,
   next: NextFunction,
 ) => {
+  const timestamp = new Date().toISOString()
+  console.info(`[SSLCommerz IPN] ${timestamp} - Request arrived`)
+
   try {
     const callback = getCallbackData(req.body)
+    if (!callback.tran_id) {
+      console.warn(`[SSLCommerz IPN] ${timestamp} - Missing tran_id field`)
+      throw createHttpError(400, 'Payment transaction ID is required')
+    }
     if (!callback.val_id) {
+      console.warn(`[SSLCommerz IPN] ${timestamp} - Missing val_id field`)
       throw createHttpError(400, 'Payment validation ID is required')
     }
 
@@ -369,8 +377,10 @@ export const sslCommerzIpnController = async (
       validationId: callback.val_id,
     })
 
+    console.info(`[SSLCommerz IPN] ${timestamp} - Success`)
     res.status(200).send('OK')
   } catch (error) {
+    console.error(`[SSLCommerz IPN] ${timestamp} - Failed`)
     next(error)
   }
 }

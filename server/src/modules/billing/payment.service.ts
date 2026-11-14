@@ -105,6 +105,7 @@ const assertVerifiedTransactionMatches = (
   validation: SslCommerzValidation,
   validationId: string,
 ) => {
+  const timestamp = new Date().toISOString()
   const expectedAmount = amountInMinorUnits(payment.amount.toString())
   const verifiedAmount = amountInMinorUnits(validation.currencyAmount)
 
@@ -117,8 +118,20 @@ const assertVerifiedTransactionMatches = (
     validation.currencyType !== payment.currency ||
     payment.mode !== currentMode()
   ) {
+    const reasons = []
+    if (!expectedAmount) reasons.push('invalid_stored_amount')
+    if (!verifiedAmount) reasons.push('invalid_verified_amount')
+    if (expectedAmount !== verifiedAmount) reasons.push('amount_mismatch')
+    if (validation.transactionId !== payment.merchantTransactionRef) reasons.push('tran_id_mismatch')
+    if (validation.validationId !== validationId) reasons.push('val_id_mismatch')
+    if (validation.currencyType !== payment.currency) reasons.push('currency_mismatch')
+    if (payment.mode !== currentMode()) reasons.push('mode_mismatch')
+
+    console.warn(`[SSLCommerz Match] ${timestamp} - Validation failed: ${reasons.join(', ')}`)
     throw createHttpError(409, 'Payment validation did not match the pending transaction')
   }
+
+  console.info(`[SSLCommerz Match] ${timestamp} - All checks passed`)
 }
 
 const findSslCommerzPayment = async (transactionId: string) => {
