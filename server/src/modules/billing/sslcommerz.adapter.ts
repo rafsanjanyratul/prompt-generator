@@ -34,7 +34,8 @@ export type SslCommerzValidation = {
   validationId: string
   amount: string
   currency: string
-  storeId: string
+  currencyAmount: string
+  currencyType: string
   cardType: string
   bankTransactionId: string
 }
@@ -176,13 +177,19 @@ export async function validateSslCommerzTransaction(input: {
 
   const payload = await requestJson(url.toString(), { method: 'GET' })
 
+  // The documented validation response can omit store_id; verify it when present.
+  if (Object.hasOwn(payload, 'store_id') && getString(payload.store_id) !== credentials.storeId) {
+    throw createHttpError(409, 'Payment validation did not match the pending transaction')
+  }
+
   return {
     status: getString(payload.status).toUpperCase(),
     transactionId: getString(payload.tran_id),
     validationId: getString(payload.val_id),
     amount: getString(payload.amount),
     currency: getString(payload.currency).toUpperCase(),
-    storeId: getString(payload.store_id),
+    currencyAmount: getString(payload.currency_amount),
+    currencyType: getString(payload.currency_type).toUpperCase(),
     cardType: getString(payload.card_type),
     bankTransactionId: getString(payload.bank_tran_id),
   }

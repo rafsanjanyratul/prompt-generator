@@ -13,7 +13,6 @@ import {
   type SslCommerzMode,
   type SslCommerzValidation,
 } from './sslcommerz.adapter.js'
-import { env } from '../../config/env.js'
 import { settleVerifiedCreditPaymentWithSubscription } from './payment-settlement.service.js'
 
 const createHttpError = (statusCode: number, message: string) => {
@@ -107,7 +106,7 @@ const assertVerifiedTransactionMatches = (
   validationId: string,
 ) => {
   const expectedAmount = amountInMinorUnits(payment.amount.toString())
-  const verifiedAmount = amountInMinorUnits(validation.amount)
+  const verifiedAmount = amountInMinorUnits(validation.currencyAmount)
 
   if (
     !expectedAmount ||
@@ -115,9 +114,7 @@ const assertVerifiedTransactionMatches = (
     expectedAmount !== verifiedAmount ||
     validation.transactionId !== payment.merchantTransactionRef ||
     validation.validationId !== validationId ||
-    validation.currency !== payment.currency ||
-    !env.SSLCOMMERZ_STORE_ID ||
-    validation.storeId !== env.SSLCOMMERZ_STORE_ID ||
+    validation.currencyType !== payment.currency ||
     payment.mode !== currentMode()
   ) {
     throw createHttpError(409, 'Payment validation did not match the pending transaction')
