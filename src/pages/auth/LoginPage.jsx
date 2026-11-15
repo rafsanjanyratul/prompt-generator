@@ -206,7 +206,7 @@ function LoginPage() {
           </form>
 
           {googleClientId ? (
-            <div className="pt-2">
+            <div className="w-full max-w-[300px] mx-auto pt-2">
               <GoogleOAuthProvider clientId={googleClientId}>
                 <GoogleLogin
                   onSuccess={handleGoogleSuccess}
@@ -215,10 +215,11 @@ function LoginPage() {
                     setStatus({ type: 'error', message: errorMessage })
                     toast.error(errorMessage)
                   }}
-                  text="signin_with"
+                  text="continue_with"
                   theme="outline"
                   shape="pill"
-                  width="100%"
+                  logo_alignment="left"
+                  width={300}
                 />
               </GoogleOAuthProvider>
             </div>
