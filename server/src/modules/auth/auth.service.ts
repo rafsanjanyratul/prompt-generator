@@ -69,7 +69,7 @@ const sanitizeUser = (user: Record<string, unknown>) => {
 }
 
 const buildVerificationLink = (token: string) => `${env.APP_BASE_URL.replace(/\/$/, '')}/verify-email?token=${encodeURIComponent(token)}`
-const buildPasswordResetLink = (token: string) => `${env.APP_BASE_URL.replace(/\/$/, '')}/reset-password?token=${encodeURIComponent(token)}`
+const buildPasswordResetLink = (token: string) => `${env.FRONTEND_URL.replace(/\/$/, '')}/reset-password?token=${encodeURIComponent(token)}`
 
 export async function registerUser(input: z.infer<typeof registerSchema>) {
   const normalizedEmail = input.email.toLowerCase()
