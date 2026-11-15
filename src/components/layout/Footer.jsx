@@ -11,20 +11,22 @@ function Footer() {
       transition={{ duration: 0.28, ease: 'easeOut' }}
       className="border-t border-[var(--border)] bg-[var(--surface)]/95"
     >
-      <div className="mx-auto w-[min(var(--container-width),calc(100%-2rem))] py-6 md:py-8">
-        <div className="grid gap-5 border-b border-[var(--border)] pb-5 md:grid-cols-[1.5fr_0.8fr_0.7fr] md:gap-6 md:pb-6">
+      <div className="mx-auto w-[min(var(--container-width),calc(100%-2rem))] py-8 md:py-12">
+        <div className="grid gap-8 border-b border-[var(--border)] pb-8 md:grid-cols-[1.5fr_1fr_1fr_1fr] md:gap-6 md:pb-8">
+          {/* Brand Section */}
           <div className="max-w-sm">
             <p className="m-0 text-lg font-bold tracking-[-0.05em] text-[var(--text)]">PromptMuse</p>
             <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">
-              Discover image styles, copy ready-to-use prompts, and create your next image.
+              Discover image styles, copy ready-to-use prompts, and create your next image with AI-powered prompt enhancement.
             </p>
           </div>
 
-          <nav aria-label="Footer navigation" className="min-w-0">
+          {/* Explore Section */}
+          <nav aria-label="Footer explore navigation" className="min-w-0">
             <p className="m-0 text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--text-muted)]">
-              Navigate
+              Explore
             </p>
-            <div className="mt-2 flex flex-col gap-1.5 text-sm text-[var(--text-muted)]">
+            <div className="mt-3 flex flex-col gap-2 text-sm text-[var(--text-muted)]">
               <Link
                 to="/"
                 className="inline-flex items-center rounded-md px-1 py-1 transition-colors hover:text-[var(--text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
@@ -35,26 +37,56 @@ function Footer() {
                 to="/explore"
                 className="inline-flex items-center rounded-md px-1 py-1 transition-colors hover:text-[var(--text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
               >
-                Explore
+                Explore Prompts
               </Link>
               <Link
                 to="/styles/1980s-vintage-portrait"
                 className="inline-flex items-center rounded-md px-1 py-1 transition-colors hover:text-[var(--text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
               >
-                Styles
+                Style Gallery
               </Link>
             </div>
           </nav>
 
-          <div className="min-w-0 text-left md:text-left">
+          {/* Features Section */}
+          <nav aria-label="Footer features navigation" className="min-w-0">
             <p className="m-0 text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--text-muted)]">
-              Created by
+              Features
             </p>
-            <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">Rafsan Jany Ratul</p>
+            <div className="mt-3 flex flex-col gap-2 text-sm text-[var(--text-muted)]">
+              <Link
+                to="/voice-prompt"
+                className="inline-flex items-center rounded-md px-1 py-1 transition-colors hover:text-[var(--text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
+              >
+                Voice Prompt
+              </Link>
+              <Link
+                to="/ai-enhancer"
+                className="inline-flex items-center rounded-md px-1 py-1 transition-colors hover:text-[var(--text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
+              >
+                AI Enhancer
+              </Link>
+              <Link
+                to="/pricing"
+                className="inline-flex items-center rounded-md px-1 py-1 transition-colors hover:text-[var(--text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
+              >
+                Pricing
+              </Link>
+            </div>
+          </nav>
+
+          {/* Creator Section */}
+          <div className="min-w-0">
+            <p className="m-0 text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--text-muted)]">
+              About
+            </p>
+            <p className="mt-3 text-sm leading-6 text-[var(--text-muted)]">
+              Built with care by <span className="text-[var(--text)]">Rafsan Jany Ratul</span>
+            </p>
           </div>
         </div>
 
-        <div className="pt-3 text-center md:text-left">
+        <div className="pt-6 text-center md:text-left">
           <p className="m-0 text-[11px] leading-5 text-[var(--text-muted)]">
             © 2026 Rafsan Jany Ratul. All rights reserved.
           </p>

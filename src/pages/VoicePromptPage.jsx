@@ -562,6 +562,9 @@ function VoicePromptPage() {
       const result = await enhancePromptWithAI(idea)
       setEnhancedPrompt(result)
       setEnhancedCopyState('idle')
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('creditBalanceUpdated'))
+      }
     } catch (error) {
       const message = error?.message || 'Unable to enhance this prompt right now.'
       setEnhancementError(message)

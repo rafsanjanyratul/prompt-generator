@@ -19,34 +19,26 @@ function Header() {
   const isStylesRoute = location.pathname.startsWith('/styles/')
   const stylesNavTarget = isStylesRoute ? location.pathname : DEFAULT_STYLES_PATH
 
-  // Load credit balance when user logs in
+  // Listen for credit balance update events from other components
   useEffect(() => {
-    let isMounted = true
+    const handleCreditBalanceUpdated = async () => {
+      if (!user) return
+      try {
+        const balance = await getCreditBalance()
+        setCreditBalance(balance)
+      } catch (error) {
+        console.error('Failed to refresh credit balance:', error)
+      }
+    }
 
-    if (user) {
-      setCreditLoading(true)
-      getCreditBalance()
-        .then((balance) => {
-          if (isMounted) {
-            setCreditBalance(balance)
-          }
-        })
-        .catch((error) => {
-          if (isMounted) {
-            console.error('Failed to load credit balance:', error)
-          }
-        })
-        .finally(() => {
-          if (isMounted) {
-            setCreditLoading(false)
-          }
-        })
-    } else {
-      setCreditBalance(null)
+    if (typeof window !== 'undefined') {
+      window.addEventListener('creditBalanceUpdated', handleCreditBalanceUpdated)
     }
 
     return () => {
-      isMounted = false
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('creditBalanceUpdated', handleCreditBalanceUpdated)
+      }
     }
   }, [user])
 
@@ -68,12 +60,42 @@ function Header() {
     closeMenu()
     toast.success('Logout successful.')
     setCreditBalance(null)
+    setCreditLoading(false)
   }
 
   const handleCreditClick = () => {
     navigate('/billing')
     closeMenu()
   }
+
+  // Handle initial credit fetch after user authentication
+  useEffect(() => {
+    if (!user) return
+
+    let isMounted = true
+
+    const loadCreditBalance = async () => {
+      try {
+        setCreditLoading(true)
+        const balance = await getCreditBalance()
+        if (isMounted) {
+          setCreditBalance(balance)
+          setCreditLoading(false)
+        }
+      } catch (error) {
+        console.error('Failed to load credit balance:', error)
+        if (isMounted) {
+          setCreditLoading(false)
+        }
+      }
+    }
+
+    loadCreditBalance()
+
+    return () => {
+      isMounted = false
+    }
+  }, [user])
 
   return (
     <header className="sticky top-0 z-20 border-b border-[var(--border)] bg-[var(--background)]/80 backdrop-blur-xl supports-[backdrop-filter]:bg-[var(--background)]/70 relative">
@@ -134,7 +156,19 @@ function Header() {
               >
                 <Zap className="size-4 flex-shrink-0 text-[var(--brand)]" aria-hidden="true" />
                 <span>
-                  {creditLoading ? '...' : creditBalance ? creditBalance.availableCredits : '—'}
+                  {creditLoading ? (
+                    <span className="flex items-center gap-1">
+                      <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                      </svg>
+                      Loading
+                    </span>
+                  ) : creditBalance !== null ? (
+                    creditBalance.availableCredits
+                  ) : (
+                    '0'
+                  )}
                 </span>
               </button>
 
@@ -203,7 +237,7 @@ function Header() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.2, ease: 'easeOut' }}
-            className="absolute inset-x-0 top-full border-t border-[var(--border)] bg-[var(--background)]/95 shadow-[0_16px_36px_rgba(15,23,42,0.08)] md:hidden"
+            className="absolute inset-x-0 top-full border-t border-[var(--border)] bg-[var(--background)]/95 shadow-[0_16px_36px_rgba(15,23,42,0.08)] md:hidden max-h-[calc(100vh-4rem)] overflow-y-auto"
           >
             <motion.nav
               initial={{ opacity: 0, y: -8 }}
@@ -259,7 +293,19 @@ function Header() {
                   >
                     <span className="inline-flex items-center gap-2">
                       <Zap className="size-4 text-[var(--brand)]" aria-hidden="true" />
-                      {creditLoading ? 'Loading...' : `${creditBalance ? creditBalance.availableCredits : '0'} Credits`}
+                      {creditLoading ? (
+                        <span className="flex items-center gap-1">
+                          <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                          </svg>
+                          Loading
+                        </span>
+                      ) : creditBalance !== null ? (
+                        creditBalance.availableCredits
+                      ) : (
+                        '0'
+                      )} Credits
                     </span>
                     <span aria-hidden="true">•</span>
                   </motion.button>
@@ -286,11 +332,12 @@ function Header() {
                     </NavLink>
                   </motion.div>
 
-                  {/* History Link in Mobile Menu */}
+                  
+                  {/* Usage History Link in Mobile Menu */}
                   <motion.div
                     initial={{ opacity: 0, x: -12 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: (navItems.length + 2) * 0.04, duration: 0.18, ease: 'easeOut' }}
+                    transition={{ delay: (navItems.length + 3) * 0.04, duration: 0.18, ease: 'easeOut' }}
                   >
                     <NavLink
                       to="/history"
@@ -308,11 +355,23 @@ function Header() {
                     </NavLink>
                   </motion.div>
 
+{/* User Name Display in Mobile Menu */}
+                  <motion.div
+                    initial={{ opacity: 0, x: -12 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: (navItems.length + 2) * 0.04, duration: 0.18, ease: 'easeOut' }}
+                    className="flex items-center justify-between rounded-full px-3 py-2.5 text-base font-medium text-[var(--text-muted)]"
+                  >
+                    <span className="truncate">{user.name}</span>
+                    <span aria-hidden="true">•</span>
+                  </motion.div>
+
+                  
                   <motion.button
                     type="button"
                     initial={{ opacity: 0, x: -12 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: (navItems.length + 3) * 0.04, duration: 0.18, ease: 'easeOut' }}
+                    transition={{ delay: (navItems.length + 4) * 0.04, duration: 0.18, ease: 'easeOut' }}
                     onClick={handleLogout}
                     className="mt-2 flex items-center justify-between rounded-full border border-[var(--border)] bg-[var(--surface)] px-3 py-2.5 text-base font-medium text-[var(--text)] transition-colors hover:border-[var(--focus)] hover:bg-[var(--surface-elevated)]"
                   >

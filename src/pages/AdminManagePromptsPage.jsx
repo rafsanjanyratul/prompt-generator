@@ -220,9 +220,11 @@ function AdminManagePromptsPage() {
   return (
     <div className="mx-auto w-[min(var(--container-width),calc(100%-2rem))] py-8 pb-16">
       <div className="grid gap-6 lg:grid-cols-[240px_minmax(0,1fr)]">
-        <AdminSidebar />
+        <div className="lg:block hidden">
+          <AdminSidebar />
+        </div>
 
-        <div className="rounded-[28px] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[0_14px_32px_rgba(15,23,42,0.05)] sm:p-6 lg:p-8">
+        <div className="lg:minmax(0,1fr) rounded-[28px] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[0_14px_32px_rgba(15,23,42,0.05)] sm:p-6 lg:p-8">
           <div className="flex flex-col gap-4 border-b border-[var(--border)] pb-6 md:flex-row md:items-center md:justify-between">
             <div>
               <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--text-muted)]">
@@ -283,8 +285,42 @@ function AdminManagePromptsPage() {
               />
             </div>
           ) : (
-            <div className="mt-8 overflow-hidden rounded-[22px] border border-[var(--border)] bg-[var(--surface-muted)]">
-              <div className="overflow-x-auto">
+            <>
+              {/* Mobile card layout */}
+              <div className="block md:hidden mt-8 space-y-4">
+                {filteredPrompts.map((prompt) => editingSlug === prompt.slug ? (
+                  <div key={prompt.slug} className="rounded-[22px] border border-[var(--border)] bg-[var(--surface)] p-4 shadow-sm">
+                    <div className="grid gap-4">
+                      <label className="block text-xs font-medium uppercase tracking-[0.14em] text-[var(--text-muted)]">Title<input type="text" name="title" value={draft.title || ''} onChange={handleDraftChange} className="mt-1 w-full rounded-[14px] border border-[var(--border)] bg-[var(--surface-muted)] px-3 py-2.5 text-sm text-[var(--text)] outline-none focus:border-[var(--focus)]" /></label>
+                      <label className="block text-xs font-medium uppercase tracking-[0.14em] text-[var(--text-muted)]">Category<input type="text" name="category" value={draft.category || ''} onChange={handleDraftChange} className="mt-1 w-full rounded-[14px] border border-[var(--border)] bg-[var(--surface-muted)] px-3 py-2.5 text-sm text-[var(--text)] outline-none focus:border-[var(--focus)]" /></label>
+                      <label className="block text-xs font-medium uppercase tracking-[0.14em] text-[var(--text-muted)]">Gender<input type="text" name="gender" value={draft.gender || ''} onChange={handleDraftChange} className="mt-1 w-full rounded-[14px] border border-[var(--border)] bg-[var(--surface-muted)] px-3 py-2.5 text-sm text-[var(--text)] outline-none focus:border-[var(--focus)]" /></label>
+                      <label className="block text-xs font-medium uppercase tracking-[0.14em] text-[var(--text-muted)]">Description<textarea name="shortDescription" value={draft.shortDescription || ''} onChange={handleDraftChange} rows="3" className="mt-1 w-full rounded-[14px] border border-[var(--border)] bg-[var(--surface-muted)] px-3 py-2.5 text-sm text-[var(--text)] outline-none focus:border-[var(--focus)]"></textarea></label>
+                      <label className="block text-xs font-medium uppercase tracking-[0.14em] text-[var(--text-muted)]">Style<input type="text" name="style" value={draft.style || ''} onChange={handleDraftChange} className="mt-1 w-full rounded-[14px] border border-[var(--border)] bg-[var(--surface-muted)] px-3 py-2.5 text-sm text-[var(--text)] outline-none focus:border-[var(--focus)]" /></label>
+                      <label className="block text-xs font-medium uppercase tracking-[0.14em] text-[var(--text-muted)]">Tags<input type="text" name="tags" value={draft.tags || ''} onChange={handleDraftChange} placeholder="comma separated tags" className="mt-1 w-full rounded-[14px] border border-[var(--border)] bg-[var(--surface-muted)] px-3 py-2.5 text-sm text-[var(--text)] outline-none focus:border-[var(--focus)]" /></label>
+                    </div>
+                    <div className="mt-4 flex items-center gap-2">
+                      <button type="button" onClick={() => setEditingSlug(null)} className="flex-1 rounded-full border border-[var(--border)] bg-[var(--surface)] px-4 py-2 text-sm font-medium text-[var(--text)] hover:bg-[var(--brand-soft)]">Cancel</button>
+                      <button type="button" onClick={handleSave} disabled={saving} className="flex-1 rounded-full bg-[var(--brand)] px-4 py-2 text-sm font-semibold text-[var(--background)] disabled:opacity-60 disabled:cursor-not-allowed">{saving ? 'Saving...' : 'Save'}</button>
+                    </div>
+                  </div>
+                ) : (
+                  <div key={prompt.slug} className="rounded-[22px] border border-[var(--border)] bg-[var(--surface)] p-4 shadow-sm">
+                    <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+                      <div className="flex-1 min-w-0">
+                        <div className="font-semibold text-[var(--text)] truncate">{prompt.title}</div>
+                        <div className="mt-1 max-w-xs text-xs leading-5 text-[var(--text-muted)] break-words">{prompt.shortDescription || 'No description available.'}</div>
+                        <div className="mt-3 flex items-center gap-3 text-xs text-[var(--text-muted)]"><span>{prompt.category || '—'}</span><span aria-hidden="true">•</span><span>{prompt.gender || '—'}</span><span aria-hidden="true">•</span><span>{prompt.style || '—'}</span></div>
+                        <div className="mt-3 flex items-center gap-2"><span className={`inline-flex rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] ${prompt.featured ? 'bg-[rgba(28,124,84,0.12)] text-[var(--success)]' : 'bg-[var(--surface-muted)] text-[var(--text-muted)]'}`}>{prompt.featured ? 'Featured' : 'Not featured'}</span><span className={`inline-flex rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] ${prompt.trending ? 'bg-[rgba(122,92,69,0.12)] text-[var(--brand-accent)]' : 'bg-[var(--surface-muted)] text-[var(--text-muted)]'}`}>{prompt.trending ? 'Trending' : 'Not trending'}</span></div>
+                      </div>
+                      <div className="flex items-center gap-2 flex-col md:flex-row"><button type="button" onClick={() => beginEdit(prompt)} className="inline-flex items-center gap-1.5 rounded-full border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-xs font-medium text-[var(--text)] transition-colors hover:border-[var(--focus)] w-full md:w-auto"><Pencil className="size-3.5" aria-hidden="true" /> Edit</button><button type="button" onClick={() => setDeleteTarget(prompt)} className="inline-flex items-center gap-1.5 rounded-full border border-red-200 bg-red-50 px-3 py-2 text-xs font-medium text-red-700 transition-colors hover:border-red-300 w-full md:w-auto"><Trash2 className="size-3.5" aria-hidden="true" /> Delete</button></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Desktop table layout */}
+              <div className="hidden md:block mt-8 overflow-hidden rounded-[22px] border border-[var(--border)] bg-[var(--surface-muted)]">
+                <div className="overflow-x-auto">
                 <table className="min-w-full text-left text-sm">
                   <thead className="border-b border-[var(--border)] bg-[var(--surface)] text-[var(--text-muted)]">
                     <tr>
@@ -537,8 +573,9 @@ function AdminManagePromptsPage() {
                     })}
                   </tbody>
                 </table>
+                </div>
               </div>
-            </div>
+            </>
           )}
         </div>
       </div>
@@ -573,6 +610,7 @@ function AdminManagePromptsPage() {
         </div>
       ) : null}
     </div>
+    
   )
 }
 

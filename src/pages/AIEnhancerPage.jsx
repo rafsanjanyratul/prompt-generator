@@ -71,6 +71,9 @@ function AIEnhancerPage() {
     try {
       const result = await enhancePromptWithAI(trimmedIdea)
       setEnhancedPrompt(result)
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('creditBalanceUpdated'))
+      }
     } catch (error) {
       const message = error?.message || 'Unable to enhance this prompt right now.'
       setEnhancementError(message)

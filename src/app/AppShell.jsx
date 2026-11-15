@@ -5,7 +5,7 @@ import ScrollToTop from '../components/layout/ScrollToTop'
 
 function AppShell() {
   return (
-    <div className="flex min-h-screen flex-col bg-[var(--background)] text-[var(--text)]">
+    <div className="flex min-h-screen flex-col overflow-x-hidden bg-[var(--background)] text-[var(--text)]">
       <ScrollToTop />
       <Header />
       <main className="flex-1">
