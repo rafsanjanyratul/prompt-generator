@@ -134,6 +134,11 @@ function PricingPage() {
       // Refresh subscription info
       const subscription = await getCurrentSubscription()
       setCurrentSubscription(subscription)
+
+      // Notify Header to refresh credit balance
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('creditBalanceUpdated'))
+      }
     } catch (activationError) {
       toast.error(activationError.message || 'Failed to activate free plan.')
     } finally {

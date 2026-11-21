@@ -1,8 +1,9 @@
-import { Types, type HydratedDocument } from 'mongoose'
+import mongoose, { Types, type HydratedDocument } from 'mongoose'
 
 import { Plan, type PlanFields } from './plan.model.js'
 import { Subscription, type SubscriptionFields } from './subscription.model.js'
 import { PaymentTransaction } from './payment-transaction.model.js'
+import { grantCredits } from './credit.service.js'
 import { capturePlanSnapshot } from './plan.service.js'
 
 const createHttpError = (statusCode: number, message: string) => {
@@ -55,6 +56,21 @@ export async function activateFreeSubscription(
   })
 
   if (existing && existing.status === 'active') {
+    // For existing active Free Plan subscriptions, ensure the one-time
+    // free-plan credit grant has been made. grantCredits is idempotent
+    // via its unique (userId, idempotencyKey) ledger index, so repeated
+    // calls will not create duplicate grants.
+    if (existing.planSnapshot.planType === 'free') {
+      await grantCredits(
+        userId,
+        plan.creditEntitlement,
+        'free',
+        `free-plan:${userId}:credit-grant`,
+        {
+          subscriptionId: existing._id.toString(),
+        },
+      )
+    }
     return existing
   }
 
@@ -70,21 +86,57 @@ export async function activateFreeSubscription(
     nextBillingAt: null,
   })
 
+  const session = await mongoose.startSession()
+  await session.startTransaction()
+
   try {
-    await subscription.save()
+    await subscription.save({ session })
+
+    // Grant one-time free plan credits for the newly created subscription.
+    // The same session is passed so grantCredits() participates in this
+    // transaction — no nested transaction is created.
+    await grantCredits(
+      userId,
+      plan.creditEntitlement,
+      'free',
+      `free-plan:${userId}:credit-grant`,
+      {
+        subscriptionId: subscription._id.toString(),
+        session,
+      },
+    )
+
+    await session.commitTransaction()
     return subscription
   } catch (error) {
-    // Handle race condition: another concurrent request may have created the active subscription
+    // Abort the transaction so a failed credit grant does not leave an
+    // active subscription with 0 credits.
+    await session.abortTransaction()
+
+    // Handle race condition: another concurrent request may have created the
+    // active subscription between the existence check and the save. Find the
+    // existing subscription and ensure credits are granted idempotently.
     if (isDuplicateKeyError(error)) {
       const duplicateSubscription = await Subscription.findOne({
         userId: userObjectId,
         status: 'active',
       })
-      if (duplicateSubscription) {
+      if (duplicateSubscription && duplicateSubscription.planSnapshot.planType === 'free') {
+        await grantCredits(
+          userId,
+          plan.creditEntitlement,
+          'free',
+          `free-plan:${userId}:credit-grant`,
+          {
+            subscriptionId: duplicateSubscription._id.toString(),
+          },
+        )
         return duplicateSubscription
       }
     }
     throw error
+  } finally {
+    await session.endSession()
   }
 }
 

@@ -48,7 +48,7 @@ export function useDocumentMeta({
   robots = 'index,follow',
 }) {
   useEffect(() => {
-    const resolvedTitle = title ? `${title} | PromptMuse` : 'PromptMuse'
+    const resolvedTitle = title ? `${title} | PromptTouch AI` : 'PromptTouch AI'
     const resolvedDescription = description || 'Discover curated AI photo styles and prompt ideas for creative image generation.'
 
     document.title = resolvedTitle
@@ -57,7 +57,7 @@ export function useDocumentMeta({
     applyMetaTag({ name: 'robots', content: robots })
     applyMetaTag({ name: 'theme-color', content: document.documentElement.dataset.theme === 'dark' ? '#101114' : '#f5f2ee' })
 
-    applyMetaTag({ property: 'og:title', content: ogTitle || title || 'PromptMuse' })
+    applyMetaTag({ property: 'og:title', content: ogTitle || title || 'PromptTouch AI' })
     applyMetaTag({ property: 'og:description', content: ogDescription || resolvedDescription })
     applyMetaTag({ property: 'og:type', content: ogType })
 
@@ -69,10 +69,10 @@ export function useDocumentMeta({
     }
 
     return () => {
-      document.title = 'PromptMuse'
+      document.title = 'PromptTouch AI'
       applyMetaTag({ name: 'description', content: 'Discover curated AI photo styles and prompt ideas for creative image generation.' })
       applyMetaTag({ name: 'robots', content: 'index,follow' })
-      applyMetaTag({ property: 'og:title', content: 'PromptMuse' })
+      applyMetaTag({ property: 'og:title', content: 'PromptTouch AI' })
       applyMetaTag({ property: 'og:description', content: 'Discover curated AI photo styles and prompt ideas for creative image generation.' })
       applyMetaTag({ property: 'og:type', content: 'website' })
     }

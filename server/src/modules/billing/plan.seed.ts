@@ -12,7 +12,7 @@ const plans = [
     billingInterval: null,
     priceAmount: '0',
     currency: 'USD',
-    creditEntitlement: 0,
+    creditEntitlement: 10,
     creditExpirationPolicy: 'never' as const,
   },
   {
@@ -50,5 +50,11 @@ export async function seedDemoPlanIfNotExists() {
   if (!freePlanExists) {
     await Plan.insertMany(plans)
     console.log('Demo plans seeded successfully')
+  } else if (freePlanExists.creditEntitlement !== 10) {
+    await Plan.updateOne(
+      { key: 'free', version: 1 },
+      { $set: { creditEntitlement: 10 } },
+    )
+    console.log('Free plan credit entitlement updated to 10')
   }
 }
