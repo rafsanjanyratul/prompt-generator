@@ -32,7 +32,7 @@ function StyleDetailPage() {
     let isMounted = true
 
     async function loadPrompt() {
-      if (!slug) {
+      if (!slug || slug.trim() === '') {
         if (isMounted) {
           setStyle(null)
           setError('Style not found.')

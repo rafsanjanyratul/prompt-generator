@@ -30,7 +30,7 @@ function HistoryPage() {
   const [creditsError, setCreditsError] = useState('')
 
   useDocumentMeta({
-    title: 'Usage & Credit History — PromptMuse',
+    title: 'Usage & Credit History — PromptTouch AI',
     description: 'View your AI usage and credit transaction history.',
   })
 

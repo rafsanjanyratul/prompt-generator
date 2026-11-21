@@ -21,7 +21,7 @@ function FavoritesPage() {
     title: 'My Favorites',
     description: 'View and manage the public prompts you have saved to your favorites list.',
     ogTitle: 'My Favorites',
-    ogDescription: 'Browse and unfavorite the prompts you have saved in PromptMuse.',
+    ogDescription: 'Browse and unfavorite the prompts you have saved in PromptTouch AI.',
   })
 
   useEffect(() => {

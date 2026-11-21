@@ -1,4 +1,4 @@
-import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google'
+import GoogleSignInButton from '../../components/ui/GoogleSignInButton'
 import { useState } from 'react'
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
@@ -15,7 +15,6 @@ function LoginPage() {
   const [status, setStatus] = useState({ type: 'idle', message: '', code: null })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isResending, setIsResending] = useState(false)
-  const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID
 
   if (loading) {
     return (
@@ -91,9 +90,13 @@ function LoginPage() {
     }
   }
 
-  const handleGoogleSuccess = async (credentialResponse) => {
-    const credential = credentialResponse?.credential
+  const handleGoogleError = () => {
+    const errorMessage = 'Google sign-in failed. Please try again.'
+    setStatus({ type: 'error', message: errorMessage })
+    toast.error(errorMessage)
+  }
 
+  const handleGoogleSuccess = async (credential) => {
     if (!credential) {
       const errorMessage = 'Google sign-in failed. Please try again.'
       setStatus({ type: 'error', message: errorMessage, code: null })
@@ -205,25 +208,12 @@ function LoginPage() {
             </button>
           </form>
 
-          {googleClientId ? (
-            <div className="w-full max-w-[300px] mx-auto pt-2">
-              <GoogleOAuthProvider clientId={googleClientId}>
-                <GoogleLogin
-                  onSuccess={handleGoogleSuccess}
-                  onError={() => {
-                    const errorMessage = 'Google sign-in failed. Please try again.'
-                    setStatus({ type: 'error', message: errorMessage })
-                    toast.error(errorMessage)
-                  }}
-                  text="continue_with"
-                  theme="outline"
-                  shape="pill"
-                  logo_alignment="left"
-                  width={300}
-                />
-              </GoogleOAuthProvider>
-            </div>
-          ) : null}
+        <div className="w-full max-w-[300px] mx-auto pt-2">
+          <GoogleSignInButton
+            onSuccess={handleGoogleSuccess}
+            onError={handleGoogleError}
+          />
+        </div>
         </div>
 
         <div className="mt-5 text-center text-sm text-[var(--text-muted)]">

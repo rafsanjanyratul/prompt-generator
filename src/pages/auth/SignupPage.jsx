@@ -1,4 +1,4 @@
-import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google'
+import GoogleSignInButton from '../../components/ui/GoogleSignInButton'
 import { useState } from 'react'
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
@@ -15,7 +15,6 @@ function SignupPage() {
   const [status, setStatus] = useState({ type: 'idle', message: '' })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isResending, setIsResending] = useState(false)
-  const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID
 
   if (loading) {
     return (
@@ -83,8 +82,14 @@ function SignupPage() {
     }
   }
 
-  const handleGoogleSuccess = async (credentialResponse) => {
-    const credential = credentialResponse?.credential
+  const handleGoogleError = (error) => {
+    const errorMessage = error?.error?.message || 'Google sign-in failed. Please try again.'
+    setStatus({ type: 'error', message: errorMessage })
+    toast.error(errorMessage)
+  }
+
+  const handleGoogleSuccess = async (credential) => {
+    setStatus({ type: 'idle', message: '' })
 
     if (!credential) {
       const errorMessage = 'Google sign-in failed. Please try again.'
@@ -92,8 +97,6 @@ function SignupPage() {
       toast.error(errorMessage)
       return
     }
-
-    setStatus({ type: 'idle', message: '' })
 
     try {
       await googleLogin(credential)
@@ -105,10 +108,7 @@ function SignupPage() {
       navigate(redirectDestination, { replace: true })
     } catch (error) {
       const errorMessage = error.message || 'Google sign-in failed. Please try again.'
-      setStatus({
-        type: 'error',
-        message: errorMessage,
-      })
+      setStatus({ type: 'error', message: errorMessage })
       toast.error(errorMessage)
     }
   }
@@ -212,25 +212,12 @@ function SignupPage() {
             </button>
           </form>
 
-          {googleClientId ? (
-            <div className="w-full max-w-[300px] mx-auto pt-2">
-              <GoogleOAuthProvider clientId={googleClientId}>
-                <GoogleLogin
-                  onSuccess={handleGoogleSuccess}
-                  onError={() => {
-                    const errorMessage = 'Google sign-in failed. Please try again.'
-                    setStatus({ type: 'error', message: errorMessage })
-                    toast.error(errorMessage)
-                  }}
-                  text="continue_with"
-                  theme="outline"
-                  shape="pill"
-                  logo_alignment="left"
-                  width={300}
-                />
-              </GoogleOAuthProvider>
-            </div>
-          ) : null}
+          <div className="w-full max-w-[300px] mx-auto pt-2">
+            <GoogleSignInButton
+              onSuccess={handleGoogleSuccess}
+              onError={handleGoogleError}
+            />
+          </div>
         </div>
 
         <p className="mt-5 text-center text-sm text-[var(--text-muted)]">

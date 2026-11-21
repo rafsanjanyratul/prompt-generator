@@ -21,9 +21,9 @@ function PricingPage() {
   const [loadingSubscription, setLoadingSubscription] = useState(false)
 
   useDocumentMeta({
-    title: 'Pricing — PromptMuse',
+    title: 'Pricing — PromptTouch AI',
     description: 'Unlock AI-powered prompt enhancement with flexible pricing plans.',
-    ogTitle: 'PromptMuse Pricing',
+    ogTitle: 'PromptTouch AI Pricing',
     ogDescription: 'Free, Starter, and Pro plans to enhance your creativity.',
   })
 
@@ -39,7 +39,18 @@ function PricingPage() {
         const fetchedPlans = await getPlans()
 
         if (isMounted) {
-          setPlans(Array.isArray(fetchedPlans) ? fetchedPlans : [])
+          const planOrder = ['free', 'starter', 'pro']
+          const sortedPlans = Array.isArray(fetchedPlans)
+            ? [...fetchedPlans].sort((a, b) => {
+                const aIndex = planOrder.indexOf(a.key)
+                const bIndex = planOrder.indexOf(b.key)
+                if (aIndex === -1 && bIndex === -1) return 0
+                if (aIndex === -1) return 1
+                if (bIndex === -1) return -1
+                return aIndex - bIndex
+              })
+            : []
+          setPlans(sortedPlans)
         }
       } catch (loadError) {
         if (isMounted) {

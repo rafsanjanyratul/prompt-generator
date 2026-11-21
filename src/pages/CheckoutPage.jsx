@@ -40,7 +40,7 @@ function CheckoutPage() {
   })
 
   useDocumentMeta({
-    title: 'Checkout — PromptMuse',
+    title: 'Checkout — PromptTouch AI',
     description: 'Complete your purchase through secure hosted checkout.',
   })
 
@@ -515,7 +515,7 @@ function CheckoutPage() {
             <button
               onClick={handleConfirmCheckout}
               disabled={isProcessing}
-              className="flex-1 inline-flex min-h-[44px] items-center justify-center rounded-full border-0 bg-[var(--brand)] px-6 py-3 font-semibold text-white transition-all duration-200 hover:bg-[var(--brand-hover)] active:bg-[var(--brand-active)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)] disabled:cursor-not-allowed disabled:opacity-60"
+              className="flex-1 inline-flex min-h-[44px] items-center justify-center rounded-full border-0 bg-[var(--brand)] px-6 py-3 font-semibold text-white transition-all duration-200 hover:bg-white hover:text-black active:bg-[var(--brand-active)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)] focus-visible:bg-white focus-visible:text-black disabled:cursor-not-allowed disabled:opacity-60"
             >
               {isProcessing ? (
                 <>

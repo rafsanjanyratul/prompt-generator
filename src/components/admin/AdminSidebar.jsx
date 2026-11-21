@@ -57,7 +57,7 @@ function AdminSidebar({ children = null }) {
           P
         </span>
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--text-muted)]">PromptMuse</p>
+          <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--text-muted)]">PromptTouch AI</p>
           <p className="mt-1 text-sm font-semibold text-[var(--text)]">Admin console</p>
         </div>
       </div>

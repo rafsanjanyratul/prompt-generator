@@ -15,7 +15,7 @@ function Footer() {
         <div className="grid gap-8 border-b border-[var(--border)] pb-8 md:grid-cols-[1.5fr_1fr_1fr_1fr] md:gap-6 md:pb-8">
           {/* Brand Section */}
           <div className="max-w-sm">
-            <p className="m-0 text-lg font-bold tracking-[-0.05em] text-[var(--text)]">PromptMuse</p>
+            <p className="m-0 text-lg font-bold tracking-[-0.05em] text-[var(--text)]">PromptTouch AI</p>
             <p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">
               Discover image styles, copy ready-to-use prompts, and create your next image with AI-powered prompt enhancement.
             </p>
@@ -40,10 +40,10 @@ function Footer() {
                 Explore Prompts
               </Link>
               <Link
-                to="/styles/1980s-vintage-portrait"
+                to="/explore"
                 className="inline-flex items-center rounded-md px-1 py-1 transition-colors hover:text-[var(--text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
               >
-                Style Gallery
+                Explore Styles
               </Link>
             </div>
           </nav>

@@ -3,11 +3,14 @@ import { createRoot } from 'react-dom/client'
 import { RouterProvider } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import { GoogleOAuthProvider } from '@react-oauth/google'
 import router from './app/routes.jsx'
 import { AuthProvider } from './contexts/AuthContext.jsx'
 import { initializeAnalytics, trackPageView } from './lib/analytics.js'
 import './styles/tokens.css'
 import './styles/globals.css'
+
+const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID
 
 function AppShell() {
   const [toastTheme, setToastTheme] = useState(() => (document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light'))
@@ -38,9 +41,11 @@ function AppShell() {
 
   return (
     <>
-      <AuthProvider>
-        <RouterProvider router={router} />
-      </AuthProvider>
+      <GoogleOAuthProvider clientId={googleClientId}>
+        <AuthProvider>
+          <RouterProvider router={router} />
+        </AuthProvider>
+      </GoogleOAuthProvider>
       <ToastContainer
         position="top-right"
         autoClose={3000}

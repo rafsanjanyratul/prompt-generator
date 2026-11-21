@@ -61,7 +61,7 @@ const baseEmailLayout = ({
             <tr>
               <td style="padding:24px 32px 12px; text-align:left; background:rgba(17, 24, 39, 0.92);">
                 <div style="font-size:12px; letter-spacing:0.18em; text-transform:uppercase; color:#c4b5fd; font-weight:bold;">
-                  PromptMuse
+                  PromptTouch AI
                 </div>
               </td>
             </tr>
@@ -101,7 +101,7 @@ const baseEmailLayout = ({
             </tr>
             <tr>
               <td style="padding:0 32px 28px; color:#94a3b8; font-size:12px; line-height:1.6; text-align:center;">
-                PromptMuse • Create better prompts, with clarity and confidence.
+                PromptTouch AI • Create better prompts, with clarity and confidence.
               </td>
             </tr>
           </table>
@@ -117,11 +117,11 @@ export const buildVerificationEmailTemplate = ({ recipientName, actionUrl, expir
   const safeActionUrl = escapeHtml(actionUrl)
   const safeExpiresIn = escapeHtml(expiresIn)
 
-  const subject = 'Verify your PromptMuse account'
+  const subject = 'Verify your PromptTouch AI account'
   const heading = 'Verify your email'
-  const bodyParagraph = `Hi ${safeName}, welcome to PromptMuse. Please confirm your email address to finish setting up your account and start creating smarter prompts.`
+  const bodyParagraph = `Hi ${safeName}, welcome to PromptTouch AI. Please confirm your email address to finish setting up your account and start creating smarter prompts.`
   const expiryText = `This verification link expires in ${safeExpiresIn}.` 
-  const footerNote = 'For your security, never share this email with anyone else. If you did not create a PromptMuse account, you can ignore this message.'
+  const footerNote = 'For your security, never share this email with anyone else. If you did not create a PromptTouch AI account, you can ignore this message.'
 
   return {
     subject,
@@ -134,7 +134,7 @@ export const buildVerificationEmailTemplate = ({ recipientName, actionUrl, expir
       expiryText,
       footerNote,
     }),
-    text: `Hi ${recipientName || 'there'},\n\nWelcome to PromptMuse. Please confirm your email address by visiting: ${actionUrl}\n\nThis verification link expires in ${expiresIn}.\n\nFor your security, never share this email with anyone else. If you did not create a PromptMuse account, you can ignore this message.`,
+    text: `Hi ${recipientName || 'there'},\n\nWelcome to PromptTouch AI. Please confirm your email address by visiting: ${actionUrl}\n\nThis verification link expires in ${expiresIn}.\n\nFor your security, never share this email with anyone else. If you did not create a PromptTouch AI account, you can ignore this message.`,
   }
 }
 
@@ -143,9 +143,9 @@ export const buildPasswordResetEmailTemplate = ({ recipientName, actionUrl, expi
   const safeActionUrl = escapeHtml(actionUrl)
   const safeExpiresIn = escapeHtml(expiresIn)
 
-  const subject = 'Reset your PromptMuse password'
+  const subject = 'Reset your PromptTouch AI password'
   const heading = 'Reset your password'
-  const bodyParagraph = `Hi ${safeName}, we received a request to reset the password for your PromptMuse account. Use the button below to choose a new password and continue securely.`
+  const bodyParagraph = `Hi ${safeName}, we received a request to reset the password for your PromptTouch AI account. Use the button below to choose a new password and continue securely.`
   const expiryText = `This password reset link expires in ${safeExpiresIn}.`
   const footerNote = 'For your security, this link can only be used once. If you did not request a password reset, you can safely ignore this message.'
 
@@ -160,6 +160,6 @@ export const buildPasswordResetEmailTemplate = ({ recipientName, actionUrl, expi
       expiryText,
       footerNote,
     }),
-    text: `Hi ${recipientName || 'there'},\n\nWe received a request to reset the password for your PromptMuse account. Use the following link to create a new password: ${actionUrl}\n\nThis password reset link expires in ${expiresIn}.\n\nFor your security, this link can only be used once. If you did not request a password reset, you can safely ignore this message.`,
+    text: `Hi ${recipientName || 'there'},\n\nWe received a request to reset the password for your PromptTouch AI account. Use the following link to create a new password: ${actionUrl}\n\nThis password reset link expires in ${expiresIn}.\n\nFor your security, this link can only be used once. If you did not request a password reset, you can safely ignore this message.`,
   }
 }

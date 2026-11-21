@@ -101,9 +101,9 @@ function AdminManagePromptsPage() {
 
   useDocumentMeta({
     title: 'Manage Prompts',
-    description: 'Manage PromptMuse prompt catalog entries and publication states from the admin dashboard.',
-    ogTitle: 'PromptMuse Admin Manage Prompts',
-    ogDescription: 'Review, edit, and remove PromptMuse prompt entries from the admin dashboard.',
+    description: 'Manage PromptTouch AI prompt catalog entries and publication states from the admin dashboard.',
+    ogTitle: 'PromptTouch AI Admin Manage Prompts',
+    ogDescription: 'Review, edit, and remove PromptTouch AI prompt entries from the admin dashboard.',
   })
 
   const beginEdit = (prompt) => {

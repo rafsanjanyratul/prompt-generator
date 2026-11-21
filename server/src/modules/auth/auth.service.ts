@@ -96,7 +96,7 @@ export async function registerUser(input: z.infer<typeof registerSchema>) {
 
   await sendTransactionalEmail({
     to: user.email,
-    subject: 'Verify your PromptMuse account',
+    subject: 'Verify your PromptTouch AI account',
     html: buildVerificationEmailTemplate({
       recipientName: user.name,
       actionUrl: buildVerificationLink(verificationToken),
@@ -235,7 +235,7 @@ export async function resendVerificationUser(input: z.infer<typeof resendVerific
 
     await sendTransactionalEmail({
       to: user.email,
-      subject: 'Verify your PromptMuse account',
+      subject: 'Verify your PromptTouch AI account',
       html: buildVerificationEmailTemplate({
         recipientName: user.name,
         actionUrl: buildVerificationLink(newVerificationToken),
@@ -281,7 +281,7 @@ export async function forgotPasswordUser(input: z.infer<typeof forgotPasswordSch
 
   await sendTransactionalEmail({
     to: user.email,
-    subject: 'Reset your PromptMuse password',
+    subject: 'Reset your PromptTouch AI password',
     html: buildPasswordResetEmailTemplate({
       recipientName: user.name,
       actionUrl: buildPasswordResetLink(resetToken),

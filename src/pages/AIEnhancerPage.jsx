@@ -167,7 +167,7 @@ function AIEnhancerPage() {
           <div className="max-w-2xl space-y-3">
             <div className="inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--brand-soft)] px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--text-muted)]">
               <Sparkles className="size-3.5 text-[var(--brand-accent)]" aria-hidden="true" />
-              PromptMuse AI Studio
+              PromptTouch AI Studio
             </div>
             <h1 className="m-0 text-[clamp(2.2rem,5vw,4.3rem)] leading-[0.95] tracking-[-0.07em] text-[var(--text)]">
               AI Prompt Enhancer

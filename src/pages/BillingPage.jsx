@@ -34,7 +34,7 @@ function BillingPage() {
   const [paymentsError, setPaymentsError] = useState('')
 
   useDocumentMeta({
-    title: 'Billing Dashboard — PromptMuse',
+    title: 'Billing Dashboard — PromptTouch AI',
     description: 'Manage your subscription, credits, and billing information.',
   })
 

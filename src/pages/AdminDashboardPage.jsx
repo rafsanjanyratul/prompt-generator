@@ -41,8 +41,8 @@ function AdminDashboardPage() {
 
   useDocumentMeta({
     title: 'Admin Overview',
-    description: 'Administrative overview for PromptMuse prompt management and content operations.',
-    ogTitle: 'PromptMuse Admin Dashboard',
+    description: 'Administrative overview for PromptTouch AI prompt management and content operations.',
+    ogTitle: 'PromptTouch AI Admin Dashboard',
     ogDescription: 'Manage prompts, monitor featured and trending content, and review quick admin metrics.',
   })
 
@@ -125,7 +125,7 @@ function AdminDashboardPage() {
               <span className={`inline-block h-2.5 w-2.5 rounded-full ${error ? 'bg-[var(--error)]' : loading ? 'bg-[var(--text-muted)]' : 'bg-[var(--success)]'}`} aria-hidden="true" />
               {catalogStatus}
             </div>
-            <p className="mt-2 text-xs leading-5 text-[var(--text-muted)]">PromptMuse public prompt catalog</p>
+            <p className="mt-2 text-xs leading-5 text-[var(--text-muted)]">PromptTouch AI public prompt catalog</p>
           </div>
         </AdminSidebar>
 
@@ -135,7 +135,7 @@ function AdminDashboardPage() {
               <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--text-muted)]">Overview</p>
               <h1 className="mt-3 text-3xl font-bold tracking-[-0.06em] text-[var(--text)] sm:text-4xl">Admin dashboard</h1>
               <p className="mt-3 max-w-2xl text-sm leading-6 text-[var(--text-muted)] sm:text-base">
-                Monitor the PromptMuse catalog, review featured content, and keep the prompt library fresh for your audience.
+                Monitor the PromptTouch AI catalog, review featured content, and keep the prompt library fresh for your audience.
               </p>
             </div>
 

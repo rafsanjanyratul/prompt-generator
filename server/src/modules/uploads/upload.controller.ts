@@ -19,7 +19,7 @@ export const uploadImageController = async (req: Request, res: Response, next: N
     const result = await new Promise<{ secure_url?: string; public_id?: string }>((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
         {
-          folder: 'promptmuse/styles',
+          folder: 'prompttouchai/styles',
           resource_type: 'image',
           allowed_formats: ['jpg', 'jpeg', 'png', 'webp', 'avif'],
           overwrite: false,

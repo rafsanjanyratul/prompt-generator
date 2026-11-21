@@ -80,12 +80,14 @@ const envSchema = z.object({
       message: 'MONGODB_URI must use mongodb:// or mongodb+srv:// protocol',
     }),
   GOOGLE_CLIENT_ID: z.string().trim().min(1, 'GOOGLE_CLIENT_ID is required'),
-  EMAIL_PROVIDER: z.enum(['gmail']).default('gmail'),
-  SMTP_HOST: z.string().trim().min(1, 'SMTP_HOST is required'),
-  SMTP_PORT: z.coerce.number().int().positive('SMTP_PORT must be a positive integer'),
-  SMTP_USER: z.string().trim().min(1, 'SMTP_USER is required'),
-  SMTP_PASS: z.string().trim().min(1, 'SMTP_PASS is required'),
-  SMTP_FROM: z.string().trim().email('SMTP_FROM must be a valid email address'),
+  EMAIL_PROVIDER: z.enum(['gmail', 'resend']).default('resend'),
+  RESEND_API_KEY: z.string().trim().min(1).optional(),
+  RESEND_FROM_EMAIL: z.string().trim().email().optional(),
+  SMTP_HOST: z.string().trim().min(1).optional(),
+  SMTP_PORT: z.coerce.number().int().positive().optional(),
+  SMTP_USER: z.string().trim().min(1).optional(),
+  SMTP_PASS: z.string().trim().min(1).optional(),
+  SMTP_FROM: z.string().trim().email().optional(),
   JWT_SECRET: z
     .string()
     .trim()
@@ -101,6 +103,61 @@ const envSchema = z.object({
       code: 'custom',
       message: 'SSLCOMMERZ_STORE_ID and SSLCOMMERZ_STORE_PASSWORD must be configured together',
     })
+  }
+
+  if (values.EMAIL_PROVIDER === 'resend') {
+    if (!values.RESEND_API_KEY) {
+      context.addIssue({
+        code: 'custom',
+        path: ['RESEND_API_KEY'],
+        message: 'RESEND_API_KEY is required when EMAIL_PROVIDER is resend',
+      })
+    }
+    if (!values.RESEND_FROM_EMAIL) {
+      context.addIssue({
+        code: 'custom',
+        path: ['RESEND_FROM_EMAIL'],
+        message: 'RESEND_FROM_EMAIL is required when EMAIL_PROVIDER is resend',
+      })
+    }
+  }
+
+  if (values.EMAIL_PROVIDER === 'gmail') {
+    if (!values.SMTP_HOST) {
+      context.addIssue({
+        code: 'custom',
+        path: ['SMTP_HOST'],
+        message: 'SMTP_HOST is required when EMAIL_PROVIDER is gmail',
+      })
+    }
+    if (!values.SMTP_USER) {
+      context.addIssue({
+        code: 'custom',
+        path: ['SMTP_USER'],
+        message: 'SMTP_USER is required when EMAIL_PROVIDER is gmail',
+      })
+    }
+    if (!values.SMTP_PASS) {
+      context.addIssue({
+        code: 'custom',
+        path: ['SMTP_PASS'],
+        message: 'SMTP_PASS is required when EMAIL_PROVIDER is gmail',
+      })
+    }
+    if (!values.SMTP_FROM) {
+      context.addIssue({
+        code: 'custom',
+        path: ['SMTP_FROM'],
+        message: 'SMTP_FROM is required when EMAIL_PROVIDER is gmail',
+      })
+    }
+    if (!values.SMTP_PORT) {
+      context.addIssue({
+        code: 'custom',
+        path: ['SMTP_PORT'],
+        message: 'SMTP_PORT is required when EMAIL_PROVIDER is gmail',
+      })
+    }
   }
 
   const apiUrl = new URL(values.API_BASE_URL)

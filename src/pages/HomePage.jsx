@@ -70,7 +70,7 @@ function HomePage() {
             Make Your Ideas Better with AI
           </h2>
           <p className="m-0 max-w-2xl text-sm leading-6 text-[var(--text-muted)] sm:text-base">
-            Turn simple ideas into detailed, creative AI image prompts with PromptMuse.
+            Turn simple ideas into detailed, creative AI image prompts with PromptTouch AI.
           </p>
         </div>
         <Link

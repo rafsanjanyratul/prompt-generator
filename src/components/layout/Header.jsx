@@ -7,7 +7,7 @@ import { useAuth } from '../../contexts/AuthContext.jsx'
 import { getCreditBalance } from '../../lib/billingApi.js'
 import ThemeToggle from '../ui/ThemeToggle'
 
-const DEFAULT_STYLES_PATH = '/styles/1980s-vintage-portrait'
+const DEFAULT_STYLES_PATH = '/explore'
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -99,21 +99,21 @@ function Header() {
 
   return (
     <header className="sticky top-0 z-20 border-b border-[var(--border)] bg-[var(--background)]/80 backdrop-blur-xl supports-[backdrop-filter]:bg-[var(--background)]/70 relative">
-      <div className="mx-auto flex min-h-16 w-[min(var(--container-width),calc(100%-2rem))] items-center justify-between gap-1 md:gap-2">
+      <div className="mx-auto flex min-h-16 w-[min(var(--container-width),calc(100%-2rem))] items-center justify-between gap-1 md:gap-2 lg:gap-4">
         <NavLink
           to="/"
           className="inline-flex shrink-0 items-center gap-2 rounded-full border border-transparent px-1.5 py-1 text-sm font-bold tracking-[-0.04em] text-[var(--text)] transition-colors hover:text-[var(--text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
-          aria-label="PromptMuse home"
+          aria-label="PromptTouch AI home"
           onClick={closeMenu}
         >
           <span className="inline-flex size-8 items-center justify-center rounded-[0.7rem] border border-[var(--border)] bg-[var(--brand-soft)] text-sm font-bold text-[var(--text)] shadow-[0_6px_18px_rgba(15,23,42,0.04)]">
             P
           </span>
-          <span className="hidden sm:inline">PromptMuse</span>
+          <span className="hidden sm:inline">PromptTouch AI</span>
         </NavLink>
 
         <nav
-          className="hidden flex-1 items-center justify-center gap-0.5 text-xs sm:gap-1.5 sm:text-sm md:flex md:gap-2 lg:gap-2.5"
+          className="hidden flex-1 items-center justify-center gap-0.5 text-xs sm:gap-1.5 sm:text-sm lg:flex lg:gap-2.5"
           aria-label="Main navigation"
         >
           {navItems.map((item) => {
@@ -121,15 +121,15 @@ function Header() {
 
             return (
               <NavLink
-                key={item.to}
+                key={`${item.label}-${item.to}`}
                 to={item.to}
                 end={item.end}
                 className={({ isActive }) =>
-                  `relative inline-flex min-h-9 items-center whitespace-nowrap px-0.5 py-2 text-sm font-medium transition-colors sm:px-1 md:text-sm ${
+                  `relative inline-flex min-h-9 items-center whitespace-nowrap px-0.5 py-2 text-sm font-medium transition-colors sm:px-1 md:text-sm ${`${
                     (resolvedIsActive ?? isActive)
                       ? 'text-[var(--text)] after:absolute after:bottom-0 after:left-0 after:h-px after:w-full after:bg-[var(--brand)]'
                       : 'text-[var(--text-muted)] hover:text-[var(--text)]'
-                  }`
+                  }`}`
                 }
               >
                 <span className="inline-flex items-center gap-0.5 whitespace-nowrap">
@@ -141,11 +141,11 @@ function Header() {
           })}
         </nav>
 
-        <div className="flex items-center justify-end gap-0.5 md:gap-1">
+        <div className="flex items-center justify-end gap-0.5 md:gap-1 lg:gap-2">
           <ThemeToggle />
 
           {user ? (
-            <div className="hidden items-center gap-0.5 md:flex">
+            <div className="hidden items-center gap-0.5 lg:flex">
               {/* Credit Balance Display */}
               <button
                 type="button"
@@ -176,11 +176,11 @@ function Header() {
               <NavLink
                 to="/billing"
                 className={({ isActive }) =>
-                  `inline-flex items-center justify-center whitespace-nowrap rounded-full border px-2 py-1.5 text-xs sm:text-sm font-medium transition-all duration-200 ${
+                  `inline-flex items-center justify-center whitespace-nowrap rounded-full border px-2 py-1.5 text-xs sm:text-sm font-medium transition-all duration-200 ${`${
                     isActive
                       ? 'border-[var(--brand)] bg-[var(--brand-soft)] text-[var(--text)]'
                       : 'border-[var(--border)] bg-[var(--surface)] text-[var(--text)] hover:border-[var(--focus)] hover:bg-[var(--surface-elevated)]'
-                  }`
+                  }`}`
                 }
               >
                 Billing
@@ -196,7 +196,7 @@ function Header() {
               </button>
             </div>
           ) : (
-            <div className="hidden items-center gap-0.5 md:flex">
+            <div className="hidden items-center gap-0.5 lg:flex">
               <NavLink
                 to="/pricing"
                 className="inline-flex items-center justify-center whitespace-nowrap rounded-full border border-[var(--border)] bg-[var(--surface)] px-2 py-1.5 text-xs sm:text-sm font-medium text-[var(--text)] transition-all duration-200 hover:border-[var(--focus)] hover:bg-[var(--surface-elevated)]"
@@ -223,21 +223,22 @@ function Header() {
             aria-label={isMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
             aria-expanded={isMenuOpen}
             onClick={() => setIsMenuOpen((open) => !open)}
-            className="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface)] text-[var(--text)] shadow-[0_8px_22px_rgba(15,23,42,0.06)] transition-colors hover:border-[var(--focus)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)] md:hidden"
+            className="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface)] text-[var(--text)] shadow-[0_8px_22px_rgba(15,23,42,0.06)] transition-colors hover:border-[var(--focus)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)] lg:hidden"
           >
             {isMenuOpen ? <X className="size-5" aria-hidden="true" /> : <Menu className="size-5" aria-hidden="true" />}
           </button>
         </div>
-      </div>
 
-      <AnimatePresence>
+        </div>
+
+<AnimatePresence>
         {isMenuOpen ? (
           <motion.div
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.2, ease: 'easeOut' }}
-            className="absolute inset-x-0 top-full border-t border-[var(--border)] bg-[var(--background)]/95 shadow-[0_16px_36px_rgba(15,23,42,0.08)] md:hidden max-h-[calc(100vh-4rem)] overflow-y-auto"
+            className="absolute inset-x-0 top-full border-t border-[var(--border)] bg-[var(--background)]/95 shadow-[0_16px_36px_rgba(15,23,42,0.08)] lg:hidden max-h-[calc(100vh-4rem)] overflow-y-auto"
           >
             <motion.nav
               initial={{ opacity: 0, y: -8 }}
@@ -252,7 +253,7 @@ function Header() {
 
                 return (
                   <motion.div
-                    key={item.to}
+                    key={`${item.label}-${item.to}`}
                     initial={{ opacity: 0, x: -12 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.04, duration: 0.18, ease: 'easeOut' }}
