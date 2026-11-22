@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import { AnimatePresence, motion } from 'motion/react'
+import { useState, useEffect, useRef } from 'react'
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { Menu, Sparkles, X, Zap } from 'lucide-react'
 import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
@@ -11,6 +11,9 @@ const DEFAULT_STYLES_PATH = '/explore'
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const menuRef = useRef(null)
+  const toggleRef = useRef(null)
+  const prefersReducedMotion = useReducedMotion()
   const [creditBalance, setCreditBalance] = useState(null)
   const [creditLoading, setCreditLoading] = useState(false)
   const location = useLocation()
@@ -96,6 +99,24 @@ function Header() {
       isMounted = false
     }
   }, [user])
+
+  // Close mobile menu when clicking outside the menu or toggle button
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!isMenuOpen) return
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        if (toggleRef.current && !toggleRef.current.contains(event.target)) {
+          setIsMenuOpen(false)
+        }
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [isMenuOpen])
 
   return (
     <header className="sticky top-0 z-20 border-b border-[var(--border)] bg-[var(--background)]/80 backdrop-blur-xl supports-[backdrop-filter]:bg-[var(--background)]/70 relative">
@@ -190,7 +211,7 @@ function Header() {
               <button
                 type="button"
                 onClick={handleLogout}
-                className="inline-flex items-center justify-center whitespace-nowrap rounded-full border border-[var(--border)] bg-[var(--surface)] px-2 py-1.5 text-xs sm:text-sm font-medium text-[var(--text)] transition-all duration-200 hover:border-[var(--focus)] hover:bg-[var(--surface-elevated)]"
+                className="inline-flex items-center justify-center whitespace-nowrap rounded-full border border-[var(--border)] bg-[var(--surface)] px-4 py-2 text-sm font-medium text-[var(--text)] transition-all duration-200 hover:border-[var(--focus)] hover:bg-[var(--surface-elevated)] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
               >
                 Logout
               </button>
@@ -198,53 +219,60 @@ function Header() {
           ) : (
             <div className="hidden items-center gap-0.5 lg:flex">
               <NavLink
-                to="/pricing"
-                className="inline-flex items-center justify-center whitespace-nowrap rounded-full border border-[var(--border)] bg-[var(--surface)] px-2 py-1.5 text-xs sm:text-sm font-medium text-[var(--text)] transition-all duration-200 hover:border-[var(--focus)] hover:bg-[var(--surface-elevated)]"
-              >
-                Pricing
-              </NavLink>
-              <NavLink
                 to="/login"
-                className="inline-flex items-center justify-center whitespace-nowrap rounded-full border border-[var(--border)] bg-[var(--surface)] px-2 py-1.5 text-xs sm:text-sm font-medium text-[var(--text)] transition-all duration-200 hover:border-[var(--focus)] hover:bg-[var(--surface-elevated)]"
+                className="inline-flex items-center justify-center whitespace-nowrap rounded-full border border-[var(--border)] bg-[var(--surface)] px-4 py-2 text-sm font-medium text-[var(--text)] transition-all duration-200 hover:border-[var(--focus)] hover:bg-[var(--surface-elevated)] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
               >
                 Login
               </NavLink>
               <NavLink
                 to="/signup"
-                className="inline-flex items-center justify-center whitespace-nowrap rounded-full border border-[var(--border)] bg-[var(--surface)] px-2 py-1.5 text-xs sm:text-sm font-medium text-[var(--text)] transition-all duration-200 hover:border-[var(--focus)] hover:bg-[var(--surface-elevated)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
+                className="inline-flex items-center justify-center whitespace-nowrap rounded-full border border-[var(--border)] bg-[var(--surface)] px-4 py-2 text-sm font-medium text-[var(--text)] transition-all duration-200 hover:border-[var(--focus)] hover:bg-[var(--surface-elevated)] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
               >
                 Sign up
               </NavLink>
             </div>
           )}
 
-          <button
+          <motion.button
             type="button"
+            ref={toggleRef}
+            whileTap={{ scale: 0.92 }}
             aria-label={isMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
             aria-expanded={isMenuOpen}
             onClick={() => setIsMenuOpen((open) => !open)}
             className="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface)] text-[var(--text)] shadow-[0_8px_22px_rgba(15,23,42,0.06)] transition-colors hover:border-[var(--focus)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)] lg:hidden"
           >
-            {isMenuOpen ? <X className="size-5" aria-hidden="true" /> : <Menu className="size-5" aria-hidden="true" />}
-          </button>
+            <AnimatePresence mode="wait">
+              {isMenuOpen ? (
+                <motion.span key="close" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ duration: prefersReducedMotion ? 0 : 0.15, ease: 'easeOut' }}>
+                  <X className="size-5" aria-hidden="true" />
+                </motion.span>
+              ) : (
+                <motion.span key="menu" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ duration: prefersReducedMotion ? 0 : 0.15, ease: 'easeOut' }}>
+                  <Menu className="size-5" aria-hidden="true" />
+                </motion.span>
+              )}
+            </AnimatePresence>
+          </motion.button>
         </div>
 
         </div>
 
-<AnimatePresence>
+<AnimatePresence mode="wait">
         {isMenuOpen ? (
           <motion.div
-            initial={{ opacity: 0, y: -8 }}
+            ref={menuRef}
+            initial={{ opacity: 0, y: -6 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.2, ease: 'easeOut' }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: prefersReducedMotion ? 0 : 0.25, ease: 'easeOut' }}
             className="absolute inset-x-0 top-full border-t border-[var(--border)] bg-[var(--background)]/95 shadow-[0_16px_36px_rgba(15,23,42,0.08)] lg:hidden max-h-[calc(100vh-4rem)] overflow-y-auto"
           >
             <motion.nav
-              initial={{ opacity: 0, y: -8 }}
+              initial={{ opacity: 0, y: -6 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.2, ease: 'easeOut' }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: prefersReducedMotion ? 0 : 0.25, ease: 'easeOut' }}
               aria-label="Mobile navigation"
               className="mx-auto flex w-[min(var(--container-width),calc(100%-2rem))] flex-col py-3"
             >
@@ -254,9 +282,10 @@ function Header() {
                 return (
                   <motion.div
                     key={`${item.label}-${item.to}`}
-                    initial={{ opacity: 0, x: -12 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.04, duration: 0.18, ease: 'easeOut' }}
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 6 }}
+                    transition={{ delay: index * 0.04, duration: 0.2, ease: 'easeOut' }}
                   >
                     <NavLink
                       to={item.to}
@@ -285,9 +314,10 @@ function Header() {
                   {/* Credit Balance in Mobile Menu */}
                   <motion.button
                     type="button"
-                    initial={{ opacity: 0, x: -12 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: (navItems.length) * 0.04, duration: 0.18, ease: 'easeOut' }}
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 6 }}
+                    transition={{ delay: (navItems.length) * 0.04, duration: 0.2, ease: 'easeOut' }}
                     onClick={handleCreditClick}
                     disabled={creditLoading}
                     className="mt-2 flex items-center justify-between rounded-full border border-[var(--border)] bg-[var(--surface-elevated)] px-3 py-2.5 text-base font-medium text-[var(--text)] transition-colors hover:border-[var(--focus)] hover:bg-[var(--brand-soft)] disabled:opacity-60"
@@ -313,9 +343,10 @@ function Header() {
 
                   {/* Billing Link in Mobile Menu */}
                   <motion.div
-                    initial={{ opacity: 0, x: -12 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: (navItems.length + 1) * 0.04, duration: 0.18, ease: 'easeOut' }}
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 6 }}
+                    transition={{ delay: (navItems.length + 1) * 0.04, duration: 0.2, ease: 'easeOut' }}
                   >
                     <NavLink
                       to="/billing"
@@ -336,9 +367,10 @@ function Header() {
                   
                   {/* Usage History Link in Mobile Menu */}
                   <motion.div
-                    initial={{ opacity: 0, x: -12 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: (navItems.length + 3) * 0.04, duration: 0.18, ease: 'easeOut' }}
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 6 }}
+                    transition={{ delay: (navItems.length + 3) * 0.04, duration: 0.2, ease: 'easeOut' }}
                   >
                     <NavLink
                       to="/history"
@@ -358,9 +390,10 @@ function Header() {
 
 {/* User Name Display in Mobile Menu */}
                   <motion.div
-                    initial={{ opacity: 0, x: -12 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: (navItems.length + 2) * 0.04, duration: 0.18, ease: 'easeOut' }}
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 6 }}
+                    transition={{ delay: (navItems.length + 2) * 0.04, duration: 0.2, ease: 'easeOut' }}
                     className="flex items-center justify-between rounded-full px-3 py-2.5 text-base font-medium text-[var(--text-muted)]"
                   >
                     <span className="truncate">{user.name}</span>
@@ -370,9 +403,10 @@ function Header() {
                   
                   <motion.button
                     type="button"
-                    initial={{ opacity: 0, x: -12 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: (navItems.length + 4) * 0.04, duration: 0.18, ease: 'easeOut' }}
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 6 }}
+                    transition={{ delay: (navItems.length + 4) * 0.04, duration: 0.2, ease: 'easeOut' }}
                     onClick={handleLogout}
                     className="mt-2 flex items-center justify-between rounded-full border border-[var(--border)] bg-[var(--surface)] px-3 py-2.5 text-base font-medium text-[var(--text)] transition-colors hover:border-[var(--focus)] hover:bg-[var(--surface-elevated)]"
                   >
@@ -384,9 +418,10 @@ function Header() {
                 <>
                   {/* Pricing Link for Unauthenticated Users */}
                   <motion.div
-                    initial={{ opacity: 0, x: -12 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: navItems.length * 0.04, duration: 0.18, ease: 'easeOut' }}
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 6 }}
+                    transition={{ delay: navItems.length * 0.04, duration: 0.2, ease: 'easeOut' }}
                   >
                     <NavLink
                       to="/pricing"
@@ -399,9 +434,10 @@ function Header() {
                   </motion.div>
 
                   <motion.div
-                    initial={{ opacity: 0, x: -12 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: (navItems.length + 1) * 0.04, duration: 0.18, ease: 'easeOut' }}
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 6 }}
+                    transition={{ delay: (navItems.length + 1) * 0.04, duration: 0.2, ease: 'easeOut' }}
                   >
                     <NavLink
                       to="/login"
@@ -413,9 +449,10 @@ function Header() {
                     </NavLink>
                   </motion.div>
                   <motion.div
-                    initial={{ opacity: 0, x: -12 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: (navItems.length + 2) * 0.04, duration: 0.18, ease: 'easeOut' }}
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 6 }}
+                    transition={{ delay: (navItems.length + 2) * 0.04, duration: 0.2, ease: 'easeOut' }}
                   >
                     <NavLink
                       to="/signup"

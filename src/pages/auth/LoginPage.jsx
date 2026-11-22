@@ -1,5 +1,6 @@
 import GoogleSignInButton from '../../components/ui/GoogleSignInButton'
 import { useState } from 'react'
+import { motion, useReducedMotion } from 'motion/react'
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
@@ -15,6 +16,7 @@ function LoginPage() {
   const [status, setStatus] = useState({ type: 'idle', message: '', code: null })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isResending, setIsResending] = useState(false)
+  const prefersReducedMotion = useReducedMotion()
 
   if (loading) {
     return (
@@ -25,6 +27,10 @@ function LoginPage() {
   }
 
   if (user) {
+    const redirectFrom = location.state?.from
+    if (redirectFrom) {
+      return <Navigate to={`${redirectFrom.pathname}${redirectFrom.search}${redirectFrom.hash}`} replace />
+    }
     return <Navigate to="/" replace />
   }
 
@@ -128,7 +134,12 @@ function LoginPage() {
   const redirectMessage = location.state?.message
 
   return (
-    <div className="mx-auto flex min-h-[60vh] w-full max-w-md items-center justify-center px-4 py-12">
+    <motion.div
+      className="mx-auto flex min-h-[60vh] w-full max-w-md items-center justify-center px-4 py-12"
+      initial={prefersReducedMotion ? false : { opacity: 0, y: 8 }}
+      animate={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, ease: 'easeOut' }}
+    >
       <div className="w-full rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface)] p-6 shadow-[0_18px_42px_rgba(15,23,42,0.08)]">
         <div className="mb-6 text-center">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--brand)]">Welcome back</p>
@@ -238,7 +249,7 @@ function LoginPage() {
           </p>
         </div>
       </div>
-    </div>
+    </motion.div>
   )
 }
 

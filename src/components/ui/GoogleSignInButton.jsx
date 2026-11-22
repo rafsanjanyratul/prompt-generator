@@ -70,7 +70,7 @@ function GoogleSignInButton({ onSuccess, onError }) {
         text: 'continue_with',
         shape: 'pill',
         logo_alignment: 'left',
-        width: 300,
+        width: 150,
       })
     }
 
@@ -122,7 +122,7 @@ function GoogleSignInButton({ onSuccess, onError }) {
     }
   }, [])
 
-  return <div ref={btnContainerRef} style={{ height: 40 }} />
+  return <div ref={btnContainerRef} style={{ height: 40, display: 'flex', justifyContent: 'center' }} />
 }
 
 export default GoogleSignInButton
