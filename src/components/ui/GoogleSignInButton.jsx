@@ -66,7 +66,7 @@ function GoogleSignInButton({ onSuccess, onError }) {
       google.accounts.id.renderButton(btnContainerRef.current, {
         type: 'standard',
         theme: 'outline',
-        size: 'large',
+        size: 'medium',
         text: 'continue_with',
         shape: 'pill',
         logo_alignment: 'left',

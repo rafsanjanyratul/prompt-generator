@@ -22,6 +22,7 @@ import SignupPage from '../pages/auth/SignupPage'
 import VerifyEmailPage from '../pages/auth/VerifyEmailPage.jsx'
 import ForgotPasswordPage from '../pages/auth/ForgotPasswordPage.jsx'
 import ResetPasswordPage from '../pages/auth/ResetPasswordPage.jsx'
+import NotFoundPage from '../pages/NotFoundPage.jsx'
 import { trackPageView } from '../lib/analytics.js'
 
 const routePageType = (path) => {
@@ -168,6 +169,10 @@ const router = createBrowserRouter([
       {
         path: 'reset-password',
         element: <ResetPasswordPage />,
+      },
+      {
+        path: '*',
+        element: <NotFoundPage />,
       },
     ],
   },
