@@ -21,7 +21,7 @@ function PricingPage() {
   const [loadingSubscription, setLoadingSubscription] = useState(false)
 
   useDocumentMeta({
-    title: 'Pricing — PromptTouch AI',
+    title: 'Pricing',
     description: 'Unlock AI-powered prompt enhancement with flexible pricing plans.',
     ogTitle: 'PromptTouch AI Pricing',
     ogDescription: 'Free, Starter, and Pro plans to enhance your creativity.',

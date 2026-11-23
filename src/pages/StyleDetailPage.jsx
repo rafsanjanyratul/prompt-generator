@@ -13,6 +13,7 @@ import { trackEvent } from '../lib/analytics.js'
 import { addFavoritePrompt, getFavoritePrompts, removeFavoritePrompt } from '../lib/authApi.js'
 import { withCloudinaryDisplayTransform } from '../lib/cloudinary.js'
 import { getAllPrompts, getPromptBySlug } from '../lib/promptsApi.js'
+import { getSiteOrigin } from '../lib/siteUrl.js'
 
 function StyleDetailPage() {
   const { slug } = useParams()
@@ -222,7 +223,7 @@ function StyleDetailPage() {
     }
   }
 
-  const origin = window.location.origin
+  const origin = getSiteOrigin()
 
   const styleImageUrl = style ? withCloudinaryDisplayTransform(style.image) : undefined
 

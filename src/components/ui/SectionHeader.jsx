@@ -1,4 +1,5 @@
-function SectionHeader({ eyebrow, title, description, align = 'left' }) {
+function SectionHeader({ eyebrow, title, description, align = 'left', as = 'h2' }) {
+  const Heading = as === 'h1' ? 'h1' : 'h2';
   return (
     <div
       className={`flex flex-col gap-2 ${align === 'center' ? 'items-center text-center' : 'items-start text-left'} mb-6 md:mb-8`}
@@ -8,14 +9,14 @@ function SectionHeader({ eyebrow, title, description, align = 'left' }) {
           {eyebrow}
         </p>
       ) : null}
-      <h2 className="m-0 text-[clamp(2.1rem,3vw,3rem)] leading-[1.05] tracking-[-0.06em] text-[var(--text)]">
+      <Heading className="m-0 text-[clamp(2.1rem,3vw,3rem)] leading-[1.05] tracking-[-0.06em] text-[var(--text)]">
         {title}
-      </h2>
+      </Heading>
       {description ? (
         <p className="m-0 max-w-[42rem] text-base leading-7 text-[var(--text-muted)]">{description}</p>
       ) : null}
     </div>
-  )
+  );
 }
 
 export default SectionHeader

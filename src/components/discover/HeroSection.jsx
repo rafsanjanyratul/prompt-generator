@@ -190,6 +190,8 @@ function HeroSection() {
                   <img
                     src={item.src}
                     alt={item.alt}
+                    width={400}
+                    height={500}
                     className="block aspect-[4/5] w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
                   />
                   <div className="absolute inset-x-0 top-0 flex items-center justify-between p-2.5 md:p-3">

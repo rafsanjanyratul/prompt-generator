@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "postbuild": "node scripts/create-surge-fallback.mjs",
+    "postbuild": "node scripts/generate-sitemap.mjs && node scripts/create-surge-fallback.mjs",
     "lint": "oxlint",
     "preview": "vite preview"
   },

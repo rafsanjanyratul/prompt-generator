@@ -350,6 +350,7 @@ function ExplorePage() {
       >
         <SectionHeader
           eyebrow="Browse"
+          as="h1"
           title={
             filters.category === 'All'
               ? 'Explore AI photo styles'

@@ -8,6 +8,7 @@ import CategorySection from '../components/discover/CategorySection'
 import LoadingSpinner from '../components/ui/LoadingSpinner.jsx'
 import useDocumentMeta from '../hooks/useDocumentMeta'
 import { getAllPrompts } from '../lib/promptsApi.js'
+import { getSiteOrigin } from '../lib/siteUrl.js'
 
 function HomePage() {
   const [promptStyles, setPromptStyles] = useState([])
@@ -65,7 +66,7 @@ function HomePage() {
       '@context': 'https://schema.org',
       '@type': 'WebSite',
       name: 'PromptTouch AI',
-      url: window.location.origin,
+      url: getSiteOrigin(),
     },
   })
 

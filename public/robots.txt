@@ -1,0 +1,35 @@
+# PromptTouch AI — Crawlability Foundation
+# Verified production origin: https://prompt-generator-ratul.surge.sh
+
+User-agent: *
+
+# Public pages are crawlable and indexable.
+Allow: /
+Allow: /explore
+Allow: /pricing
+Allow: /styles/
+
+# Public assets must remain crawlable (CSS, JS, images, favicon, icons).
+Allow: /favicon.svg
+Allow: /icons.svg
+Allow: /images/
+
+# Auth / private / admin routes are not for indexing.
+# They are intentionally NOT disallowed here so crawlers can still read any
+# on-page robots metadata; access control is handled by the application, not robots.txt.
+# Disallow: /login
+# Disallow: /signup
+# Disallow: /verify-email
+# Disallow: /forgot-password
+# Disallow: /reset-password
+# Disallow: /billing
+# Disallow: /checkout
+# Disallow: /history
+# Disallow: /create
+# Disallow: /my-prompts
+# Disallow: /favorites
+# Disallow: /voice-prompt
+# Disallow: /ai-enhancer
+# Disallow: /admin
+
+Sitemap: https://prompt-generator-ratul.surge.sh/sitemap.xml

@@ -37,12 +37,6 @@ function Footer() {
                 to="/explore"
                 className="inline-flex items-center rounded-md px-1 py-1 transition-colors hover:text-[var(--text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
               >
-                Explore Prompts
-              </Link>
-              <Link
-                to="/explore"
-                className="inline-flex items-center rounded-md px-1 py-1 transition-colors hover:text-[var(--text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
-              >
                 Explore Styles
               </Link>
             </div>
