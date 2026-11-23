@@ -4,8 +4,15 @@ import { toast } from 'react-toastify'
 
 import { resendVerificationEmail, verifyEmail } from '../../lib/authApi.js'
 import LoadingSpinner from '../../components/ui/LoadingSpinner.jsx'
+import useDocumentMeta from '../../hooks/useDocumentMeta'
 
 function VerifyEmailPage() {
+  useDocumentMeta({
+    title: 'Verify your account',
+    description: 'Verify your PromptTouch AI email address to complete your account setup.',
+    robots: 'noindex,nofollow',
+  })
+
   const [searchParams] = useSearchParams()
   const location = useLocation()
   const token = searchParams.get('token')

@@ -6,6 +6,7 @@ import { toast } from 'react-toastify'
 import { resendVerificationEmail } from '../../lib/authApi.js'
 import LoadingSpinner from '../../components/ui/LoadingSpinner.jsx'
 import { useAuth } from '../../contexts/AuthContext.jsx'
+import useDocumentMeta from '../../hooks/useDocumentMeta'
 
 function SignupPage() {
   const navigate = useNavigate()
@@ -27,6 +28,12 @@ function SignupPage() {
   if (user) {
     return <Navigate to="/" replace />
   }
+
+  useDocumentMeta({
+    title: 'Sign up',
+    description: 'Create a PromptTouch AI account to start generating AI photo prompts.',
+    robots: 'noindex,nofollow',
+  })
 
   const handleChange = (event) => {
     const { name, value } = event.target

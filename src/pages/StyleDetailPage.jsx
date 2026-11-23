@@ -222,6 +222,37 @@ function StyleDetailPage() {
     }
   }
 
+  const origin = window.location.origin
+
+  const styleImageUrl = style ? withCloudinaryDisplayTransform(style.image) : undefined
+
+  const breadcrumbStructuredData = style
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          {
+            '@type': 'ListItem',
+            position: 1,
+            name: 'Home',
+            item: `${origin}/`,
+          },
+          {
+            '@type': 'ListItem',
+            position: 2,
+            name: 'Explore Styles',
+            item: `${origin}/explore`,
+          },
+          {
+            '@type': 'ListItem',
+            position: 3,
+            name: style.title,
+            item: `${origin}/styles/${style.slug}`,
+          },
+        ],
+      }
+    : null
+
   useDocumentMeta({
     title: style ? style.title : 'Style not found',
     description: style
@@ -230,7 +261,12 @@ function StyleDetailPage() {
     ogTitle: style ? style.title : 'Style not found',
     ogDescription: style ? style.shortDescription : 'This style is not currently available in the collection.',
     ogType: 'article',
+    ogImage: styleImageUrl,
+    twitterTitle: style ? style.title : 'Style not found',
+    twitterDescription: style ? style.shortDescription : 'This style is not currently available in the collection.',
+    twitterImage: styleImageUrl,
     robots: style ? 'index,follow' : 'noindex,follow',
+    structuredData: breadcrumbStructuredData,
   })
 
   if (isLoading) {

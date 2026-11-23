@@ -56,6 +56,17 @@ function HomePage() {
     ogTitle: 'AI Photo Style Discovery',
     ogDescription:
       'Explore curated AI photo styles for portraits, couples, family moments, and cinematic inspiration.',
+    ogImage: '/images/styles/boys/old-money-luxury-elegance.webp',
+    twitterTitle: 'AI Photo Style Discovery',
+    twitterDescription:
+      'Explore curated AI photo styles for portraits, couples, family moments, and cinematic inspiration.',
+    twitterImage: '/images/styles/boys/old-money-luxury-elegance.webp',
+    structuredData: {
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      name: 'PromptTouch AI',
+      url: window.location.origin,
+    },
   })
 
   return (

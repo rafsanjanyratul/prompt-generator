@@ -38,6 +38,7 @@ function AdminCreatePromptPage() {
     description: 'Create a new public PromptTouch AI prompt entry from the admin dashboard.',
     ogTitle: 'PromptTouch AI Admin Add New Prompt',
     ogDescription: 'Create and publish a new public prompt for the PromptTouch AI catalog from the admin dashboard.',
+    robots: 'noindex,nofollow',
   })
 
   const handleChange = (event) => {

@@ -157,6 +157,11 @@ function ExplorePage() {
     ogTitle: 'Explore AI Photo Styles',
     ogDescription:
       'Browse AI photo styles by category, trend, and mood to find the right visual direction for your next prompt.',
+    ogImage: '/images/styles/boys/old-money-luxury-elegance.webp',
+    twitterTitle: 'Explore AI Photo Styles',
+    twitterDescription:
+      'Browse AI photo styles by category, trend, and mood to find the right visual direction for your next prompt.',
+    twitterImage: '/images/styles/boys/old-money-luxury-elegance.webp',
   })
 
   const categoryOptions = useMemo(

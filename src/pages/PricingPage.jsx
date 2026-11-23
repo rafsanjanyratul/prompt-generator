@@ -25,6 +25,10 @@ function PricingPage() {
     description: 'Unlock AI-powered prompt enhancement with flexible pricing plans.',
     ogTitle: 'PromptTouch AI Pricing',
     ogDescription: 'Free, Starter, and Pro plans to enhance your creativity.',
+    ogImage: '/images/styles/boys/old-money-luxury-elegance.webp',
+    twitterTitle: 'PromptTouch AI Pricing',
+    twitterDescription: 'Free, Starter, and Pro plans to enhance your creativity.',
+    twitterImage: '/images/styles/boys/old-money-luxury-elegance.webp',
   })
 
   // Load plans on mount

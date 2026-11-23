@@ -44,6 +44,7 @@ function AdminDashboardPage() {
     description: 'Administrative overview for PromptTouch AI prompt management and content operations.',
     ogTitle: 'PromptTouch AI Admin Dashboard',
     ogDescription: 'Manage prompts, monitor featured and trending content, and review quick admin metrics.',
+    robots: 'noindex,nofollow',
   })
 
   const { featuredPrompts, trendingCount, topCategory } = useMemo(() => {

@@ -35,6 +35,7 @@ import {
   outfits,
 } from '../data/createBuilderOptions.js'
 import { useAuth } from '../contexts/AuthContext.jsx'
+import useDocumentMeta from '../hooks/useDocumentMeta'
 import { createUserPrompt } from '../lib/authApi.js'
 import { trackEvent } from '../lib/analytics.js'
 import Button from '../components/ui/Button.jsx'
@@ -290,6 +291,12 @@ function CreatePage() {
   const [isSaving, setIsSaving] = useState(false)
   const [saveState, setSaveState] = useState({ status: 'idle', message: '' })
   const previousPromptRef = useRef(buildPrompt(initialBuilderState).prompt)
+
+  useDocumentMeta({
+    title: 'Create Prompt',
+    description: 'Build a custom AI image prompt with PromptTouch AI prompt builder.',
+    robots: 'noindex,nofollow',
+  })
 
   const generatedPrompt = useMemo(() => buildPrompt(builder), [builder])
 

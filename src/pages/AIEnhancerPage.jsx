@@ -30,6 +30,7 @@ function AIEnhancerPage() {
   useDocumentMeta({
     title: 'AI Prompt Enhancer',
     description: 'Transform a simple idea into a detailed AI image-generation prompt.',
+    robots: 'noindex,nofollow',
   })
 
   const redirectToLogin = () => {

@@ -104,6 +104,7 @@ function AdminManagePromptsPage() {
     description: 'Manage PromptTouch AI prompt catalog entries and publication states from the admin dashboard.',
     ogTitle: 'PromptTouch AI Admin Manage Prompts',
     ogDescription: 'Review, edit, and remove PromptTouch AI prompt entries from the admin dashboard.',
+    robots: 'noindex,nofollow',
   })
 
   const beginEdit = (prompt) => {

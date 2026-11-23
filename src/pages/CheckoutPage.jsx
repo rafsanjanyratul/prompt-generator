@@ -42,6 +42,7 @@ function CheckoutPage() {
   useDocumentMeta({
     title: 'Checkout — PromptTouch AI',
     description: 'Complete your purchase through secure hosted checkout.',
+    robots: 'noindex,nofollow',
   })
 
   // Extract and validate plan ID from URL

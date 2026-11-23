@@ -32,6 +32,7 @@ function HistoryPage() {
   useDocumentMeta({
     title: 'Usage & Credit History — PromptTouch AI',
     description: 'View your AI usage and credit transaction history.',
+    robots: 'noindex,nofollow',
   })
 
   // Load AI usage history

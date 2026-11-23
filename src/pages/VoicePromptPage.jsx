@@ -231,6 +231,7 @@ function VoicePromptPage() {
   useDocumentMeta({
     title: 'Voice Prompt',
     description: 'Speak your idea and turn it into a ready-to-use AI image prompt.',
+    robots: 'noindex,nofollow',
   })
 
   const startListening = (nextLanguage) => {

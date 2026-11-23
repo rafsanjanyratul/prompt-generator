@@ -3,8 +3,15 @@ import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
 import { forgotPassword } from '../../lib/authApi.js'
+import useDocumentMeta from '../../hooks/useDocumentMeta'
 
 function ForgotPasswordPage() {
+  useDocumentMeta({
+    title: 'Forgot password',
+    description: 'Reset your PromptTouch AI password if you forgot it.',
+    robots: 'noindex,nofollow',
+  })
+
   const [email, setEmail] = useState('')
   const [status, setStatus] = useState({ type: 'idle', message: '' })
   const [isSubmitting, setIsSubmitting] = useState(false)

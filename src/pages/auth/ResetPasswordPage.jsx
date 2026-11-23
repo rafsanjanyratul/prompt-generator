@@ -4,10 +4,17 @@ import { toast } from 'react-toastify'
 
 import { resetPassword } from '../../lib/authApi.js'
 import LoadingSpinner from '../../components/ui/LoadingSpinner.jsx'
+import useDocumentMeta from '../../hooks/useDocumentMeta'
 
 const MIN_PASSWORD_LENGTH = 8
 
 function ResetPasswordPage() {
+  useDocumentMeta({
+    title: 'Reset password',
+    description: 'Reset your PromptTouch AI password using the reset link sent to your email.',
+    robots: 'noindex,nofollow',
+  })
+
   const [searchParams] = useSearchParams()
   const token = searchParams.get('token')
   const [formData, setFormData] = useState({ password: '', confirmPassword: '' })

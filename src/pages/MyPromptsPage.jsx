@@ -8,6 +8,7 @@ import EmptyState from '../components/ui/EmptyState.jsx'
 import LoadingSpinner from '../components/ui/LoadingSpinner.jsx'
 import { useAuth } from '../contexts/AuthContext.jsx'
 import { deleteUserPrompt, getUserPrompts, updateUserPrompt } from '../lib/authApi.js'
+import useDocumentMeta from '../hooks/useDocumentMeta'
 
 function normalizePromptTags(value) {
   if (!value) return []
@@ -16,8 +17,7 @@ function normalizePromptTags(value) {
 
   return Array.from(
     new Set(
-      list
-        .map((item) => (typeof item === 'string' ? item.trim() : ''))
+      list.map((item) => (typeof item === 'string' ? item.trim() : ''))
         .filter((item) => item && item.length > 0)
     )
   )
@@ -34,6 +34,12 @@ function MyPromptsPage() {
   const [copyState, setCopyState] = useState('idle')
   const [isSaving, setIsSaving] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
+
+  useDocumentMeta({
+    title: 'My Prompts',
+    description: 'View and manage your PromptTouch AI prompts.',
+    robots: 'noindex,nofollow',
+  })
 
   useEffect(() => {
     if (!user) {

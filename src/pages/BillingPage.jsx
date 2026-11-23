@@ -36,6 +36,7 @@ function BillingPage() {
   useDocumentMeta({
     title: 'Billing Dashboard — PromptTouch AI',
     description: 'Manage your subscription, credits, and billing information.',
+    robots: 'noindex,nofollow',
   })
 
   // Load subscription
