@@ -280,7 +280,7 @@ function AIEnhancerPage() {
             <div className="flex flex-wrap gap-2">
               <Button
                 type="button"
-                variant="secondary"
+                variant="primary"
                 size="sm"
                 onClick={handleCopy}
                 className="gap-2"

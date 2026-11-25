@@ -321,13 +321,17 @@ function StyleDetailPage() {
         transition={{ duration: 0.3, ease: 'easeOut' }}
       >
         <div className="mb-6 flex items-center justify-between gap-3">
-          <Link
-            to="/explore"
-            className="inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--surface)] px-2.5 py-2 text-xs font-semibold uppercase tracking-[0.08em] text-[var(--text-muted)] transition-colors hover:border-[var(--border-strong)] hover:text-[var(--text)]"
+          <Button
+            asChild
+            variant="dark"
+            size="sm"
+            className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.08em] text-[var(--text)]"
           >
-            <ArrowLeft className="size-3.5" />
-            Browse more
-          </Link>
+            <Link to="/explore">
+              <ArrowLeft className="size-3.5" />
+              Browse more
+            </Link>
+          </Button>
         </div>
 
         <div className="grid gap-8 lg:grid-cols-[1.08fr_0.92fr] lg:items-start">
@@ -426,7 +430,7 @@ function StyleDetailPage() {
                   <Button
                     type="button"
                     size="sm"
-                    variant="secondary"
+                    variant="primary"
                     className={`inline-flex w-full items-center justify-center gap-2 sm:w-auto ${
                       copyState === 'success'
                         ? 'border-[var(--success)] bg-[var(--success)] text-[var(--background)] hover:-translate-y-0'
@@ -445,7 +449,7 @@ function StyleDetailPage() {
                   <Button
                     type="button"
                     size="sm"
-                    variant="secondary"
+                    variant="primary"
                     className="inline-flex w-full items-center justify-center gap-2 sm:w-auto"
                     onClick={handleToggleFavorite}
                     disabled={favoriteLoading}

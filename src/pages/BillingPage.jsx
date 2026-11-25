@@ -244,7 +244,7 @@ function BillingPage() {
               </div>
               <Button
                 size="sm"
-                variant="secondary"
+                variant="dark"
                 onClick={handleRetryCredits}
                 className="w-full"
               >
@@ -371,19 +371,19 @@ function BillingPage() {
         <h2 className="m-0 mb-4 text-lg font-semibold text-[var(--text)]">Quick Actions</h2>
         <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-4">
           <Link to="/pricing">
-            <Button variant="secondary" size="md" className="w-full justify-center">
+            <Button variant="dark" size="md" className="w-full justify-center">
               <ArrowUpRight className="mr-2 size-4" />
               Browse Plans
             </Button>
           </Link>
           <Link to="/ai-enhancer">
-            <Button variant="secondary" size="md" className="w-full justify-center">
+            <Button variant="dark" size="md" className="w-full justify-center">
               <TrendingUp className="mr-2 size-4" />
               AI Enhancer
             </Button>
           </Link>
           <Link to="/history">
-            <Button variant="secondary" size="md" className="w-full justify-center">
+            <Button variant="dark" size="md" className="w-full justify-center">
               <History className="mr-2 size-4" />
               Usage History
             </Button>
@@ -415,7 +415,7 @@ function BillingPage() {
             </div>
             <Button
               size="sm"
-              variant="secondary"
+              variant="dark"
               onClick={handleRetryPayments}
               className="w-full"
             >

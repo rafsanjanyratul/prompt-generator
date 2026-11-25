@@ -3,6 +3,7 @@ import { ArrowUpRight } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 import HeroSection from '../components/discover/HeroSection'
+import Button from '../components/ui/Button.jsx'
 import DiscoverySection from '../components/discover/DiscoverySection'
 import CategorySection from '../components/discover/CategorySection'
 import LoadingSpinner from '../components/ui/LoadingSpinner.jsx'
@@ -72,7 +73,7 @@ function HomePage() {
 
   return (
     <div className="mx-auto w-[min(var(--container-width),calc(100%-2rem))] py-8 pb-16">
-      <HeroSection />
+      <HeroSection promptStyles={promptStyles} />
 
       <CategorySection />
 
@@ -85,13 +86,17 @@ function HomePage() {
             Turn simple ideas into detailed, creative AI image prompts with PromptTouch AI.
           </p>
         </div>
-        <Link
-          to="/ai-enhancer"
-          className="inline-flex min-h-[44px] shrink-0 items-center justify-center gap-2 self-start rounded-full bg-[#171717] px-5 py-3 text-sm font-semibold !text-[#FFFFFF] transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)] sm:self-center"
+        <Button
+          asChild
+          variant="primary"
+          size="md"
+          className="self-start sm:self-center"
         >
-          Try AI Enhancer
-          <ArrowUpRight className="size-4 !text-[#FFFFFF]" aria-hidden="true" />
-        </Link>
+          <Link to="/ai-enhancer">
+            Try AI Enhancer
+            <ArrowUpRight className="size-4" aria-hidden="true" />
+          </Link>
+        </Button>
       </section>
 
       {isLoading ? (

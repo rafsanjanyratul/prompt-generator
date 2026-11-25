@@ -208,24 +208,32 @@ function HistoryPage() {
             View your AI enhancement usage and credit transactions
           </p>
         </div>
-        <button
-          onClick={() => navigate('/billing')}
-          className="hidden flex-shrink-0 items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--surface)] px-4 py-2 text-sm font-semibold text-[var(--text)] transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)] sm:flex"
+        <Button
+          asChild
+          variant="dark"
+          size="sm"
+          className="hidden flex-shrink-0 items-center gap-2 sm:flex"
         >
-          <ArrowLeft className="size-4" />
-          Back to Billing
-        </button>
+          <Link to="/billing">
+            <ArrowLeft className="size-4" />
+            Back to Billing
+          </Link>
+        </Button>
       </div>
 
       {/* Mobile Back Button */}
       <div className="mb-6 flex sm:hidden">
-        <button
-          onClick={() => navigate('/billing')}
-          className="inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--surface)] px-4 py-2 text-sm font-semibold text-[var(--text)] transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
+        <Button
+          asChild
+          variant="dark"
+          size="sm"
+          className="inline-flex items-center gap-2"
         >
-          <ArrowLeft className="size-4" />
-          Back
-        </button>
+          <Link to="/billing">
+            <ArrowLeft className="size-4" />
+            Back
+          </Link>
+        </Button>
       </div>
 
       {/* Tab Navigation */}

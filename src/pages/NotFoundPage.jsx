@@ -43,7 +43,7 @@ function NotFoundPage() {
           <Button variant="primary" size="lg" onClick={goHome}>
             Back to Home
           </Button>
-          <Button variant="ghost" size="lg" onClick={goExplore}>
+          <Button variant="dark" size="lg" onClick={goExplore}>
             Explore Styles
           </Button>
         </div>

@@ -416,7 +416,7 @@ function MyPromptsPage() {
                 <Button type="button" variant="primary" size="sm" onClick={handleCopyPrompt}>
                   {copyState === 'success' ? 'Copied!' : copyState === 'error' ? 'Copy failed' : 'Copy Prompt'}
                 </Button>
-                <Button type="button" variant="secondary" size="sm" onClick={() => handleEditPrompt(selectedPrompt)}>
+                <Button type="button" variant="dark" size="sm" onClick={() => handleEditPrompt(selectedPrompt)}>
                   Edit
                 </Button>
                 <Button type="button" variant="ghost" size="sm" onClick={() => handleDeletePrompt(selectedPrompt)} disabled={isDeleting}>
@@ -522,7 +522,7 @@ function MyPromptsPage() {
               ) : null}
 
               <div className="flex justify-end gap-3 pt-2">
-                <Button type="button" variant="secondary" onClick={() => setEditingPrompt(null)} disabled={isSaving}>
+                <Button type="button" variant="dark" onClick={() => setEditingPrompt(null)} disabled={isSaving}>
                   Cancel
                 </Button>
                 <Button type="submit" variant="primary" disabled={isSaving}>

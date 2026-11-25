@@ -1442,7 +1442,7 @@ function CreatePage() {
               <Button
                 type="button"
                 size="sm"
-                variant="secondary"
+                variant="dark"
                 onClick={handleReset}
                 className="inline-flex items-center justify-center gap-2"
                 aria-label="Reset builder selections"
@@ -1454,7 +1454,7 @@ function CreatePage() {
               <Button
                 type="button"
                 size="sm"
-                variant="ghost"
+                variant="primary"
                 onClick={handleSurpriseMe}
                 className="inline-flex items-center justify-center gap-2"
                 aria-label="Generate a surprising compatible builder configuration"
@@ -1487,7 +1487,7 @@ function CreatePage() {
                   <Button
                     type="button"
                     size="sm"
-                    variant="secondary"
+                    variant="primary"
                     onClick={handleCopyPrompt}
                     className={`inline-flex items-center gap-2 ${
                       copyState === 'success'

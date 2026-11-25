@@ -955,15 +955,15 @@ function VoicePromptPage() {
                 <Button
                   type="button"
                   size="sm"
-                  variant="secondary"
+                  variant="primary"
                   onClick={handleCopySpeechText}
                   disabled={!hasPrompt}
                   className={`inline-flex items-center gap-2 ${
                     speechCopyState === 'success'
                       ? 'border-[var(--success)] bg-[var(--success)] text-[var(--background)] hover:-translate-y-0'
-                      : speechCopyState === 'error'
-                        ? 'border-[var(--error)] text-[var(--error)]'
-                        : ''
+                        : speechCopyState === 'error'
+                          ? 'border-[var(--error)] text-[var(--error)]'
+                          : ''
                   }`}
                   aria-live="polite"
                   aria-label={speechCopyLabel}
@@ -1036,7 +1036,7 @@ function VoicePromptPage() {
                   <Button
                     type="button"
                     size="sm"
-                    variant="secondary"
+                    variant="primary"
                     onClick={handleCopyEnhancedPrompt}
                     className="inline-flex items-center gap-2"
                     aria-live="polite"

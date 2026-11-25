@@ -127,10 +127,8 @@ function Header() {
           aria-label="PromptTouch AI home"
           onClick={closeMenu}
         >
-          <span className="inline-flex size-8 items-center justify-center rounded-[0.7rem] border border-[var(--border)] bg-[var(--brand-soft)] text-sm font-bold text-[var(--text)] shadow-[0_6px_18px_rgba(15,23,42,0.04)]">
-            P
-          </span>
-          <span className="hidden sm:inline">PromptTouch AI</span>
+          <img src="/favicon.png" alt="PromptTouch AI" className="size-8 object-contain" />
+          <span className="sm:inline">PromptTouch AI</span>
         </NavLink>
 
         <nav
@@ -408,7 +406,7 @@ function Header() {
                     exit={{ opacity: 0, y: 6 }}
                     transition={{ delay: (navItems.length + 4) * 0.04, duration: 0.2, ease: 'easeOut' }}
                     onClick={handleLogout}
-                    className="mt-2 flex items-center justify-between rounded-full border border-[var(--border)] bg-[var(--surface)] px-3 py-2.5 text-base font-medium text-[var(--text)] transition-colors hover:border-[var(--focus)] hover:bg-[var(--surface-elevated)]"
+                    className="mt-2 flex items-center justify-between rounded-full bg-[linear-gradient(110deg,#8801FC_0%,#2600B9_50%,#000142_100%)] text-white shadow-[0_10px_20px_rgba(0,1,66,0.25)] hover:brightness-110 px-3 py-2.5 text-base font-medium"
                   >
                     <span>Logout</span>
                     <span aria-hidden="true">•</span>

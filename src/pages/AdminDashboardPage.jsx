@@ -147,24 +147,22 @@ function AdminDashboardPage() {
           </div>
 
           <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-            <Link
-              to="/admin/manage-prompts"
-              className="flex-1 rounded-full bg-[#171717] px-5 py-3 text-center text-base font-semibold !text-[#FFFFFF] transition-all duration-200 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
-            >
+          <Button asChild variant="dark" size="md" className="flex-1">
+            <Link to="/admin/manage-prompts">
               <span className="inline-flex items-center justify-center gap-2">
                 Manage Prompts
-                <ArrowRight className="size-4 !text-[#FFFFFF]" aria-hidden="true" />
+                <ArrowRight className="size-4" aria-hidden="true" />
               </span>
             </Link>
-            <Link
-              to="/admin/prompts/new"
-              className="flex-1 rounded-full border border-[var(--border)] bg-[var(--surface)] px-5 py-3 text-center text-base font-semibold text-[var(--text)] transition-all duration-200 hover:-translate-y-0.5 hover:border-[var(--focus)] hover:bg-[var(--surface-elevated)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
-            >
+          </Button>
+          <Button asChild variant="dark" size="md" className="flex-1">
+            <Link to="/admin/prompts/new">
               <span className="inline-flex items-center justify-center gap-2">
                 <Plus className="size-4" aria-hidden="true" />
                 Add New Prompt
               </span>
             </Link>
+          </Button>
           </div>
 
           {error ? (

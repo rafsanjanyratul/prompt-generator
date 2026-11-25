@@ -1,4 +1,5 @@
 import GoogleSignInButton from '../../components/ui/GoogleSignInButton'
+import Button from '../../components/ui/Button.jsx'
 import { useState } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
@@ -207,23 +208,27 @@ function LoginPage() {
             ) : null}
 
             {status.type === 'error' && status.code === 'EMAIL_NOT_VERIFIED' ? (
-              <button
+              <Button
                 type="button"
                 onClick={handleResendVerification}
                 disabled={isResending}
-                className="w-full rounded-xl border border-[var(--brand)] px-4 py-2.5 font-medium text-[var(--brand)] transition hover:bg-[var(--brand)]/5 disabled:cursor-not-allowed disabled:opacity-70"
+                variant="dark"
+                size="md"
+                className="w-full"
               >
                 {isResending ? 'Sending...' : 'Resend verification email'}
-              </button>
+              </Button>
             ) : null}
 
-            <button
+            <Button
               type="submit"
               disabled={isSubmitting}
-              className="w-full rounded-xl bg-[var(--brand)] px-4 py-3 font-semibold text-[var(--background)] transition-all duration-200 hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-70"
+              variant="primary"
+              size="md"
+              className="w-full"
             >
               {isSubmitting ? 'Signing in...' : 'Login'}
-            </button>
+            </Button>
           </form>
 
         <div className="w-full max-w-[300px] mx-auto pt-2">

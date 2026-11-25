@@ -178,7 +178,7 @@ function CheckoutPage() {
           </div>
           <div className="flex gap-3">
             <Link to="/pricing">
-              <Button variant="primary">Back to Pricing</Button>
+              <Button variant="dark">Back to Pricing</Button>
             </Link>
             <Link to="/">
               <Button variant="secondary">Home</Button>
@@ -313,7 +313,7 @@ function CheckoutPage() {
             </Button>
           </Link>
           <Link to="/ai-enhancer" className="flex-1 sm:flex-none">
-            <Button variant="secondary" size="md" className="w-full">
+            <Button variant="primary" size="md" className="w-full">
               Start Enhancing
             </Button>
           </Link>
@@ -379,7 +379,7 @@ function CheckoutPage() {
             Try Again
           </Button>
           <Link to="/pricing" className="flex-1 sm:flex-none">
-            <Button variant="secondary" size="md" className="w-full">
+            <Button variant="dark" size="md" className="w-full">
               Back to Pricing
             </Button>
           </Link>
@@ -513,10 +513,12 @@ function CheckoutPage() {
                 Cancel
               </Button>
             </Link>
-            <button
+            <Button
               onClick={handleConfirmCheckout}
               disabled={isProcessing}
-              className="flex-1 inline-flex min-h-[44px] items-center justify-center rounded-full border-0 bg-[var(--brand)] px-6 py-3 font-semibold text-[var(--background)] transition-all duration-200 hover:bg-white hover:text-black active:bg-[var(--brand-active)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)] focus-visible:bg-white focus-visible:text-black disabled:cursor-not-allowed disabled:opacity-60"
+              variant="primary"
+              size="md"
+              className="flex-1"
             >
               {isProcessing ? (
                 <>
@@ -529,7 +531,7 @@ function CheckoutPage() {
                   Complete Purchase
                 </>
               )}
-            </button>
+            </Button>
           </div>
 
         {/* Info Footer */}

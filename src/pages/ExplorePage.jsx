@@ -396,7 +396,7 @@ function ExplorePage() {
 
           {activeFilterCount > 0 || searchTerm.trim() ? (
             <Button
-              variant="secondary"
+              variant="dark"
               size="sm"
               className="inline-flex items-center gap-2 self-start lg:self-auto"
               onClick={() => {

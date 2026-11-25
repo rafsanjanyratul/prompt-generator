@@ -310,13 +310,14 @@ function AdminCreatePromptPage() {
               >
                 Cancel
               </Link>
-              <button
+              <Button
                 type="submit"
                 disabled={submitting}
-                className="inline-flex items-center justify-center rounded-full bg-[var(--brand)] px-5 py-3 text-sm font-semibold text-[var(--background)] transition-all duration-200 hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
+                variant="primary"
+                size="md"
               >
                 {submitting ? 'Creating prompt...' : 'Create prompt'}
-              </button>
+              </Button>
             </div>
           </form>
         </div>
