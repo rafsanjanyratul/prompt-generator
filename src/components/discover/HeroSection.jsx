@@ -314,14 +314,14 @@ function HeroSection({ promptStyles = [] }) {
       </motion.div>
 
       <div className="grid items-center gap-8 md:gap-4 lg:gap-6 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-        <div className="order-1 md:order-none">
+        <div className="order-1 min-w-0 md:order-none">
           <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--text-muted)]">
             Discover the style
           </p>
 
           <h1
             aria-label={headlineText}
-            className="relative m-0 text-[clamp(2.8rem,6vw,5.1rem)] leading-[0.94] tracking-[-0.07em] text-[var(--text)]"
+            className="relative m-0 max-w-full min-w-0 pl-4 md:pl-0 text-[clamp(2.8rem,6vw,5.1rem)] leading-[0.94] tracking-[-0.07em] text-[var(--text)]"
           >
             {/* Invisible full headline reserves the exact final wrapped height so the
                 typewriter animation never changes the container height. */}
@@ -349,7 +349,7 @@ function HeroSection({ promptStyles = [] }) {
           className="relative order-2 w-full md:order-none"
         >
           <div
-            className="relative h-[300px] w-screen left-1/2 -translate-x-1/2 overflow-x-clip overflow-y-hidden sm:h-[340px] md:h-[420px] lg:h-[460px] cursor-grab active:cursor-grabbing perspective-[1000px] md:static md:w-full md:left-auto md:translate-x-0 md:overflow-x-clip"
+            className="relative h-[300px] w-full max-w-full mx-auto overflow-x-clip overflow-y-hidden sm:h-[340px] md:h-[420px] lg:h-[460px] cursor-grab active:cursor-grabbing perspective-[1000px] md:static md:w-full md:left-auto md:translate-x-0 md:overflow-x-clip"
             style={{ touchAction: 'pan-y' }}
             onPointerDown={onDragStart}
             onPointerMove={onDragMove}

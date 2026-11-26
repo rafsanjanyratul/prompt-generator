@@ -6,6 +6,7 @@ import { toast } from 'react-toastify'
 import { useAuth } from '../../contexts/AuthContext.jsx'
 import { getCreditBalance } from '../../lib/billingApi.js'
 import ThemeToggle from '../ui/ThemeToggle'
+import Button from '../ui/Button.jsx'
 
 const DEFAULT_STYLES_PATH = '/explore'
 
@@ -216,18 +217,12 @@ function Header() {
             </div>
           ) : (
             <div className="hidden items-center gap-0.5 lg:flex">
-              <NavLink
-                to="/login"
-                className="inline-flex items-center justify-center whitespace-nowrap rounded-full border border-[var(--border)] bg-[var(--surface)] px-4 py-2 text-sm font-medium text-[var(--text)] transition-all duration-200 hover:border-[var(--focus)] hover:bg-[var(--surface-elevated)] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
-              >
-                Login
-              </NavLink>
-              <NavLink
-                to="/signup"
-                className="inline-flex items-center justify-center whitespace-nowrap rounded-full border border-[var(--border)] bg-[var(--surface)] px-4 py-2 text-sm font-medium text-[var(--text)] transition-all duration-200 hover:border-[var(--focus)] hover:bg-[var(--surface-elevated)] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
-              >
-                Sign up
-              </NavLink>
+              <Button asChild variant="primary" size="sm" className="whitespace-nowrap">
+                <NavLink to="/login">Login</NavLink>
+              </Button>
+              <Button asChild variant="primary" size="sm" className="whitespace-nowrap">
+                <NavLink to="/signup">Sign up</NavLink>
+              </Button>
             </div>
           )}
 
@@ -414,23 +409,6 @@ function Header() {
                 </>
               ) : (
                 <>
-                  {/* Pricing Link for Unauthenticated Users */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 6 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 6 }}
-                    transition={{ delay: navItems.length * 0.04, duration: 0.2, ease: 'easeOut' }}
-                  >
-                    <NavLink
-                      to="/pricing"
-                      onClick={closeMenu}
-                      className="flex items-center justify-between rounded-full border border-[var(--border)] bg-[var(--surface)] px-3 py-2.5 text-base font-medium text-[var(--text)] transition-colors hover:border-[var(--focus)] hover:bg-[var(--surface-elevated)]"
-                    >
-                      <span>Pricing</span>
-                      <span aria-hidden="true">•</span>
-                    </NavLink>
-                  </motion.div>
-
                   <motion.div
                     initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -440,10 +418,10 @@ function Header() {
                     <NavLink
                       to="/login"
                       onClick={closeMenu}
-                      className="flex items-center justify-between rounded-full border border-[var(--border)] bg-[var(--surface)] px-3 py-2.5 text-base font-medium text-[var(--text)] transition-colors hover:border-[var(--focus)] hover:bg-[var(--surface-elevated)]"
+                      className="flex items-center justify-between rounded-full bg-[linear-gradient(110deg,#8801FC_0%,#2600B9_50%,#0052FE_100%)] text-white shadow-[0_10px_20px_rgba(0,1,66,0.25)] hover:brightness-110 px-3 py-2.5 text-base font-medium w-full"
                     >
-                      <span>Login</span>
-                      <span aria-hidden="true">•</span>
+                      <span className="!text-white">Login</span>
+                      <span className="!text-white" aria-hidden="true">•</span>
                     </NavLink>
                   </motion.div>
                   <motion.div
@@ -455,10 +433,10 @@ function Header() {
                     <NavLink
                       to="/signup"
                       onClick={closeMenu}
-                      className="flex items-center justify-between rounded-full border border-[var(--border)] bg-[var(--surface)] px-3 py-2.5 text-base font-medium text-[var(--text)] transition-colors hover:border-[var(--focus)] hover:bg-[var(--surface-elevated)]"
+                      className="flex items-center justify-between rounded-full bg-[linear-gradient(110deg,#8801FC_0%,#2600B9_50%,#0052FE_100%)] text-white shadow-[0_10px_20px_rgba(0,1,66,0.25)] hover:brightness-110 px-3 py-2.5 text-base font-medium w-full"
                     >
-                      <span>Sign up</span>
-                      <span aria-hidden="true">•</span>
+                      <span className="!text-white">Sign up</span>
+                      <span className="!text-white" aria-hidden="true">•</span>
                     </NavLink>
                   </motion.div>
                 </>

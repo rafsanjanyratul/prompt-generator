@@ -388,7 +388,10 @@ function BillingPage() {
               Usage History
             </Button>
           </Link>
-          <button
+          <Button
+            variant="dark"
+            size="md"
+            className="w-full justify-center"
             onClick={() => {
               // Scroll to payment history
               const element = document.getElementById('payment-history')
@@ -396,11 +399,10 @@ function BillingPage() {
                 element.scrollIntoView({ behavior: 'smooth' })
               }
             }}
-            className="inline-flex min-h-[44px] w-full items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface)] px-5 py-3 font-semibold text-[var(--text)] transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)] disabled:cursor-not-allowed disabled:opacity-60"
           >
             <History className="mr-2 size-4" />
             Payments
-          </button>
+          </Button>
         </div>
       </div>
 

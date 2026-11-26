@@ -20,6 +20,12 @@ function LoginPage() {
   const [isResending, setIsResending] = useState(false)
   const prefersReducedMotion = useReducedMotion()
 
+  useDocumentMeta({
+    title: 'Login',
+    description: 'Sign in to your PromptTouch AI account to access your prompts and billing.',
+    robots: 'noindex,nofollow',
+  })
+
   if (loading) {
     return (
       <div className="flex min-h-[50vh] items-center justify-center px-4">
@@ -35,12 +41,6 @@ function LoginPage() {
     }
     return <Navigate to="/" replace />
   }
-
-  useDocumentMeta({
-    title: 'Login',
-    description: 'Sign in to your PromptTouch AI account to access your prompts and billing.',
-    robots: 'noindex,nofollow',
-  })
 
   const handleChange = (event) => {
     const { name, value } = event.target

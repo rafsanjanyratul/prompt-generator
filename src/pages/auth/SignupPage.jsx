@@ -18,6 +18,12 @@ function SignupPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isResending, setIsResending] = useState(false)
 
+  useDocumentMeta({
+    title: 'Sign up',
+    description: 'Create a PromptTouch AI account to start generating AI photo prompts.',
+    robots: 'noindex,nofollow',
+  })
+
   if (loading) {
     return (
       <div className="flex min-h-[50vh] items-center justify-center px-4">
@@ -29,12 +35,6 @@ function SignupPage() {
   if (user) {
     return <Navigate to="/" replace />
   }
-
-  useDocumentMeta({
-    title: 'Sign up',
-    description: 'Create a PromptTouch AI account to start generating AI photo prompts.',
-    robots: 'noindex,nofollow',
-  })
 
   const handleChange = (event) => {
     const { name, value } = event.target
