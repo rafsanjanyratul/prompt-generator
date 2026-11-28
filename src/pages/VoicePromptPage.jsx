@@ -947,59 +947,76 @@ function VoicePromptPage() {
                 Recognized speech
               </label>
 
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="text-[11px] font-medium text-[var(--text-muted)]">
+              <div className="flex items-center gap-2 min-w-0">
+                <span className="shrink-0 text-[11px] font-medium text-[var(--text-muted)]">
                   {hasPrompt ? `${wordCount} ${wordCount === 1 ? 'word' : 'words'}` : 'No text yet'}
                 </span>
+                <div className="grid grid-cols-3 gap-2 flex-1 min-w-0">
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="primary"
+                    onClick={handleCopySpeechText}
+                    disabled={!hasPrompt}
+                    className={`w-full min-w-0 inline-flex items-center gap-2 whitespace-nowrap ${
+                      speechCopyState === 'success'
+                        ? 'border-[var(--success)] bg-[var(--success)] text-[var(--background)] hover:-translate-y-0'
+                          : speechCopyState === 'error'
+                            ? 'border-[var(--error)] text-[var(--error)]'
+                            : ''
+                    }`}
+                    aria-live="polite"
+                    aria-label={speechCopyLabel}
+                  >
+                    {speechCopyState === 'success' ? (
+                      <Check className="size-3.5 shrink-0" aria-hidden="true" />
+                    ) : (
+                      <Copy className="size-3.5 shrink-0" aria-hidden="true" />
+                    )}
+                    <span className="inline sm:hidden">
+                      {speechCopyState === 'success' ? 'Copied!' : speechCopyState === 'error' ? 'Copy failed' : 'Copy'}
+                    </span>
+                    <span className="hidden sm:inline">
+                      {speechCopyState === 'success' ? 'Copied!' : speechCopyState === 'error' ? 'Copy failed' : 'Copy Speech Text'}
+                    </span>
+                  </Button>
 
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="primary"
-                  onClick={handleCopySpeechText}
-                  disabled={!hasPrompt}
-                  className={`inline-flex items-center gap-2 ${
-                    speechCopyState === 'success'
-                      ? 'border-[var(--success)] bg-[var(--success)] text-[var(--background)] hover:-translate-y-0'
-                        : speechCopyState === 'error'
-                          ? 'border-[var(--error)] text-[var(--error)]'
-                          : ''
-                  }`}
-                  aria-live="polite"
-                  aria-label={speechCopyLabel}
-                >
-                  {speechCopyState === 'success' ? (
-                    <Check className="size-3.5" aria-hidden="true" />
-                  ) : (
-                    <Copy className="size-3.5" aria-hidden="true" />
-                  )}
-                  {speechCopyLabel}
-                </Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="primary"
+                    onClick={handleSavePrompt}
+                    disabled={!hasPrompt || isSavingPrompt || !user}
+                    className="w-full min-w-0 inline-flex items-center gap-2 whitespace-nowrap"
+                    aria-label={user ? 'Save this voice prompt to My Prompts' : 'Sign in to save this voice prompt'}
+                  >
+                    <span className="inline sm:hidden">
+                      {isSavingPrompt ? 'Saving...' : 'Save'}
+                    </span>
+                    <span className="hidden sm:inline">
+                      {isSavingPrompt ? 'Saving...' : 'Save to My Prompts'}
+                    </span>
+                  </Button>
 
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="primary"
-                  onClick={handleSavePrompt}
-                  disabled={!hasPrompt || isSavingPrompt || !user}
-                  className="inline-flex items-center gap-2"
-                  aria-label={user ? 'Save this voice prompt to My Prompts' : 'Sign in to save this voice prompt'}
-                >
-                  {isSavingPrompt ? 'Saving...' : 'Save to My Prompts'}
-                </Button>
-
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="primary"
-                  onClick={handleEnhancePrompt}
-                  disabled={isEnhancing}
-                  className="inline-flex items-center gap-2"
-                  aria-busy={isEnhancing}
-                >
-                  <Sparkles className="size-3.5" aria-hidden="true" />
-                  {isEnhancing ? 'Enhancing...' : 'Enhance with AI'}
-                </Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="primary"
+                    onClick={handleEnhancePrompt}
+                    disabled={isEnhancing}
+                    className="w-full min-w-0 inline-flex items-center gap-2 whitespace-nowrap"
+                    aria-label="Enhance with AI"
+                    aria-busy={isEnhancing}
+                  >
+                    <Sparkles className="size-3.5 shrink-0" aria-hidden="true" />
+                    <span className="inline sm:hidden">
+                      {isEnhancing ? 'Enhancing...' : 'Enhance'}
+                    </span>
+                    <span className="hidden sm:inline">
+                      {isEnhancing ? 'Enhancing...' : 'Enhance with AI'}
+                    </span>
+                  </Button>
+                </div>
               </div>
             </div>
 
@@ -1026,7 +1043,7 @@ function VoicePromptPage() {
 
             {enhancedPrompt ? (
               <div className="space-y-2 rounded-[20px] border border-[var(--border)] bg-[var(--surface-muted)] p-3 sm:p-4">
-                <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="flex flex-wrap items-center gap-2 sm:flex-row sm:items-center sm:justify-between">
                   <label
                     htmlFor="voice-prompt-enhanced"
                     className="text-[10px] font-bold uppercase tracking-[0.18em] text-[var(--text-muted)]"
@@ -1038,7 +1055,7 @@ function VoicePromptPage() {
                     size="sm"
                     variant="primary"
                     onClick={handleCopyEnhancedPrompt}
-                    className="inline-flex items-center gap-2"
+                    className="w-full sm:w-auto inline-flex items-center gap-2"
                     aria-live="polite"
                   >
                     {enhancedCopyState === 'success' ? (
@@ -1058,7 +1075,7 @@ function VoicePromptPage() {
                     variant="primary"
                     onClick={handleSaveEnhancedPrompt}
                     disabled={!enhancedPrompt.trim() || isEnhancing || isSavingEnhancedPrompt || !user}
-                    className="inline-flex items-center gap-2"
+                    className="w-full sm:w-auto inline-flex items-center gap-2"
                     aria-busy={isSavingEnhancedPrompt}
                     aria-label={user ? 'Save enhanced prompt to My Prompts' : 'Sign in to save this enhanced prompt'}
                   >

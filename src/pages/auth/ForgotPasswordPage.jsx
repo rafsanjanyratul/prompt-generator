@@ -4,6 +4,7 @@ import { toast } from 'react-toastify'
 
 import { forgotPassword } from '../../lib/authApi.js'
 import useDocumentMeta from '../../hooks/useDocumentMeta'
+import Button from '../../components/ui/Button.jsx'
 
 function ForgotPasswordPage() {
   useDocumentMeta({
@@ -88,13 +89,15 @@ function ForgotPasswordPage() {
               </div>
             ) : null}
 
-            <button
+            <Button
               type="submit"
+              variant="primary"
+              size="md"
               disabled={isSubmitting}
-              className="w-full rounded-xl bg-[var(--brand)] px-4 py-3 font-semibold text-[var(--background)] transition-all duration-200 hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-70"
+              className="w-full"
             >
               {isSubmitting ? 'Sending...' : 'Send reset link'}
-            </button>
+            </Button>
 
             <div className="text-center">
               <Link to="/login" className="text-sm font-semibold text-[var(--brand)]">

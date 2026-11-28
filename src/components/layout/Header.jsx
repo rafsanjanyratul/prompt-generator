@@ -401,7 +401,7 @@ function Header() {
                     exit={{ opacity: 0, y: 6 }}
                     transition={{ delay: (navItems.length + 4) * 0.04, duration: 0.2, ease: 'easeOut' }}
                     onClick={handleLogout}
-                    className="mt-2 flex items-center justify-between rounded-full bg-[linear-gradient(110deg,#8801FC_0%,#2600B9_50%,#000142_100%)] text-white shadow-[0_10px_20px_rgba(0,1,66,0.25)] hover:brightness-110 px-3 py-2.5 text-base font-medium"
+                    className="mt-2 flex items-center justify-between rounded-full bg-[linear-gradient(110deg,#DB2777_0%,#EC4899_50%,#BE185D_100%)] text-white hover:brightness-110 px-3 py-2.5 text-base font-medium"
                   >
                     <span>Logout</span>
                     <span aria-hidden="true">•</span>
@@ -418,7 +418,7 @@ function Header() {
                     <NavLink
                       to="/login"
                       onClick={closeMenu}
-                      className="flex items-center justify-between rounded-full bg-[linear-gradient(110deg,#8801FC_0%,#2600B9_50%,#0052FE_100%)] text-white shadow-[0_10px_20px_rgba(0,1,66,0.25)] hover:brightness-110 px-3 py-2.5 text-base font-medium w-full"
+                      className="flex items-center justify-between rounded-full bg-[linear-gradient(110deg,#DB2777_0%,#EC4899_50%,#BE185D_100%)] text-white hover:brightness-110 px-3 py-2.5 text-base font-medium w-full"
                     >
                       <span className="!text-white">Login</span>
                       <span className="!text-white" aria-hidden="true">•</span>
@@ -433,7 +433,7 @@ function Header() {
                     <NavLink
                       to="/signup"
                       onClick={closeMenu}
-                      className="flex items-center justify-between rounded-full bg-[linear-gradient(110deg,#8801FC_0%,#2600B9_50%,#0052FE_100%)] text-white shadow-[0_10px_20px_rgba(0,1,66,0.25)] hover:brightness-110 px-3 py-2.5 text-base font-medium w-full"
+                      className="flex items-center justify-between rounded-full bg-[linear-gradient(110deg,#DB2777_0%,#EC4899_50%,#BE185D_100%)] text-white hover:brightness-110 px-3 py-2.5 text-base font-medium w-full"
                     >
                       <span className="!text-white">Sign up</span>
                       <span className="!text-white" aria-hidden="true">•</span>

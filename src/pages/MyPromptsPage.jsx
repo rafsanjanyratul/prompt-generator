@@ -412,14 +412,14 @@ function MyPromptsPage() {
                 </div>
               ) : null}
 
-              <div className="flex flex-wrap items-center gap-3">
-                <Button type="button" variant="primary" size="sm" onClick={handleCopyPrompt}>
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                <Button type="button" variant="primary" size="sm" onClick={handleCopyPrompt} className="w-full sm:w-auto">
                   {copyState === 'success' ? 'Copied!' : copyState === 'error' ? 'Copy failed' : 'Copy Prompt'}
                 </Button>
-                <Button type="button" variant="dark" size="sm" onClick={() => handleEditPrompt(selectedPrompt)}>
+                <Button type="button" variant="dark" size="sm" onClick={() => handleEditPrompt(selectedPrompt)} className="w-full sm:w-auto">
                   Edit
                 </Button>
-                <Button type="button" variant="ghost" size="sm" onClick={() => handleDeletePrompt(selectedPrompt)} disabled={isDeleting}>
+                <Button type="button" variant="ghost" size="sm" onClick={() => handleDeletePrompt(selectedPrompt)} disabled={isDeleting} className="w-full sm:w-auto">
                   {isDeleting ? 'Deleting...' : 'Delete'}
                 </Button>
               </div>
@@ -521,11 +521,11 @@ function MyPromptsPage() {
                 <p className="text-sm text-red-600">{error}</p>
               ) : null}
 
-              <div className="flex justify-end gap-3 pt-2">
-                <Button type="button" variant="dark" onClick={() => setEditingPrompt(null)} disabled={isSaving}>
+              <div className="flex flex-col gap-3 sm:flex-row sm:justify-end pt-2">
+                <Button type="button" variant="dark" onClick={() => setEditingPrompt(null)} disabled={isSaving} className="w-full sm:w-auto">
                   Cancel
                 </Button>
-                <Button type="submit" variant="primary" disabled={isSaving}>
+                <Button type="submit" variant="primary" disabled={isSaving} className="w-full sm:w-auto">
                   {isSaving ? 'Saving...' : 'Save changes'}
                 </Button>
               </div>

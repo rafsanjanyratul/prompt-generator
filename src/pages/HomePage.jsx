@@ -92,9 +92,9 @@ function HomePage() {
           size="md"
           className="self-start sm:self-center"
         >
-          <Link to="/ai-enhancer">
+          <Link to="/ai-enhancer" className="inline-flex items-center gap-2">
             Try AI Enhancer
-            <ArrowUpRight className="size-4" aria-hidden="true" />
+            <ArrowUpRight className="size-4 shrink-0" aria-hidden="true" />
           </Link>
         </Button>
       </section>

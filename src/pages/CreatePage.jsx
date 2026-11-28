@@ -1471,7 +1471,7 @@ function CreatePage() {
                   Prompt Preview
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
                   <Button
                     type="button"
                     size="sm"
@@ -1480,6 +1480,7 @@ function CreatePage() {
                     disabled={isSaving || !user}
                     aria-live="polite"
                     aria-label={user ? 'Save this prompt to My Prompts' : 'Sign in to save this prompt'}
+                    className="w-full sm:w-auto"
                   >
                     {isSaving ? 'Saving...' : user ? 'Save to My Prompts' : 'Sign in to save'}
                   </Button>
@@ -1489,7 +1490,7 @@ function CreatePage() {
                     size="sm"
                     variant="primary"
                     onClick={handleCopyPrompt}
-                    className={`inline-flex items-center gap-2 ${
+                    className={`w-full sm:w-auto inline-flex items-center gap-2 ${
                       copyState === 'success'
                         ? 'border-[var(--success)] bg-[var(--success)] text-[var(--background)] hover:-translate-y-0'
                         : copyState === 'error'

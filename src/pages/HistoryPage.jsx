@@ -212,7 +212,7 @@ function HistoryPage() {
           asChild
           variant="dark"
           size="sm"
-          className="hidden flex-shrink-0 items-center gap-2 sm:flex"
+          className="flex-shrink-0 items-center gap-2"
         >
           <Link to="/billing">
             <ArrowLeft className="size-4" />
@@ -221,43 +221,28 @@ function HistoryPage() {
         </Button>
       </div>
 
-      {/* Mobile Back Button */}
-      <div className="mb-6 flex sm:hidden">
-        <Button
-          asChild
-          variant="dark"
-          size="sm"
-          className="inline-flex items-center gap-2"
-        >
-          <Link to="/billing">
-            <ArrowLeft className="size-4" />
-            Back
-          </Link>
-        </Button>
-      </div>
-
       {/* Tab Navigation */}
-      <div className="mb-8 flex gap-3 border-b border-[var(--border)]">
+      <div className="mb-8 flex flex-wrap gap-3 border-b border-[var(--border)]">
         <button
           onClick={() => setActiveTab(TAB_TYPES.USAGE)}
-          className={`inline-flex items-center gap-2 border-b-2 px-4 py-3 font-semibold transition-all duration-200 ${
+          className={`inline-flex items-center gap-2 whitespace-nowrap border-b-2 px-4 py-3 font-semibold transition-all duration-200 ${
             activeTab === TAB_TYPES.USAGE
               ? 'border-[var(--brand)] text-[var(--brand)]'
               : 'border-transparent text-[var(--text-muted)] hover:text-[var(--text)]'
           }`}
         >
-          <TrendingUp className="size-5" />
+          <TrendingUp className="size-5 shrink-0" />
           <span>AI Usage History</span>
         </button>
         <button
           onClick={() => setActiveTab(TAB_TYPES.CREDITS)}
-          className={`inline-flex items-center gap-2 border-b-2 px-4 py-3 font-semibold transition-all duration-200 ${
+          className={`inline-flex items-center gap-2 whitespace-nowrap border-b-2 px-4 py-3 font-semibold transition-all duration-200 ${
             activeTab === TAB_TYPES.CREDITS
               ? 'border-[var(--brand)] text-[var(--brand)]'
               : 'border-transparent text-[var(--text-muted)] hover:text-[var(--text)]'
           }`}
         >
-          <BookOpen className="size-5" />
+          <BookOpen className="size-5 shrink-0" />
           <span>Credit Transactions</span>
         </button>
       </div>
