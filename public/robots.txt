@@ -1,5 +1,5 @@
 # PromptTouch AI — Crawlability Foundation
-# Verified production origin: https://prompt-generator-ratul.surge.sh
+# Verified production origin: https://prompttouchai.com
 
 User-agent: *
 
@@ -32,4 +32,4 @@ Allow: /images/
 # Disallow: /ai-enhancer
 # Disallow: /admin
 
-Sitemap: https://prompt-generator-ratul.surge.sh/sitemap.xml
+Sitemap: https://prompttouchai.com/sitemap.xml

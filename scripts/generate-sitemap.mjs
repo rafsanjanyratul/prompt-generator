@@ -9,7 +9,7 @@ const OUTPUT = join(OUTPUT_DIR, 'sitemap.xml');
 
 const STATIC_ROUTES = ['/', '/explore', '/pricing'];
 
-const DEFAULT_ORIGIN = 'https://prompt-generator-ratul.surge.sh';
+const DEFAULT_ORIGIN = 'https://prompttouchai.com';
 
 function loadEnvValue(key) {
   if (process.env[key] && process.env[key].trim() !== '') {
