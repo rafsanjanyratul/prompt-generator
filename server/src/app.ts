@@ -15,9 +15,25 @@ import billingRoutes from './modules/billing/billing.routes.js'
 
 const app = express()
 
+const allowedOrigins = [
+  new URL(env.FRONTEND_URL).origin,
+  ...env.CORS_ALLOWED_ORIGINS,
+]
+
 app.use(
   cors({
-    origin: env.FRONTEND_URL,
+    origin: (origin, callback) => {
+      // Allow requests without Origin header (server-to-server, health checks, curl)
+      if (!origin) {
+        return callback(null, false)
+      }
+      // Exact match against allowlist; echo back the matching origin
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, origin)
+      }
+      // Reject unknown origins
+      return callback(new Error('Not allowed by CORS'))
+    },
     credentials: true,
   }),
 )

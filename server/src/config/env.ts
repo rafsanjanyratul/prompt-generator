@@ -58,6 +58,36 @@ const envSchema = z.object({
   PORT: z.coerce.number().int().positive().default(5000),
   AI_ENHANCEMENT_CREDIT_COST: z.coerce.number().int().positive().default(1),
   FRONTEND_URL: z.string().url().default('http://localhost:5173'),
+  CORS_ALLOWED_ORIGINS: z
+    .string()
+    .default('')
+    .transform((value) => {
+      if (!value.trim()) return []
+      return value
+        .split(',')
+        .map((url) => url.trim())
+        .filter(Boolean)
+        .map((url) => {
+          try {
+            const parsed = new URL(url)
+            if (!['http:', 'https:'].includes(parsed.protocol)) {
+              throw new Error(`Invalid CORS_ALLOWED_ORIGINS protocol: ${parsed.protocol}`)
+            }
+            if (parsed.pathname !== '/' && parsed.pathname !== '') {
+              throw new Error(`Invalid CORS_ALLOWED_ORIGINS pathname: ${parsed.pathname}`)
+            }
+            if (parsed.search || parsed.hash) {
+              throw new Error(`Invalid CORS_ALLOWED_ORIGINS query or hash`)
+            }
+            return parsed.origin
+          } catch (err) {
+            if (err instanceof Error && err.message.startsWith('Invalid CORS_ALLOWED_ORIGINS')) {
+              throw err
+            }
+            throw new Error(`Invalid CORS_ALLOWED_ORIGINS entry: ${url}`)
+          }
+        })
+    }),
   APP_BASE_URL: z.string().url().default('http://localhost:5173'),
   API_BASE_URL: apiBaseUrlSchema,
   SSLCOMMERZ_STORE_ID: z.preprocess(
